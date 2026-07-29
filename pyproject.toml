@@ -1,0 +1,29 @@
+[project]
+name = "se-browseragent"
+version = "0.1.0"
+description = "Software Engineer Browser Agent"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "dotenv>=0.9.9",
+    "fastapi>=0.139.0",
+    "flask>=3.1.3",
+    "flask-cors>=6.0.5",
+    "ipykernel>=7.3.0",
+    "langchain>=1.3.7",
+    "langchain-aws>=1.6.0",
+    "langchain-community>=0.4.2",
+    "langchain-google-genai>=4.2.5",
+    "langchain-groq>=1.1.3",
+    "langchain-openrouter>=0.2.4",
+    "langgraph>=1.2.4",
+    "lxml>=6.1.1",
+    "pydantic>=2.13.4",
+    "pypdf>=6.14.2",
+    "qrcode[pil]>=8.2",
+    "schemas>=0.7.1",
+    "sentence-transformers>=5.6.0",
+    "tensorflow>=2.21.0",
+    "uvicorn>=0.51.0",
+]
