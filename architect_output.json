@@ -1,9 +1,0 @@
-﻿{
-  "project_name": "Todo List App",
-  "description": "A runnable FastAPI todo application generated from architect_output.",
-  "features": [
-    "Create todo items",
-    "Complete todo items",
-    "Delete todo items"
-  ]
-}

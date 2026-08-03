@@ -260,7 +260,7 @@ Path: {file_path}
 GENERATED SOURCE CODE
 =========================================================
 {code}
-
+{error_section}
 =========================================================
 YOUR TASK
 =========================================================
@@ -285,30 +285,41 @@ STRICT RULES
 """
 )
 
-def debugger_agent(generated_files: List[GeneratedFile]) -> List[GeneratedFile]:
-    print(f"\n[4/4] Debugger Agent reviewing {len(generated_files)} files...")
+import concurrent.futures
+
+def debugger_agent(generated_files: List[GeneratedFile], errors: str = None) -> List[GeneratedFile]:
+    print(f"\n[4/4] Debugger Agent reviewing {len(generated_files)} files (concurrently)...")
     project_structure = "\n".join(f"  {f.path}" for f in generated_files)
     chain = DEBUGGER_PROMPT | LLM
-    fixed: List[GeneratedFile] = []
-    for i, gf in enumerate(generated_files, 1):
-        print(f"     [{i:02d}/{len(generated_files):02d}] Debugging {gf.path} ...", end=" ", flush=True)
+    
+    error_section = ""
+    if errors:
+        error_section = f"\n=========================================================\nPREVIOUS ERRORS (Address these!)\n=========================================================\n{errors}\n"
+
+    def debug_file(gf: GeneratedFile) -> GeneratedFile:
+        print(f"     [>] Debugging {gf.path} ...", flush=True)
         try:
             response = chain.invoke(
                 {
                     "project_structure": project_structure,
                     "file_path": gf.path,
                     "code": gf.content,
+                    "error_section": error_section,
                 }
             )
             content = response.content.strip()
             if content.startswith("```"):
                 lines = content.splitlines()
                 content = "\n".join(lines[1:-1]) if lines[-1].strip() == "```" else "\n".join(lines[1:])
-            fixed.append(GeneratedFile(path=gf.path, content=content))
-            print("OK")
+            print(f"     [OK] {gf.path}", flush=True)
+            return GeneratedFile(path=gf.path, content=content)
         except Exception as exc:
-            print(f"FAILED (keeping original -- {exc})")
-            fixed.append(gf)
+            print(f"     [FAILED] {gf.path} (keeping original -- {exc})", flush=True)
+            return gf
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(generated_files))) as executor:
+        fixed = list(executor.map(debug_file, generated_files))
+        
     return fixed
 
 
@@ -479,24 +490,42 @@ def run_pipeline(query: str, output_dir: str = "generated_project") -> None:
     manifest = architect_agent(plan)
 
     # 3. Code
-    generated = coding_agent(manifest, plan)
+    current_files = coding_agent(manifest, plan)
 
-    # 4. Debug
-    debugged = debugger_agent(generated)
+    # iterative debug
+    max_iterations = 3
+    errors = None
+    terminal_result = None
+    root = None
 
-    # 5. Validate
-    validate_project(debugged, manifest)
+    for iteration in range(max_iterations):
+        if iteration > 0:
+            print(f"\n--- Debug Iteration {iteration + 1} ---")
+            
+        # 4. Debug
+        current_files = debugger_agent(current_files, errors=errors)
 
-    # 6. Save to disk first (so terminal agent can operate on files)
-    root = save_project(debugged, manifest, root=output_dir)
+        # 5. Validate
+        validate_project(current_files, manifest)
 
-    # 7. Terminal agent – install + compile check
-    terminal_result = terminal_agent(
-        project_path=str(root),
-        install_command=manifest.install_command,
-    )
+        # 6. Save to disk first (so terminal agent can operate on files)
+        root = save_project(current_files, manifest, root=output_dir)
+
+        # 7. Terminal agent – install + compile check
+        terminal_result = terminal_agent(
+            project_path=str(root),
+            install_command=manifest.install_command,
+        )
+        
+        if terminal_result["success"]:
+            print("\n  No errors found, stopping iteration.")
+            break
+        else:
+            errors = terminal_result["stderr"]
+            print(f"\n  Errors found, passing to next debug iteration...")
+
     if not terminal_result["success"]:
-        print("\n  NOTE: Some install/compile checks failed.")
+        print("\n  NOTE: Some install/compile checks failed after maximum iterations.")
         print("  Review the generated project and fix errors manually.")
         print("  stderr summary:")
         for line in terminal_result["stderr"].splitlines()[:20]:
@@ -506,7 +535,7 @@ def run_pipeline(query: str, output_dir: str = "generated_project") -> None:
     print("  Pipeline complete!")
     print("=" * 60)
     print(f"\n  Project : {manifest.project_name}")
-    print(f"  Files   : {len(debugged)}")
+    print(f"  Files   : {len(current_files)}")
     print(f"  Folder  : {root.resolve()}")
     status_icon = "OK" if terminal_result["success"] else "WARNINGS"
     print(f"\n  Install check : {status_icon}")
@@ -515,6 +544,7 @@ def run_pipeline(query: str, output_dir: str = "generated_project") -> None:
     print(f"    {manifest.install_command}")
     print(f"    {manifest.run_command}")
     print()
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
