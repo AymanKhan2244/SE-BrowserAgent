@@ -19,7 +19,7 @@ import sys
 import argparse
 import zipfile
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -403,6 +403,225 @@ def terminal_agent(project_path: str, install_command: str) -> dict:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# Agent 6 – Browser Agent (Playwright smoke tests)
+# ══════════════════════════════════════════════════════════════════════════════
+
+import time
+import socket
+import threading
+import urllib.request
+import urllib.error
+
+def _detect_port(run_command: str) -> int:
+    """
+    Infer the local port from the project's run command.
+    Supports Flask (5000), Uvicorn/FastAPI (8000), Node/npm (3000).
+    Falls back to 8000.
+    """
+    import re
+    # Explicit --port flag  (uvicorn, gunicorn, etc.)
+    m = re.search(r"--port[=\s]+(\d+)", run_command)
+    if m:
+        return int(m.group(1))
+    # Flask / python app.py
+    if "flask" in run_command.lower() or "app.py" in run_command.lower():
+        return 5000
+    # Node / npm
+    if "node" in run_command.lower() or "npm" in run_command.lower():
+        return 3000
+    # uvicorn / fastapi default
+    if "uvicorn" in run_command.lower() or "fastapi" in run_command.lower():
+        return 8000
+    return 8000
+
+
+def _find_chromium_executable() -> Optional[str]:
+    """
+    Auto-discover the Playwright Chromium executable installed on this machine.
+    Looks in ms-playwright cache for the latest chromium-XXXX folder.
+    Returns None if not found (Playwright will use its default, which may fail
+    if the headless-shell is not installed).
+    """
+    import glob as _glob
+    candidates = [
+        os.path.expandvars(r"%LOCALAPPDATA%\ms-playwright"),  # Windows
+        os.path.expanduser("~/.cache/ms-playwright"),           # Linux
+        os.path.expanduser("~/Library/Caches/ms-playwright"),  # macOS
+    ]
+    for base in candidates:
+        if not os.path.isdir(base):
+            continue
+        dirs = sorted(
+            [d for d in _glob.glob(os.path.join(base, "chromium-*"))
+             if os.path.isdir(d) and "headless" not in d],
+            reverse=True,
+        )
+        for d in dirs:
+            for exe_name in (
+                "chrome-win64/chrome.exe",
+                "chrome-linux/chrome",
+                "chrome-mac/Chromium.app/Contents/MacOS/Chromium",
+            ):
+                exe = os.path.join(d, exe_name)
+                if os.path.isfile(exe):
+                    return exe
+    return None
+
+
+def _wait_for_server(host: str, port: int, timeout: int = 30) -> bool:
+    """
+    Poll http://host:port/ until it responds or timeout (seconds) is reached.
+    Returns True if the server is ready, False otherwise.
+    """
+    url = f"http://{host}:{port}/"
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            urllib.request.urlopen(url, timeout=2)
+            return True
+        except (urllib.error.URLError, OSError):
+            time.sleep(0.5)
+    return False
+
+
+def browser_agent(
+    project_root: str,
+    run_command: str,
+    host: str = "localhost",
+) -> dict:
+    """
+    Step 6 – Browser Agent.
+
+    1. Starts the generated app as a background subprocess.
+    2. Waits for the HTTP server to be ready.
+    3. Uses Playwright (sync API) to:
+       - Navigate to the app URL.
+       - Perform generic smoke tests (title present, no HTTP 500, screenshot).
+    4. Kills the app process.
+    5. Returns a result dict.
+    """
+    print(f"\n[6/6] Browser Agent testing the generated app...")
+    root = Path(project_root)
+    port = _detect_port(run_command)
+    url = f"http://{host}:{port}/"
+    print(f"     App URL      : {url}")
+    print(f"     Run command  : {run_command}")
+
+    # ── Start the app ─────────────────────────────────────────────────────────
+    try:
+        app_process = subprocess.Popen(
+            run_command,
+            cwd=str(root),
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+    except Exception as exc:
+        print(f"     ERROR: Could not start the app: {exc}")
+        return {
+            "success": False,
+            "url": url,
+            "error": str(exc),
+            "screenshot_path": None,
+        }
+
+    # ── Wait for server to be ready ───────────────────────────────────────────
+    print("     Waiting for server to be ready...", end=" ", flush=True)
+    ready = _wait_for_server(host, port, timeout=30)
+    if not ready:
+        app_process.kill()
+        print("TIMEOUT")
+        return {
+            "success": False,
+            "url": url,
+            "error": "Server did not start within 30 seconds.",
+            "screenshot_path": None,
+        }
+    print("READY")
+
+    # ── Playwright smoke tests ────────────────────────────────────────────────
+    screenshot_path = str(root / "browser_test_screenshot.png")
+    errors = []
+    page_title = ""
+    status_code = None
+
+    try:
+        from playwright.sync_api import sync_playwright
+
+        with sync_playwright() as pw:
+            # Use full Chromium directly (avoids dependency on headless-shell)
+            chromium_exe = _find_chromium_executable()
+            launch_kwargs: dict = {"headless": True}
+            if chromium_exe:
+                launch_kwargs["executable_path"] = chromium_exe
+            browser = pw.chromium.launch(**launch_kwargs)
+            context = browser.new_context()
+            page = context.new_page()
+
+            # Navigate with response capture
+            try:
+                response = page.goto(url, wait_until="networkidle", timeout=15000)
+                status_code = response.status if response else None
+                if status_code and status_code >= 500:
+                    errors.append(f"HTTP {status_code} returned by the server.")
+            except Exception as nav_exc:
+                errors.append(f"Navigation failed: {nav_exc}")
+
+            # Wait a moment for JS to settle
+            page.wait_for_timeout(2000)
+
+            # Smoke test 1: page title is not empty
+            page_title = page.title()
+            if not page_title.strip():
+                errors.append("Page title is empty — the page may not have loaded correctly.")
+            else:
+                print(f"     Page title   : {page_title}")
+
+            # Smoke test 2: body has visible text content
+            body_text = page.locator("body").inner_text(timeout=5000)
+            if len(body_text.strip()) < 5:
+                errors.append("Page body appears empty — the app may have crashed.")
+
+            # Screenshot
+            page.screenshot(path=screenshot_path, full_page=True)
+            print(f"     Screenshot   : {screenshot_path}")
+
+            context.close()
+            browser.close()
+
+    except ImportError:
+        errors.append(
+            "Playwright is not installed. Run: pip install playwright && playwright install"
+        )
+    except Exception as exc:
+        errors.append(f"Playwright error: {exc}")
+    finally:
+        # Always kill the app subprocess
+        app_process.kill()
+        try:
+            app_process.wait(timeout=5)
+        except Exception:
+            pass
+
+    success = len(errors) == 0
+    if success:
+        print("     All smoke tests passed!")
+    else:
+        print(f"     {len(errors)} smoke test(s) failed:")
+        for err in errors:
+            print(f"       - {err}")
+
+    return {
+        "success": success,
+        "url": url,
+        "page_title": page_title,
+        "status_code": status_code,
+        "errors": errors,
+        "screenshot_path": screenshot_path if Path(screenshot_path).exists() else None,
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # Saver – write files to disk + create zip
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -531,6 +750,12 @@ def run_pipeline(query: str, output_dir: str = "generated_project") -> None:
         for line in terminal_result["stderr"].splitlines()[:20]:
             print(f"    {line}")
 
+    # 8. Browser Agent – smoke test the running app
+    browser_result = browser_agent(
+        project_root=str(root),
+        run_command=manifest.run_command,
+    )
+
     print("\n" + "=" * 60)
     print("  Pipeline complete!")
     print("=" * 60)
@@ -538,7 +763,11 @@ def run_pipeline(query: str, output_dir: str = "generated_project") -> None:
     print(f"  Files   : {len(current_files)}")
     print(f"  Folder  : {root.resolve()}")
     status_icon = "OK" if terminal_result["success"] else "WARNINGS"
-    print(f"\n  Install check : {status_icon}")
+    print(f"\n  Install check  : {status_icon}")
+    browser_icon = "OK" if browser_result["success"] else "WARNINGS"
+    print(f"  Browser tests  : {browser_icon}")
+    if browser_result.get("screenshot_path"):
+        print(f"  Screenshot     : {browser_result['screenshot_path']}")
     print(f"\n  To run the app:")
     print(f"    cd {root}")
     print(f"    {manifest.install_command}")

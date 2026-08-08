@@ -19,3 +19,4 @@ qrcode[pil]
 flask 
 flask_cors
 tensorflow
+playwright
