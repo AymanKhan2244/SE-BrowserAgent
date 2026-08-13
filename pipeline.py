@@ -468,19 +468,34 @@ def _find_chromium_executable() -> Optional[str]:
     return None
 
 
-def _wait_for_server(host: str, port: int, timeout: int = 30) -> bool:
+def _wait_for_server(host: str, port: int, timeout: int = 60) -> bool:
     """
-    Poll http://host:port/ until it responds or timeout (seconds) is reached.
+    Poll until http://host:port/ responds or timeout (seconds) is reached.
+    First waits for TCP connectivity, then confirms with an HTTP GET.
     Returns True if the server is ready, False otherwise.
     """
     url = f"http://{host}:{port}/"
     deadline = time.time() + timeout
+
+    # Phase 1: wait for TCP port to accept connections
     while time.time() < deadline:
         try:
-            urllib.request.urlopen(url, timeout=2)
-            return True
-        except (urllib.error.URLError, OSError):
+            with socket.create_connection((host, port), timeout=2):
+                break  # port is open
+        except (OSError, ConnectionRefusedError):
             time.sleep(0.5)
+    else:
+        return False  # TCP never became reachable
+
+    # Phase 2: wait for HTTP to return a non-error response
+    while time.time() < deadline:
+        try:
+            resp = urllib.request.urlopen(url, timeout=3)
+            if resp.status < 500:
+                return True
+        except (urllib.error.URLError, OSError):
+            pass
+        time.sleep(0.5)
     return False
 
 
@@ -508,13 +523,21 @@ def browser_agent(
     print(f"     Run command  : {run_command}")
 
     # ── Start the app ─────────────────────────────────────────────────────────
+    # Set env vars to prevent common startup issues:
+    #   FLASK_DEBUG=0  – disables the Werkzeug reloader (avoids double-spawn delay)
+    #   PYTHONUNBUFFERED=1 – ensures output isn't silently buffered
+    env = os.environ.copy()
+    env["FLASK_DEBUG"] = "0"
+    env["PYTHONUNBUFFERED"] = "1"
+
     try:
         app_process = subprocess.Popen(
             run_command,
             cwd=str(root),
             shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            env=env,
         )
     except Exception as exc:
         print(f"     ERROR: Could not start the app: {exc}")
@@ -525,9 +548,20 @@ def browser_agent(
             "screenshot_path": None,
         }
 
+    # Check that the process hasn't immediately crashed
+    time.sleep(1)
+    if app_process.poll() is not None:
+        print(f"CRASHED (exit code {app_process.returncode})")
+        return {
+            "success": False,
+            "url": url,
+            "error": f"App process exited immediately with code {app_process.returncode}",
+            "screenshot_path": None,
+        }
+
     # ── Wait for server to be ready ───────────────────────────────────────────
     print("     Waiting for server to be ready...", end=" ", flush=True)
-    ready = _wait_for_server(host, port, timeout=30)
+    ready = _wait_for_server(host, port, timeout=60)
     if not ready:
         app_process.kill()
         print("TIMEOUT")
