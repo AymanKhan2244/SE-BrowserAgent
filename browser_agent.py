@@ -62,6 +62,9 @@ def _wait_for_server(host: str, port: int, timeout: int = 30) -> bool:
         try:
             urllib.request.urlopen(url, timeout=2)
             return True
+        except urllib.error.HTTPError as e:
+            # If we got an HTTP error, the server responded, so it is up
+            return True
         except (urllib.error.URLError, OSError):
             time.sleep(0.5)
     return False
@@ -70,7 +73,7 @@ def _wait_for_server(host: str, port: int, timeout: int = 30) -> bool:
 def browser_agent(
     project_root: str,
     run_command: str,
-    host: str = 'localhost',
+    host: str = '127.0.0.1',
 ) -> Dict[str, Any]:
     print(f'\n[6/6] Browser Agent testing the generated app...')
     root = Path(project_root)

@@ -288,7 +288,30 @@ STRICT RULES
 import concurrent.futures
 
 def debugger_agent(generated_files: List[GeneratedFile], errors: str = None) -> List[GeneratedFile]:
-    print(f"\n[4/4] Debugger Agent reviewing {len(generated_files)} files (concurrently)...")
+    blacklist_extensions = {'.md', '.txt', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.gitignore', '.env', '.toml', '.lock', '.zip'}
+    
+    files_to_debug = []
+    skipped_files = []
+    
+    for gf in generated_files:
+        ext = Path(gf.path).suffix.lower()
+        if ext in blacklist_extensions:
+            skipped_files.append(gf)
+            continue
+            
+        if errors:
+            filename = Path(gf.path).name
+            if gf.path in errors or filename in errors:
+                files_to_debug.append(gf)
+            else:
+                skipped_files.append(gf)
+        else:
+            files_to_debug.append(gf)
+
+    print(f"\n[4/4] Debugger Agent reviewing {len(files_to_debug)}/{len(generated_files)} files (concurrently, skipped {len(skipped_files)})...")
+    if not files_to_debug:
+        return generated_files
+        
     project_structure = "\n".join(f"  {f.path}" for f in generated_files)
     chain = DEBUGGER_PROMPT | LLM
     
@@ -317,10 +340,18 @@ def debugger_agent(generated_files: List[GeneratedFile], errors: str = None) -> 
             print(f"     [FAILED] {gf.path} (keeping original -- {exc})", flush=True)
             return gf
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(generated_files))) as executor:
-        fixed = list(executor.map(debug_file, generated_files))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(files_to_debug))) as executor:
+        fixed_files = list(executor.map(debug_file, files_to_debug))
         
-    return fixed
+    debug_map = {gf.path: gf for gf in fixed_files}
+    result = []
+    for gf in generated_files:
+        if gf.path in debug_map:
+            result.append(debug_map[gf.path])
+        else:
+            result.append(gf)
+            
+    return result
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -493,6 +524,10 @@ def _wait_for_server(host: str, port: int, timeout: int = 60) -> bool:
             resp = urllib.request.urlopen(url, timeout=3)
             if resp.status < 500:
                 return True
+        except urllib.error.HTTPError as e:
+            # If we got an HTTP error, the server responded, so it is up
+            if e.code < 500:
+                return True
         except (urllib.error.URLError, OSError):
             pass
         time.sleep(0.5)
@@ -502,7 +537,7 @@ def _wait_for_server(host: str, port: int, timeout: int = 60) -> bool:
 def browser_agent(
     project_root: str,
     run_command: str,
-    host: str = "localhost",
+    host: str = "127.0.0.1",
 ) -> dict:
     """
     Step 6 – Browser Agent.
