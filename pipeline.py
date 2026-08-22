@@ -30,7 +30,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 LLM = ChatGroq(
-    model="qwen/qwen3.6-27b",
+    model="openai/gpt-oss-120b",
     temperature=0.2,
     api_key=os.getenv("GROQ_API_KEY"),
 )

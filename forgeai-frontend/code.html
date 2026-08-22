@@ -325,13 +325,237 @@
             box-shadow: inset 0 -4px 10px rgba(0,0,0,0.5);
             transform: translateY(2px);
         }
+
+        /* ═══ STAGE 1: Landing — Blast Door Split ═══ */
+        #landing-stage {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        /* Top blast door */
+        .blast-door-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            overflow: hidden;
+            z-index: 101;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+            background-color: #131313;
+            background-image: radial-gradient(#2a2a2a 1px, transparent 1px);
+            background-size: 8px 8px;
+        }
+        .blast-door-top::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f85e1c, #ffb59b, #f85e1c, transparent);
+            box-shadow: 0 0 15px #f85e1c, 0 0 30px rgba(248,94,28,0.4);
+        }
+
+        /* Bottom blast door */
+        .blast-door-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            overflow: hidden;
+            z-index: 101;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+            background-color: #131313;
+            background-image: radial-gradient(#2a2a2a 1px, transparent 1px);
+            background-size: 8px 8px;
+        }
+        .blast-door-bottom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #f85e1c, #ffb59b, #f85e1c, transparent);
+            box-shadow: 0 0 15px #f85e1c, 0 0 30px rgba(248,94,28,0.4);
+        }
+
+        /* Hydraulic slam lines on the doors */
+        .blast-door-top .hydraulic-line {
+            position: absolute;
+            bottom: 12px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,181,155,0.15), transparent);
+        }
+        .blast-door-bottom .hydraulic-line {
+            position: absolute;
+            top: 12px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,181,155,0.15), transparent);
+        }
+
+        /* EXIT: doors slide apart */
+        #landing-stage.exit .blast-door-top {
+            transform: translateY(-100%);
+        }
+        #landing-stage.exit .blast-door-bottom {
+            transform: translateY(100%);
+        }
+        #landing-stage.exit {
+            pointer-events: none;
+        }
+
+        /* The content sits centered across both doors */
+        .landing-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 102;
+            width: 100%;
+            max-width: 640px;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.3s ease, transform 0.4s ease;
+        }
+        #landing-stage.exit .landing-content {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        /* ═══ STAGE 2: Dashboard reveal ═══ */
+        #dashboard-stage {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #dashboard-stage.revealed {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Staggered slide-in animations */
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeInRight {
+            from { transform: translateX(40px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes riseUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #dashboard-stage.revealed aside {
+            animation: slideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+        }
+        #dashboard-stage.revealed main > header {
+            animation: fadeIn 0.4s ease 0.4s both;
+        }
+        #dashboard-stage.revealed .workspace-top-row {
+            animation: fadeInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+        }
+        #dashboard-stage.revealed .workspace-bottom-row {
+            animation: riseUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.7s both;
+        }
+
+        /* Landing textarea glow on focus */
+        #landing-textarea:focus {
+            box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.9),
+                        inset -1px -1px 2px rgba(255, 255, 255, 0.05),
+                        0 0 20px rgba(248, 94, 28, 0.15);
+        }
+
+        /* Typewriter hint animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .hint-blink {
+            animation: blink 1s step-end infinite;
+        }
     </style>
 </head>
 <body class="bg-perforated text-on-surface font-body-md h-screen w-screen overflow-hidden flex flex-col relative">
 <!-- Global Spotlight Vignette -->
 <div class="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]"></div>
-<!-- MAIN DASHBOARD WRAPPER -->
-<div class="relative z-10 flex h-full w-full">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- STAGE 1: LANDING — CENTERED PROMPT                                        -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="landing-stage">
+    <!-- Top Blast Door -->
+    <div class="blast-door-top">
+        <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]"></div>
+        <div class="hydraulic-line"></div>
+    </div>
+
+    <!-- Bottom Blast Door -->
+    <div class="blast-door-bottom">
+        <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]"></div>
+        <div class="hydraulic-line"></div>
+    </div>
+
+    <!-- Centered Content (overlays both doors) -->
+    <div class="landing-content">
+        <!-- Logo -->
+        <div class="mb-2 flex items-center gap-4">
+            <div class="font-headline-xl text-[64px] font-bold tracking-[0.12em] uppercase text-surface-container-highest leading-none" style="text-shadow: -1px -1px 0 rgba(255,255,255,0.3), 1px 1px 0 rgba(0,0,0,0.7), 0 0 30px rgba(248,94,28,0.6), 0 0 60px rgba(248,94,28,0.2);">
+                FORGE AI
+            </div>
+        </div>
+
+        <!-- Tagline -->
+        <div class="font-ui-label-sm text-ui-label-sm text-tertiary-container tracking-[0.3em] uppercase mb-10">
+            Multi-Agent Code Generation Platform
+        </div>
+
+        <!-- Input Console -->
+        <div class="w-full bg-surface-container-lowest rounded-xl p-3 shadow-2xl relative" style="background-image: url('data:image/svg+xml;utf8,<svg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22><filter id=%22noiseFilter%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/></svg>');">
+            <div class="recessed-well rounded-lg p-5 relative flex flex-col">
+                <!-- Rivets -->
+                <div class="rivet top-2 left-2"></div><div class="rivet top-2 right-2"></div>
+                <div class="rivet bottom-2 left-2"></div><div class="rivet bottom-2 right-2"></div>
+                <label class="font-ui-label-sm text-ui-label-sm text-primary mb-3 block uppercase tracking-widest pl-1">Command Directives</label>
+                <textarea id="landing-textarea" class="w-full h-32 bg-transparent border-none resize-none text-secondary font-terminal-md text-terminal-md focus:ring-0 p-2 relative z-10" placeholder="Describe the software you want to forge..."></textarea>
+                <div class="mt-4">
+                    <button id="landing-forge-btn" class="btn-3d w-full py-4 rounded-lg flex items-center justify-center gap-3 font-headline-lg text-headline-lg text-on-primary-fixed">
+                        <span class="material-symbols-outlined text-[32px]">bolt</span>
+                        FORGE
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hint -->
+        <div class="mt-6 flex items-center gap-2 text-tertiary-container font-terminal-md text-[12px] tracking-wider">
+            <span class="material-symbols-outlined text-[14px]">keyboard</span>
+            Press <span class="text-primary font-ui-label-bold">Ctrl+Enter</span> to forge
+            <span class="standby-cursor ml-1"></span>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- STAGE 2: DASHBOARD — FULL CONTROL PANEL                                   -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="dashboard-stage" class="relative z-10 flex h-full w-full">
 
 <!-- SIDEBAR: AGENT PIPELINE -->
 <aside class="w-72 h-full metal-plate-dark flex flex-col z-40 border-r-4 border-outline-variant relative">
@@ -478,6 +702,8 @@
 
     <!-- WORKSPACE CONTENT -->
     <div class="flex-1 p-panel-margin grid grid-cols-12 gap-panel-margin overflow-y-auto">
+      <!-- Top row: Input + Terminal -->
+      <div class="col-span-12 grid grid-cols-12 gap-panel-margin workspace-top-row">
         <!-- INPUT CONSOLE -->
         <div class="col-span-12 lg:col-span-5 flex flex-col h-full min-h-[300px]">
             <!-- Leather Border Wrapper -->
@@ -520,9 +746,10 @@
                 </div>
             </div>
         </div>
+      </div>
 
         <!-- RESULTS PANEL -->
-        <div class="col-span-12 metal-plate-dark rounded-xl p-1 pb-4 flex flex-col min-h-[400px]">
+        <div class="col-span-12 metal-plate-dark rounded-xl p-1 pb-4 flex flex-col min-h-[400px] workspace-bottom-row">
             <!-- Tabs Header -->
             <div class="flex px-4 pt-2 gap-2 border-b-2 border-surface-container-highest pb-0">
                 <div id="tab-files" class="tab-btn active bg-surface-container-highest text-primary font-ui-label-bold text-ui-label-bold px-6 py-3 rounded-t-lg border-t border-x border-[#131313] flex items-center gap-2" onclick="switchTab('files')">
@@ -574,6 +801,7 @@
 </main>
 
 </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <!-- JAVASCRIPT: Backend Integration                                           -->
@@ -585,6 +813,7 @@ let generatedFiles = [];
 let selectedFileIndex = -1;
 let isRunning = false;
 let pipelineData = {};
+let hasTransitioned = false;
 
 // ── Agent name mapping (backend → frontend element IDs) ──────────────────────
 const AGENT_MAP = {
@@ -598,6 +827,10 @@ const AGENT_MAP = {
 const AGENT_COUNT = 6;
 
 // ── DOM refs ─────────────────────────────────────────────────────────────────
+const landingStage    = document.getElementById('landing-stage');
+const dashboardStage  = document.getElementById('dashboard-stage');
+const landingTextarea = document.getElementById('landing-textarea');
+const landingForgeBtn = document.getElementById('landing-forge-btn');
 const queryInput    = document.getElementById('query-input');
 const forgeBtn      = document.getElementById('forge-btn');
 const downloadBtn   = document.getElementById('download-btn');
@@ -613,7 +846,44 @@ const codeFilenameSpan = document.getElementById('code-filename').querySelector(
 const termLed1      = document.getElementById('term-led-1');
 const termLed2      = document.getElementById('term-led-2');
 
-// ── Forge Button Click ───────────────────────────────────────────────────────
+// ── Stage 1 → Stage 2 Transition (Blast Door Split) ───────────────────────
+function transitionToDashboard(query) {
+    if (hasTransitioned) return;
+    hasTransitioned = true;
+
+    // Copy query to dashboard textarea
+    queryInput.value = query;
+
+    // Trigger blast door split
+    landingStage.classList.add('exit');
+
+    // Reveal dashboard behind the doors as they open
+    setTimeout(() => {
+        dashboardStage.classList.add('revealed');
+    }, 200);
+
+    // After doors fully open, remove landing and start forge
+    setTimeout(() => {
+        landingStage.style.display = 'none';
+        startForge(query);
+    }, 900);
+}
+
+// ── Landing Forge Button Click ───────────────────────────────────────────────
+landingForgeBtn.addEventListener('click', () => {
+    const query = landingTextarea.value.trim();
+    if (!query) return;
+    transitionToDashboard(query);
+});
+
+// Landing Ctrl+Enter
+landingTextarea.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+        landingForgeBtn.click();
+    }
+});
+
+// ── Dashboard Forge Button Click (for re-forging) ────────────────────────────
 forgeBtn.addEventListener('click', () => {
     const query = queryInput.value.trim();
     if (!query) {
@@ -624,7 +894,7 @@ forgeBtn.addEventListener('click', () => {
     startForge(query);
 });
 
-// Allow Ctrl+Enter to submit
+// Allow Ctrl+Enter to submit from dashboard
 queryInput.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'Enter') {
         forgeBtn.click();
