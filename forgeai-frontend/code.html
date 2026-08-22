@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Forge AI - Main Station</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts based on config -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500&amp;family=Inter:wght@400;600&amp;family=Rajdhani:wght@600;700&amp;family=Share+Tech+Mono&amp;family=Special+Elite&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config Injection -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary": "#bfc7d3",
+                      "error-container": "#93000a",
+                      "on-primary-fixed": "#380d00",
+                      "inverse-on-surface": "#313030",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-dim": "#131313",
+                      "primary-fixed": "#ffdbcf",
+                      "primary-container": "#f85e1c",
+                      "secondary-container": "#3f4751",
+                      "secondary-fixed-dim": "#bfc7d3",
+                      "background": "#131313",
+                      "on-tertiary-fixed-variant": "#44474f",
+                      "on-tertiary-container": "#272a32",
+                      "surface-tint": "#ffb59b",
+                      "tertiary-container": "#8e909a",
+                      "on-primary-container": "#501600",
+                      "on-error": "#690005",
+                      "surface-bright": "#3a3939",
+                      "on-tertiary": "#2d3038",
+                      "on-primary": "#5b1a00",
+                      "surface-container-high": "#2a2a2a",
+                      "tertiary-fixed-dim": "#c4c6d0",
+                      "surface": "#131313",
+                      "outline": "#aa8a7f",
+                      "surface-container-highest": "#353534",
+                      "primary": "#ffb59b",
+                      "inverse-primary": "#a93700",
+                      "surface-container": "#201f1f",
+                      "primary-fixed-dim": "#ffb59b",
+                      "surface-variant": "#353534",
+                      "on-secondary-container": "#aeb6c2",
+                      "secondary-fixed": "#dbe3f0",
+                      "outline-variant": "#5a4138",
+                      "on-surface": "#e5e2e1",
+                      "surface-container-lowest": "#0e0e0e",
+                      "on-error-container": "#ffdad6",
+                      "on-secondary-fixed": "#141c25",
+                      "on-surface-variant": "#e3bfb3",
+                      "on-background": "#e5e2e1",
+                      "tertiary": "#c4c6d0",
+                      "surface-container-low": "#1c1b1b",
+                      "error": "#ffb4ab",
+                      "tertiary-fixed": "#e0e2ed",
+                      "on-secondary-fixed-variant": "#3f4751",
+                      "on-secondary": "#29313b",
+                      "on-tertiary-fixed": "#181b23",
+                      "on-primary-fixed-variant": "#812800",
+                      "led-green": "#00E676",
+                      "led-red": "#FF1744"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "component-gap": "8px",
+                      "internal-padding": "12px",
+                      "gutter-md": "16px",
+                      "panel-margin": "24px",
+                      "rivet-offset": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "terminal-md": ["Fira Sans"],
+                      "ui-label-bold": ["Share Tech Mono"],
+                      "ui-label-sm": ["Share Tech Mono"],
+                      "headline-xl": ["Rajdhani"],
+                      "dossier-text": ["Special Elite"],
+                      "headline-lg": ["Rajdhani"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "terminal-md": ["14px", {"lineHeight": "20px", "fontWeight": "450"}],
+                      "ui-label-bold": ["14px", {"lineHeight": "16px", "fontWeight": "700"}],
+                      "ui-label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "400"}],
+                      "headline-xl": ["48px", {"lineHeight": "52px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "dossier-text": ["18px", {"lineHeight": "26px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "36px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Skeuomorphic Utilities */
+        .metal-plate-primary {
+            background: linear-gradient(135deg, #bfc7d3 0%, #8e909a 100%);
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.4),
+                        inset -1px -1px 4px rgba(0, 0, 0, 0.5),
+                        5px 5px 15px rgba(0, 0, 0, 0.8);
+        }
+        
+        .metal-plate-dark {
+            background: linear-gradient(135deg, #353534 0%, #201f1f 100%);
+            box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.1),
+                        inset -1px -1px 2px rgba(0, 0, 0, 0.8),
+                        4px 4px 10px rgba(0, 0, 0, 0.7);
+            border: 1px solid #131313;
+        }
+
+        .recessed-well {
+            background: #0e0e0e;
+            box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.9),
+                        inset -1px -1px 2px rgba(255, 255, 255, 0.05);
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-bottom: 1px solid #353534;
+            border-right: 1px solid #353534;
+        }
+
+        .rivet {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #8e909a;
+            box-shadow: inset -1px -1px 3px rgba(0,0,0,0.6),
+                        inset 1px 1px 3px rgba(255,255,255,0.8),
+                        1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .led-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.6),
+                        inset 1px 1px 3px rgba(255,255,255,0.7);
+            border: 1px solid #0e0e0e;
+        }
+        .led-amber-on {
+            background-color: #f85e1c;
+            box-shadow: 0 0 12px #f85e1c,
+                        inset -2px -2px 4px rgba(0,0,0,0.4),
+                        inset 1px 1px 3px rgba(255,255,255,0.9);
+        }
+        .led-green-on {
+            background-color: #00E676;
+            box-shadow: 0 0 12px #00E676,
+                        inset -2px -2px 4px rgba(0,0,0,0.4),
+                        inset 1px 1px 3px rgba(255,255,255,0.9);
+        }
+        .led-red-on {
+            background-color: #FF1744;
+            box-shadow: 0 0 12px #FF1744,
+                        inset -2px -2px 4px rgba(0,0,0,0.4),
+                        inset 1px 1px 3px rgba(255,255,255,0.9);
+        }
+        .led-off {
+            background-color: #201f1f;
+        }
+
+        .btn-3d {
+            background: linear-gradient(to bottom, #ffb59b, #a93700);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 0 #5b1a00,
+                        0 10px 15px rgba(0,0,0,0.6);
+            transition: all 0.1s;
+        }
+        .btn-3d:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #5b1a00,
+                        0 2px 5px rgba(0,0,0,0.6);
+            background: linear-gradient(to bottom, #a93700, #5b1a00);
+        }
+        .btn-3d:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* CRT Overlay */
+        .crt-overlay::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Background Pattern */
+        .bg-perforated {
+            background-color: #131313;
+            background-image: radial-gradient(#2a2a2a 1px, transparent 1px);
+            background-size: 8px 8px;
+        }
+
+        /* Agent card transitions */
+        .agent-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .agent-card.idle {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+        .agent-card.active {
+            opacity: 1;
+            filter: grayscale(0);
+            transform: scale(1.05) translateX(4px);
+        }
+        .agent-card.complete {
+            opacity: 1;
+            filter: grayscale(0);
+        }
+        .agent-card.error-state {
+            opacity: 1;
+            filter: grayscale(0);
+        }
+
+        /* File list item */
+        .file-item {
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .file-item:hover {
+            background: rgba(255,255,255,0.04);
+        }
+        .file-item.selected {
+            background: #0e0e0e;
+            box-shadow: inset 2px 2px 6px rgba(0,0,0,0.8), inset -1px -1px 2px rgba(255,255,255,0.03);
+            border-left: 2px solid #ffb59b;
+        }
+
+        /* Terminal scroll */
+        #terminal-output {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(248,94,28,0.4) transparent;
+        }
+        #terminal-output::-webkit-scrollbar { width: 6px; }
+        #terminal-output::-webkit-scrollbar-track { background: transparent; }
+        #terminal-output::-webkit-scrollbar-thumb { background: rgba(248,94,28,0.4); border-radius: 3px; }
+
+        /* Tab styles */
+        .tab-btn {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: #353534;
+            color: #ffb59b;
+            box-shadow: inset 0 -4px 10px rgba(0,0,0,0.5);
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body class="bg-perforated text-on-surface font-body-md h-screen w-screen overflow-hidden flex flex-col relative">
+<!-- Global Spotlight Vignette -->
+<div class="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]"></div>
+<!-- MAIN DASHBOARD WRAPPER -->
+<div class="relative z-10 flex h-full w-full">
+
+<!-- SIDEBAR: AGENT PIPELINE -->
+<aside class="w-72 h-full metal-plate-dark flex flex-col z-40 border-r-4 border-outline-variant relative">
+    <!-- Rivets -->
+    <div class="rivet top-rivet-offset left-rivet-offset"></div>
+    <div class="rivet top-rivet-offset right-rivet-offset"></div>
+    <div class="rivet bottom-rivet-offset left-rivet-offset"></div>
+    <div class="rivet bottom-rivet-offset right-rivet-offset"></div>
+    <div class="p-gutter-md border-b-2 border-[#1a1a1a] bg-surface-container-lowest/30">
+        <h2 class="font-ui-label-bold text-ui-label-bold text-tertiary tracking-widest uppercase shadow-sm">Pipeline Array</h2>
+        <div id="pipeline-status" class="text-[10px] text-tertiary-container font-terminal-md mt-1">STATUS: AWAITING_INPUT</div>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-6 relative">
+        <!-- Vertical Conduit Background Line -->
+        <div class="absolute left-9 top-8 bottom-8 w-2 bg-surface-container-lowest border-x border-[#1a1a1a] z-0 rounded-full shadow-inner">
+            <!-- Glowing fluid active segment -->
+            <div id="conduit-fill" class="absolute top-0 left-0 w-full h-[0%] bg-primary-container shadow-[0_0_10px_#f85e1c] rounded-full transition-all duration-700 ease-out"></div>
+        </div>
+
+        <!-- Agent 1: Planner -->
+        <div id="agent-planner" class="agent-card idle relative z-10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full metal-plate-dark flex items-center justify-center relative z-10 agent-icon-ring">
+                <span class="material-symbols-outlined text-tertiary text-lg" style="font-variation-settings: 'FILL' 1;">schema</span>
+                <div class="agent-led absolute -right-1 -top-1 led-indicator led-off"></div>
+            </div>
+            <div class="flex-1 metal-plate-dark rounded-md p-2">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary">PLANNER_01</div>
+                <div class="agent-status text-[10px] text-tertiary-container">STANDBY</div>
+                <div class="agent-progress w-full h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden shadow-inner border border-surface-container hidden">
+                    <div class="h-full bg-primary w-[0%] shadow-[0_0_5px_#ffb59b] transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent 2: Architect -->
+        <div id="agent-architect" class="agent-card idle relative z-10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full metal-plate-dark flex items-center justify-center relative z-10 agent-icon-ring">
+                <span class="material-symbols-outlined text-tertiary text-lg" style="font-variation-settings: 'FILL' 1;">architecture</span>
+                <div class="agent-led absolute -right-1 -top-1 led-indicator led-off"></div>
+            </div>
+            <div class="flex-1 metal-plate-dark rounded-md p-2">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary">ARCHITECT_02</div>
+                <div class="agent-status text-[10px] text-tertiary-container">STANDBY</div>
+                <div class="agent-progress w-full h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden shadow-inner border border-surface-container hidden">
+                    <div class="h-full bg-primary w-[0%] shadow-[0_0_5px_#ffb59b] transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent 3: Coder -->
+        <div id="agent-coder" class="agent-card idle relative z-10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full metal-plate-dark flex items-center justify-center relative z-10 agent-icon-ring">
+                <span class="material-symbols-outlined text-tertiary text-lg" style="font-variation-settings: 'FILL' 1;">code</span>
+                <div class="agent-led absolute -right-1 -top-1 led-indicator led-off"></div>
+            </div>
+            <div class="flex-1 metal-plate-dark rounded-md p-2">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary">CODER_03</div>
+                <div class="agent-status text-[10px] text-tertiary-container">STANDBY</div>
+                <div class="agent-progress w-full h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden shadow-inner border border-surface-container hidden">
+                    <div class="h-full bg-primary w-[0%] shadow-[0_0_5px_#ffb59b] transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent 4: Debugger -->
+        <div id="agent-debugger" class="agent-card idle relative z-10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full metal-plate-dark flex items-center justify-center relative z-10 agent-icon-ring">
+                <span class="material-symbols-outlined text-tertiary text-lg" style="font-variation-settings: 'FILL' 1;">bug_report</span>
+                <div class="agent-led absolute -right-1 -top-1 led-indicator led-off"></div>
+            </div>
+            <div class="flex-1 metal-plate-dark rounded-md p-2">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary">DEBUGGER_04</div>
+                <div class="agent-status text-[10px] text-tertiary-container">STANDBY</div>
+                <div class="agent-progress w-full h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden shadow-inner border border-surface-container hidden">
+                    <div class="h-full bg-primary w-[0%] shadow-[0_0_5px_#ffb59b] transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent 5: Terminal -->
+        <div id="agent-terminal" class="agent-card idle relative z-10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full metal-plate-dark flex items-center justify-center relative z-10 agent-icon-ring">
+                <span class="material-symbols-outlined text-tertiary text-lg">terminal</span>
+                <div class="agent-led absolute -right-1 -top-1 led-indicator led-off"></div>
+            </div>
+            <div class="flex-1 metal-plate-dark rounded-md p-2">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary">SYS_TERM_05</div>
+                <div class="agent-status text-[10px] text-tertiary-container">STANDBY</div>
+                <div class="agent-progress w-full h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden shadow-inner border border-surface-container hidden">
+                    <div class="h-full bg-primary w-[0%] shadow-[0_0_5px_#ffb59b] transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent 6: Browser -->
+        <div id="agent-browser" class="agent-card idle relative z-10 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full metal-plate-dark flex items-center justify-center relative z-10 agent-icon-ring">
+                <span class="material-symbols-outlined text-tertiary text-lg">public</span>
+                <div class="agent-led absolute -right-1 -top-1 led-indicator led-off"></div>
+            </div>
+            <div class="flex-1 metal-plate-dark rounded-md p-2">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary">NET_BROWSE_06</div>
+                <div class="agent-status text-[10px] text-tertiary-container">STANDBY</div>
+                <div class="agent-progress w-full h-1.5 bg-surface-container-highest rounded-full mt-1 overflow-hidden shadow-inner border border-surface-container hidden">
+                    <div class="h-full bg-primary w-[0%] shadow-[0_0_5px_#ffb59b] transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</aside>
+
+<!-- MAIN WORKSPACE COLUMN -->
+<main class="flex-1 flex flex-col h-full relative z-30">
+    <!-- TOP BAR (RACK PANEL) -->
+    <header class="h-20 w-full metal-plate-primary border-b-4 border-outline-variant flex items-center justify-between px-panel-margin relative z-50">
+        <!-- Rivets -->
+        <div class="rivet bottom-2 left-4"></div>
+        <div class="rivet bottom-2 right-4"></div>
+        <div class="flex items-center gap-6">
+            <!-- Embossed Logo -->
+            <div class="font-headline-xl text-headline-xl font-bold tracking-widest uppercase text-surface-container-highest" style="text-shadow: -1px -1px 0 rgba(255,255,255,0.4), 1px 1px 0 rgba(0,0,0,0.6), 0 0 15px rgba(248,94,28,0.5);">
+                FORGE AI
+            </div>
+            <!-- Power LED -->
+            <div class="flex items-center gap-2 metal-plate-dark px-3 py-1.5 rounded-sm">
+                <div id="power-led" class="led-indicator led-off"></div>
+                <span class="font-ui-label-sm text-ui-label-sm text-tertiary">PWR</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <!-- Recessed Session Badge -->
+            <div id="session-badge" class="recessed-well px-4 py-2 rounded-sm flex items-center gap-3">
+                <span class="material-symbols-outlined text-tertiary-container text-sm">badge</span>
+                <span class="font-terminal-md text-terminal-md text-primary tracking-wider">NO_SESSION</span>
+            </div>
+            <!-- Chunky Download Button -->
+            <button id="download-btn" disabled class="btn-3d px-6 py-3 rounded-md font-ui-label-bold text-ui-label-bold text-on-primary-fixed uppercase tracking-wider flex items-center gap-2">
+                <span class="material-symbols-outlined font-bold">download</span>
+                Export
+            </button>
+        </div>
+    </header>
+
+    <!-- WORKSPACE CONTENT -->
+    <div class="flex-1 p-panel-margin grid grid-cols-12 gap-panel-margin overflow-y-auto">
+        <!-- INPUT CONSOLE -->
+        <div class="col-span-12 lg:col-span-5 flex flex-col h-full min-h-[300px]">
+            <!-- Leather Border Wrapper -->
+            <div class="flex-1 bg-surface-container-lowest rounded-xl p-3 shadow-2xl relative" style="background-image: url('data:image/svg+xml;utf8,<svg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22><filter id=%22noiseFilter%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/></svg>');">
+                <!-- Recessed Textarea Area -->
+                <div class="recessed-well h-full rounded-lg p-4 relative flex flex-col">
+                    <!-- Rivets -->
+                    <div class="rivet top-2 left-2"></div><div class="rivet top-2 right-2"></div>
+                    <div class="rivet bottom-2 left-2"></div><div class="rivet bottom-2 right-2"></div>
+                    <label class="font-ui-label-sm text-ui-label-sm text-primary mb-2 block uppercase tracking-widest pl-2">Command Directives</label>
+                    <textarea id="query-input" class="w-full flex-1 bg-transparent border-none resize-none text-secondary font-terminal-md text-terminal-md focus:ring-0 p-2 relative z-10" placeholder="Describe the software you want to forge..."></textarea>
+                    <div class="mt-4 flex justify-end">
+                        <!-- Big Forge Button -->
+                        <button id="forge-btn" class="btn-3d w-full py-4 rounded-lg flex items-center justify-center gap-3 font-headline-lg text-headline-lg text-on-primary-fixed">
+                            <span class="material-symbols-outlined text-[32px]">bolt</span>
+                            FORGE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRT TERMINAL -->
+        <div class="col-span-12 lg:col-span-7 flex flex-col h-full min-h-[300px]">
+            <div class="metal-plate-dark flex-1 rounded-xl p-4 flex flex-col relative border-4 border-surface-container-lowest">
+                <!-- Rivets -->
+                <div class="rivet top-3 left-3"></div><div class="rivet top-3 right-3"></div>
+                <div class="rivet bottom-3 left-3"></div><div class="rivet bottom-3 right-3"></div>
+                <div class="flex items-center justify-between mb-3 px-2">
+                    <span class="font-ui-label-bold text-ui-label-sm text-tertiary">SYS_MONITOR // OUT</span>
+                    <div class="flex gap-2">
+                        <div id="term-led-1" class="w-3 h-3 rounded-full bg-surface-container-highest"></div>
+                        <div id="term-led-2" class="w-3 h-3 rounded-full bg-surface-container-highest"></div>
+                    </div>
+                </div>
+                <div id="terminal-output" class="recessed-well flex-1 rounded-lg relative overflow-y-auto crt-overlay p-4">
+                    <div class="font-terminal-md text-terminal-md text-secondary leading-relaxed flex flex-col gap-1">
+                        <div class="opacity-80">[SYS] ForgeAI Kernel v2.4.1 ready. Awaiting command...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS PANEL -->
+        <div class="col-span-12 metal-plate-primary rounded-xl p-1 pb-4 flex flex-col min-h-[400px]">
+            <!-- Tabs Header -->
+            <div class="flex px-4 pt-2 gap-2 border-b-2 border-surface-container-highest pb-0">
+                <div id="tab-files" class="tab-btn active bg-surface-container-highest text-primary font-ui-label-bold text-ui-label-bold px-6 py-3 rounded-t-lg border-t border-x border-[#131313] flex items-center gap-2" onclick="switchTab('files')">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">folder</span>
+                    FILES
+                </div>
+                <div id="tab-summary" class="tab-btn text-surface-container-highest font-ui-label-bold text-ui-label-bold px-6 py-3 flex items-center gap-2 hover:text-surface-dim" onclick="switchTab('summary')">
+                    <span class="material-symbols-outlined text-sm">visibility</span>
+                    SUMMARY
+                </div>
+            </div>
+
+            <!-- Panel Content: Files -->
+            <div id="panel-files" class="flex-1 flex gap-4 mt-4 px-4">
+                <!-- Left: File List -->
+                <div id="file-list" class="w-64 metal-plate-dark rounded-lg p-2 flex flex-col gap-2 overflow-y-auto">
+                    <div class="font-ui-label-sm text-ui-label-sm text-tertiary-container uppercase tracking-widest p-2 border-b border-surface-container-lowest">Generated Assets</div>
+                    <div class="p-4 text-tertiary-container text-center font-terminal-md text-terminal-md">
+                        No files generated yet.
+                    </div>
+                </div>
+                <!-- Right: Code Viewer -->
+                <div class="flex-1 recessed-well rounded-lg relative flex flex-col">
+                    <div class="metal-plate-dark p-2 border-b border-[#000] flex justify-between items-center">
+                        <div id="code-filename" class="font-terminal-md text-terminal-md text-secondary flex items-center gap-2">
+                            <span class="material-symbols-outlined text-tertiary-container text-sm">attach_file</span>
+                            <span>Select a file</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="copy-btn" class="w-6 h-6 rounded bg-surface-container-highest flex items-center justify-center hover:bg-surface-dim shadow-sm border border-[#1a1a1a]" onclick="copyCode()" title="Copy to clipboard">
+                                <span class="material-symbols-outlined text-[14px] text-tertiary">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+                    <pre id="code-viewer" class="flex-1 p-4 overflow-auto font-terminal-md text-terminal-md text-tertiary whitespace-pre font-mono"><span class="text-tertiary-container">// Select a file from the list to view its contents</span></pre>
+                </div>
+            </div>
+
+            <!-- Panel Content: Summary (hidden by default) -->
+            <div id="panel-summary" class="flex-1 mt-4 px-4 hidden">
+                <div class="recessed-well rounded-lg p-6 h-full overflow-y-auto">
+                    <div id="summary-content" class="font-dossier-text text-dossier-text text-tertiary">
+                        <p class="text-tertiary-container">Pipeline has not completed yet. Summary will appear here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT: Backend Integration                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+let sessionId = null;
+let generatedFiles = [];
+let selectedFileIndex = -1;
+let isRunning = false;
+let pipelineData = {};
+
+// ── Agent name mapping (backend → frontend element IDs) ──────────────────────
+const AGENT_MAP = {
+    'planner':  { el: 'agent-planner',   index: 0, label: 'PLANNER'   },
+    'architect':{ el: 'agent-architect',  index: 1, label: 'ARCHITECT' },
+    'coder':    { el: 'agent-coder',      index: 2, label: 'CODER'     },
+    'debugger': { el: 'agent-debugger',   index: 3, label: 'DEBUGGER'  },
+    'terminal': { el: 'agent-terminal',   index: 4, label: 'TERMINAL'  },
+    'browser':  { el: 'agent-browser',    index: 5, label: 'BROWSER'   },
+};
+const AGENT_COUNT = 6;
+
+// ── DOM refs ─────────────────────────────────────────────────────────────────
+const queryInput    = document.getElementById('query-input');
+const forgeBtn      = document.getElementById('forge-btn');
+const downloadBtn   = document.getElementById('download-btn');
+const terminalOut   = document.getElementById('terminal-output');
+const terminalInner = terminalOut.querySelector('div');
+const sessionBadge  = document.getElementById('session-badge').querySelector('span:last-child');
+const pipelineStatus= document.getElementById('pipeline-status');
+const powerLed      = document.getElementById('power-led');
+const conduitFill   = document.getElementById('conduit-fill');
+const fileListEl    = document.getElementById('file-list');
+const codeViewer    = document.getElementById('code-viewer');
+const codeFilenameSpan = document.getElementById('code-filename').querySelector('span:last-child');
+const termLed1      = document.getElementById('term-led-1');
+const termLed2      = document.getElementById('term-led-2');
+
+// ── Forge Button Click ───────────────────────────────────────────────────────
+forgeBtn.addEventListener('click', () => {
+    const query = queryInput.value.trim();
+    if (!query) {
+        addTerminalLine('[SYS] ERROR: No command directive provided.', 'error');
+        return;
+    }
+    if (isRunning) return;
+    startForge(query);
+});
+
+// Allow Ctrl+Enter to submit
+queryInput.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+        forgeBtn.click();
+    }
+});
+
+// ── Start the forge pipeline ─────────────────────────────────────────────────
+function startForge(query) {
+    isRunning = true;
+    sessionId = null;
+    generatedFiles = [];
+    selectedFileIndex = -1;
+    pipelineData = {};
+
+    // Reset UI
+    resetAgents();
+    clearTerminal();
+    clearFiles();
+    clearSummary();
+    
+    // Update button to "FORGING..."
+    forgeBtn.disabled = true;
+    forgeBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[32px] animate-spin" style="animation-duration: 3s;">settings</span>
+        FORGING...
+    `;
+
+    // Power LED on
+    powerLed.className = 'led-indicator led-amber-on animate-pulse';
+    pipelineStatus.textContent = 'STATUS: ACTIVE_PROCESSING';
+
+    // Terminal LEDs
+    termLed1.className = 'w-3 h-3 rounded-full bg-error shadow-[0_0_5px_#ffb4ab]';
+    termLed2.className = 'w-3 h-3 rounded-full bg-primary-container shadow-[0_0_5px_#f85e1c] animate-pulse';
+
+    downloadBtn.disabled = true;
+    addTerminalLine('[SYS] Initializing ForgeAI pipeline...', 'system');
+    addTerminalLine(`[SYS] Query: "${query}"`, 'system');
+
+    // ── Open SSE connection ──────────────────────────────────────────────────
+    const url = `/api/forge/stream?query=${encodeURIComponent(query)}`;
+    const evtSource = new EventSource(url);
+
+    evtSource.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            handleSSEEvent(data);
+            if (data.type === 'done' || data.type === 'error') {
+                evtSource.close();
+            }
+        } catch (e) {
+            console.error('SSE parse error:', e);
+        }
+    };
+
+    evtSource.onerror = (err) => {
+        console.error('SSE connection error:', err);
+        addTerminalLine('[SYS] Connection to forge server lost.', 'error');
+        evtSource.close();
+        onPipelineEnd(false);
+    };
+}
+
+// ── Handle incoming SSE events ───────────────────────────────────────────────
+function handleSSEEvent(data) {
+    switch (data.type) {
+        case 'session':
+            sessionId = data.session_id;
+            sessionBadge.textContent = `STA_${sessionId.toUpperCase()}`;
+            addTerminalLine(`[SYS] Session established: ${sessionId}`, 'system');
+            break;
+
+        case 'agent_start':
+            setAgentState(data.agent, 'active');
+            break;
+
+        case 'agent_log':
+            addTerminalLine(data.text, data.color || 'on-surface');
+            break;
+
+        case 'agent_complete':
+            setAgentState(data.agent, 'complete');
+            if (data.data) {
+                pipelineData[data.agent] = data.data;
+            }
+            break;
+
+        case 'pipeline_complete':
+            addTerminalLine('', 'system');
+            addTerminalLine(`[SYS] ═══ FORGE COMPLETE ═══`, 'success');
+            addTerminalLine(`[SYS] Project: ${data.data.project_name}`, 'success');
+            addTerminalLine(`[SYS] Files: ${data.data.files_count} | Stack: ${JSON.stringify(data.data.tech_stack)}`, 'system');
+            pipelineData.final = data.data;
+            sessionId = data.session_id || sessionId;
+
+            // Fetch the generated files
+            fetchFiles(sessionId);
+            buildSummary(data.data);
+            onPipelineEnd(true);
+            break;
+
+        case 'error':
+            addTerminalLine(`[ERROR] ${data.message}`, 'error');
+            onPipelineEnd(false);
+            break;
+
+        case 'done':
+            if (!pipelineData.final) {
+                onPipelineEnd(false);
+            }
+            break;
+    }
+}
+
+// ── Agent sidebar state management ───────────────────────────────────────────
+function setAgentState(agentName, state) {
+    const info = AGENT_MAP[agentName];
+    if (!info) return;
+    const card = document.getElementById(info.el);
+    if (!card) return;
+
+    const led = card.querySelector('.agent-led');
+    const status = card.querySelector('.agent-status');
+    const progress = card.querySelector('.agent-progress');
+    const iconContainer = card.querySelector('.agent-icon-ring');
+    const icon = card.querySelector('.material-symbols-outlined');
+
+    // Remove all state classes
+    card.classList.remove('idle', 'active', 'complete', 'error-state');
+
+    if (state === 'active') {
+        card.classList.add('active');
+        led.className = 'agent-led absolute -right-1 -top-1 led-indicator led-amber-on animate-pulse';
+        status.textContent = 'EXECUTING';
+        status.className = 'agent-status text-[10px] text-primary';
+        icon.classList.remove('text-tertiary');
+        icon.classList.add('text-primary-container');
+        // Add active border to icon ring
+        if (iconContainer) {
+            iconContainer.classList.add('border-2', 'border-primary-container');
+        }
+        // Show progress bar
+        progress.classList.remove('hidden');
+        animateProgress(progress.querySelector('div'));
+        // Update conduit
+        updateConduit(info.index);
+    } else if (state === 'complete') {
+        card.classList.add('complete');
+        led.className = 'agent-led absolute -right-1 -top-1 led-indicator led-green-on';
+        status.textContent = 'COMPLETE';
+        status.className = 'agent-status text-[10px] text-led-green';
+        icon.classList.remove('text-tertiary');
+        icon.classList.add('text-primary-container');
+        if (iconContainer) {
+            iconContainer.classList.add('border-2', 'border-primary-container');
+        }
+        // Fill progress bar fully
+        const bar = progress.querySelector('div');
+        if (bar) {
+            if (bar._interval) clearInterval(bar._interval);
+            bar.style.width = '100%';
+        }
+        // Update conduit
+        updateConduit(info.index + 1);
+    } else if (state === 'error') {
+        card.classList.add('error-state');
+        led.className = 'agent-led absolute -right-1 -top-1 led-indicator led-red-on';
+        status.textContent = 'ERROR';
+        status.className = 'agent-status text-[10px] text-led-red';
+    }
+}
+
+function animateProgress(bar) {
+    if (!bar) return;
+    let width = 0;
+    const interval = setInterval(() => {
+        width += Math.random() * 15;
+        if (width >= 90) { clearInterval(interval); width = 90; }
+        bar.style.width = width + '%';
+    }, 400);
+    bar._interval = interval;
+}
+
+function updateConduit(completedCount) {
+    const pct = Math.min(100, (completedCount / AGENT_COUNT) * 100);
+    conduitFill.style.height = pct + '%';
+}
+
+function resetAgents() {
+    Object.keys(AGENT_MAP).forEach(name => {
+        const info = AGENT_MAP[name];
+        const card = document.getElementById(info.el);
+        if (!card) return;
+        card.classList.remove('active', 'complete', 'error-state');
+        card.classList.add('idle');
+        const led = card.querySelector('.agent-led');
+        led.className = 'agent-led absolute -right-1 -top-1 led-indicator led-off';
+        const status = card.querySelector('.agent-status');
+        status.textContent = 'STANDBY';
+        status.className = 'agent-status text-[10px] text-tertiary-container';
+        const icon = card.querySelector('.material-symbols-outlined');
+        icon.classList.remove('text-primary-container');
+        icon.classList.add('text-tertiary');
+        const iconContainer = card.querySelector('.agent-icon-ring');
+        if (iconContainer) {
+            iconContainer.classList.remove('border-2', 'border-primary-container');
+        }
+        const progress = card.querySelector('.agent-progress');
+        progress.classList.add('hidden');
+        const bar = progress.querySelector('div');
+        if (bar) { bar.style.width = '0%'; if (bar._interval) clearInterval(bar._interval); }
+    });
+    conduitFill.style.height = '0%';
+}
+
+// ── Terminal output ──────────────────────────────────────────────────────────
+function addTerminalLine(text, colorHint) {
+    const line = document.createElement('div');
+
+    // Colorize based on backend color hints
+    if (colorHint === 'error') {
+        line.style.color = '#FF1744';
+    } else if (colorHint === 'success' || colorHint === 'tertiary') {
+        line.style.color = '#00E676';
+    } else if (colorHint === 'primary' || colorHint === 'secondary' || colorHint === 'primary-fixed' || colorHint === 'secondary-fixed') {
+        line.style.color = '#ffb59b';
+    } else if (colorHint === 'tertiary-fixed') {
+        line.style.color = '#c4c6d0';
+    } else if (colorHint === 'system') {
+        line.style.color = 'rgba(191,199,211,0.6)';
+    } else {
+        line.style.color = 'rgba(191,199,211,0.8)';
+    }
+
+    // Highlight agent tags in the text
+    const highlighted = text
+        .replace(/\[(PLANNER|ARCHITECT|CODER|DEBUGGER|TERMINAL|BROWSER)\]/g, 
+            '<span class="text-primary">[$1]</span>')
+        .replace(/\[(SYSTEM|SYS)\]/g, 
+            '<span class="text-tertiary-container">[$1]</span>')
+        .replace(/\[(ERROR)\]/g, 
+            '<span style="color:#FF1744">[$1]</span>')
+        .replace(/✓/g, '<span style="color:#00E676">✓</span>')
+        .replace(/⚠/g, '<span style="color:#ffb59b">⚠</span>');
+    
+    line.innerHTML = highlighted;
+    terminalInner.appendChild(line);
+    
+    // Auto-scroll
+    terminalOut.scrollTop = terminalOut.scrollHeight;
+}
+
+function clearTerminal() {
+    terminalInner.innerHTML = '';
+    addTerminalLine('[SYS] ForgeAI Kernel v2.4.1 initialized. Processing...', 'system');
+}
+
+// ── Fetch generated files after pipeline completes ───────────────────────────
+async function fetchFiles(sid) {
+    try {
+        const resp = await fetch(`/api/forge/${sid}/files`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        generatedFiles = data.files || [];
+        renderFileList();
+        if (generatedFiles.length > 0) {
+            selectFile(0);
+        }
+    } catch (e) {
+        addTerminalLine(`[SYS] Failed to fetch files: ${e.message}`, 'error');
+    }
+}
+
+function renderFileList() {
+    const header = fileListEl.querySelector('div:first-child');
+    fileListEl.innerHTML = '';
+    fileListEl.appendChild(header);
+
+    if (generatedFiles.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'p-4 text-tertiary-container text-center font-terminal-md text-terminal-md';
+        empty.textContent = 'No files generated yet.';
+        fileListEl.appendChild(empty);
+        return;
+    }
+
+    generatedFiles.forEach((file, idx) => {
+        const item = document.createElement('div');
+        item.className = 'file-item p-2 rounded flex items-center gap-3 text-tertiary hover:text-secondary transition-colors';
+        item.innerHTML = `
+            <span class="material-symbols-outlined text-sm">description</span>
+            <span class="font-terminal-md text-terminal-md truncate">${escapeHtml(file.path)}</span>
+        `;
+        item.addEventListener('click', () => selectFile(idx));
+        fileListEl.appendChild(item);
+    });
+}
+
+function selectFile(idx) {
+    selectedFileIndex = idx;
+    const file = generatedFiles[idx];
+    if (!file) return;
+
+    // Update selection highlight
+    const items = fileListEl.querySelectorAll('.file-item');
+    items.forEach((item, i) => {
+        if (i === idx) {
+            item.classList.add('selected');
+        } else {
+            item.classList.remove('selected');
+        }
+    });
+
+    // Update code viewer
+    codeFilenameSpan.textContent = file.path;
+    codeViewer.textContent = file.content;
+}
+
+function clearFiles() {
+    generatedFiles = [];
+    renderFileList();
+    codeViewer.innerHTML = '<span class="text-tertiary-container">// Select a file from the list to view its contents</span>';
+    codeFilenameSpan.textContent = 'Select a file';
+}
+
+// ── Copy code to clipboard ──────────────────────────────────────────────────
+function copyCode() {
+    if (selectedFileIndex < 0 || !generatedFiles[selectedFileIndex]) return;
+    navigator.clipboard.writeText(generatedFiles[selectedFileIndex].content).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.querySelector('span').textContent = 'check';
+        setTimeout(() => { btn.querySelector('span').textContent = 'content_copy'; }, 1500);
+    });
+}
+
+// ── Summary panel ────────────────────────────────────────────────────────────
+function buildSummary(data) {
+    const el = document.getElementById('summary-content');
+    el.innerHTML = `
+        <div class="mb-6">
+            <div class="text-primary font-headline-lg text-headline-lg mb-2 uppercase tracking-wider" style="text-shadow: 0 0 10px rgba(255,181,155,0.3);">${escapeHtml(data.project_name)}</div>
+            <p class="text-tertiary mb-4">${escapeHtml(data.description || '')}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="metal-plate-dark rounded-lg p-4">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary-container uppercase tracking-wider mb-2">Tech Stack</div>
+                <div class="flex flex-wrap gap-2">
+                    ${Object.entries(data.tech_stack || {}).map(([k,v]) => 
+                        `<span class="recessed-well px-3 py-1 rounded font-terminal-md text-terminal-md text-primary">${escapeHtml(k)}: ${escapeHtml(String(v))}</span>`
+                    ).join('')}
+                </div>
+            </div>
+            <div class="metal-plate-dark rounded-lg p-4">
+                <div class="font-ui-label-bold text-ui-label-sm text-tertiary-container uppercase tracking-wider mb-2">Build Info</div>
+                <div class="font-terminal-md text-terminal-md text-secondary space-y-1">
+                    <div>Files: <span class="text-led-green">${data.files_count}</span></div>
+                    <div>Entry: <span class="text-primary">${escapeHtml(data.entrypoint || 'N/A')}</span></div>
+                    <div>Run: <span class="text-tertiary">${escapeHtml(data.run_command || 'N/A')}</span></div>
+                    <div>Install: <span class="text-tertiary">${escapeHtml(data.install_command || 'N/A')}</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metal-plate-dark rounded-lg p-4">
+            <div class="font-ui-label-bold text-ui-label-sm text-tertiary-container uppercase tracking-wider mb-2">Features</div>
+            <ul class="list-disc list-inside font-terminal-md text-terminal-md text-secondary space-y-1">
+                ${(data.features || []).map(f => `<li>${escapeHtml(f)}</li>`).join('')}
+            </ul>
+        </div>
+
+        <div class="mt-6 flex gap-4">
+            <div class="metal-plate-dark rounded-lg px-4 py-2 flex items-center gap-2">
+                <div class="led-indicator ${data.terminal_success ? 'led-green-on' : 'led-red-on'}"></div>
+                <span class="font-ui-label-sm text-ui-label-sm text-tertiary">COMPILE CHECK</span>
+            </div>
+            <div class="metal-plate-dark rounded-lg px-4 py-2 flex items-center gap-2">
+                <div class="led-indicator ${data.browser_success ? 'led-green-on' : 'led-red-on'}"></div>
+                <span class="font-ui-label-sm text-ui-label-sm text-tertiary">BROWSER TEST</span>
+            </div>
+        </div>
+    `;
+}
+
+function clearSummary() {
+    document.getElementById('summary-content').innerHTML = 
+        '<p class="text-tertiary-container">Pipeline has not completed yet. Summary will appear here.</p>';
+}
+
+// ── Tab switching ────────────────────────────────────────────────────────────
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(t => {
+        t.classList.remove('active');
+        t.className = t.className.replace(/bg-surface-container-highest/g, '').replace(/text-primary/g, 'text-surface-container-highest');
+    });
+
+    const activeTab = document.getElementById(`tab-${tab}`);
+    activeTab.classList.add('active', 'bg-surface-container-highest');
+    activeTab.classList.remove('text-surface-container-highest');
+    activeTab.classList.add('text-primary');
+
+    document.getElementById('panel-files').classList.toggle('hidden', tab !== 'files');
+    document.getElementById('panel-summary').classList.toggle('hidden', tab !== 'summary');
+}
+
+// ── Pipeline end handler ─────────────────────────────────────────────────────
+function onPipelineEnd(success) {
+    isRunning = false;
+    forgeBtn.disabled = false;
+    forgeBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[32px]">bolt</span>
+        FORGE
+    `;
+
+    if (success) {
+        powerLed.className = 'led-indicator led-green-on';
+        pipelineStatus.textContent = 'STATUS: FORGE_COMPLETE';
+        termLed1.className = 'w-3 h-3 rounded-full bg-led-green shadow-[0_0_5px_#00E676]';
+        termLed2.className = 'w-3 h-3 rounded-full bg-led-green shadow-[0_0_5px_#00E676]';
+        downloadBtn.disabled = false;
+    } else {
+        powerLed.className = 'led-indicator led-red-on';
+        pipelineStatus.textContent = 'STATUS: ERROR';
+        termLed1.className = 'w-3 h-3 rounded-full bg-led-red shadow-[0_0_5px_#FF1744]';
+        termLed2.className = 'w-3 h-3 rounded-full bg-surface-container-highest';
+    }
+}
+
+// ── Download handler ─────────────────────────────────────────────────────────
+downloadBtn.addEventListener('click', () => {
+    if (!sessionId) return;
+    window.location.href = `/api/forge/${sessionId}/download`;
+});
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+</script>
+
+</body></html>
