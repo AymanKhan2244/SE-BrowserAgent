@@ -4,6 +4,9 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Forge AI - Main Station</title>
+<meta content="ForgeAI Control Center" property="og:title"/>
+<meta content="AI-powered multi-agent code generation platform" property="og:description"/>
+<link href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23131313'/><path d='M25 40 L75 40 L65 70 L35 70 Z' fill='%23f85e1c'/></svg>" rel="icon"/>
 <!-- Material Symbols -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <!-- Google Fonts based on config -->
@@ -200,7 +203,7 @@
             left: 0;
             bottom: 0;
             right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 2;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
@@ -218,13 +221,40 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .agent-card.idle {
-            opacity: 0.5;
-            filter: grayscale(1);
+            opacity: 0.75;
+            filter: grayscale(0.5);
+        }
+        .agent-card.idle .agent-icon-ring {
+            border: 1px solid rgba(255,181,155,0.08);
+            box-shadow: 0 0 8px rgba(255,181,155,0.02);
+        }
+        .agent-card.idle .material-symbols-outlined {
+            color: rgba(255,181,155,0.4) !important;
         }
         .agent-card.active {
             opacity: 1;
             filter: grayscale(0);
             transform: scale(1.05) translateX(4px);
+        }
+        .agent-card.active .agent-icon-ring {
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid #ffb59b;
+            box-shadow: 0 0 20px rgba(248,94,28,0.3);
+        }
+        .agent-card.active .flex-1.metal-plate-dark {
+            background: linear-gradient(135deg, #bfc7d3 0%, #8e909a 100%);
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.4), inset -1px -1px 4px rgba(0,0,0,0.5), 5px 5px 15px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,181,155,0.3);
+        }
+        .agent-card.active .font-ui-label-bold {
+            color: #131313 !important;
+        }
+        .agent-card.active .agent-status {
+            color: #201f1f !important;
+        }
+        .agent-card.active .material-symbols-outlined {
+            color: #131313 !important;
         }
         .agent-card.complete {
             opacity: 1;
@@ -233,6 +263,32 @@
         .agent-card.error-state {
             opacity: 1;
             filter: grayscale(0);
+        }
+
+        /* Standby pulse for empty states */
+        @keyframes standby-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .standby-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: #f85e1c;
+            margin-left: 4px;
+            vertical-align: middle;
+            animation: standby-pulse 1.2s ease-in-out infinite;
+        }
+
+        /* CRT flicker */
+        @keyframes crt-flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.97; }
+            94% { opacity: 1; }
+        }
+        .crt-flicker {
+            animation: crt-flicker 4s ease-in-out infinite;
         }
 
         /* File list item */
@@ -288,7 +344,7 @@
         <h2 class="font-ui-label-bold text-ui-label-bold text-tertiary tracking-widest uppercase shadow-sm">Pipeline Array</h2>
         <div id="pipeline-status" class="text-[10px] text-tertiary-container font-terminal-md mt-1">STATUS: AWAITING_INPUT</div>
     </div>
-    <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-6 relative">
+    <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-8 relative">
         <!-- Vertical Conduit Background Line -->
         <div class="absolute left-9 top-8 bottom-8 w-2 bg-surface-container-lowest border-x border-[#1a1a1a] z-0 rounded-full shadow-inner">
             <!-- Glowing fluid active segment -->
@@ -457,23 +513,23 @@
                         <div id="term-led-2" class="w-3 h-3 rounded-full bg-surface-container-highest"></div>
                     </div>
                 </div>
-                <div id="terminal-output" class="recessed-well flex-1 rounded-lg relative overflow-y-auto crt-overlay p-4">
+                <div id="terminal-output" class="recessed-well flex-1 rounded-lg relative overflow-y-auto crt-overlay crt-flicker p-4 bg-[rgba(0,255,0,0.02)]">
                     <div class="font-terminal-md text-terminal-md text-secondary leading-relaxed flex flex-col gap-1">
-                        <div class="opacity-80">[SYS] ForgeAI Kernel v2.4.1 ready. Awaiting command...</div>
+                        <div class="opacity-80">[SYS] ForgeAI Kernel v2.4.1 ready. Awaiting command...<span class="standby-cursor"></span></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- RESULTS PANEL -->
-        <div class="col-span-12 metal-plate-primary rounded-xl p-1 pb-4 flex flex-col min-h-[400px]">
+        <div class="col-span-12 metal-plate-dark rounded-xl p-1 pb-4 flex flex-col min-h-[400px]">
             <!-- Tabs Header -->
             <div class="flex px-4 pt-2 gap-2 border-b-2 border-surface-container-highest pb-0">
                 <div id="tab-files" class="tab-btn active bg-surface-container-highest text-primary font-ui-label-bold text-ui-label-bold px-6 py-3 rounded-t-lg border-t border-x border-[#131313] flex items-center gap-2" onclick="switchTab('files')">
                     <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">folder</span>
                     FILES
                 </div>
-                <div id="tab-summary" class="tab-btn text-surface-container-highest font-ui-label-bold text-ui-label-bold px-6 py-3 flex items-center gap-2 hover:text-surface-dim" onclick="switchTab('summary')">
+                <div id="tab-summary" class="tab-btn text-tertiary-container font-ui-label-bold text-ui-label-bold px-6 py-3 flex items-center gap-2 hover:text-tertiary" onclick="switchTab('summary')">
                     <span class="material-symbols-outlined text-sm">visibility</span>
                     SUMMARY
                 </div>
@@ -485,7 +541,7 @@
                 <div id="file-list" class="w-64 metal-plate-dark rounded-lg p-2 flex flex-col gap-2 overflow-y-auto">
                     <div class="font-ui-label-sm text-ui-label-sm text-tertiary-container uppercase tracking-widest p-2 border-b border-surface-container-lowest">Generated Assets</div>
                     <div class="p-4 text-tertiary-container text-center font-terminal-md text-terminal-md">
-                        No files generated yet.
+                        No files generated yet.<span class="standby-cursor"></span>
                     </div>
                 </div>
                 <!-- Right: Code Viewer -->
