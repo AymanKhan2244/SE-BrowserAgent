@@ -252,7 +252,12 @@ PROJECT STRUCTURE
 {project_structure}
 
 =========================================================
-CURRENT FILE
+OTHER PROJECT FILES (for cross-file consistency checking)
+=========================================================
+{cross_file_context}
+
+=========================================================
+CURRENT FILE TO DEBUG
 =========================================================
 Path: {file_path}
 
@@ -264,13 +269,33 @@ GENERATED SOURCE CODE
 =========================================================
 YOUR TASK
 =========================================================
-Review the code above and fix ALL issues including:
-- Syntax errors                - Import errors / missing imports
-- Circular imports             - Undefined variables or functions
-- Incorrect API usage          - Runtime exceptions
-- Logic bugs                   - Framework/Library misuse
-- Missing CORS headers         - Security issues
-- Async/Await mistakes         - Data persistence issues (if DB is used)
+Thoroughly review the code above and fix ALL issues including:
+
+CODE QUALITY:
+- Syntax errors, typos, missing brackets/parens
+- Import errors / missing imports / wrong import paths
+- Circular imports
+- Undefined variables, functions, or classes
+- Incorrect API usage or wrong function signatures
+- Runtime exceptions (NoneType, KeyError, IndexError, etc.)
+
+FRAMEWORK & LIBRARY:
+- Flask: Ensure blueprints are properly registered with the app, routes use correct decorators
+- Express/Node: Ensure middleware order is correct, routes are mounted properly
+- Missing CORS headers when frontend and backend are separate
+- Ensure the entrypoint file actually imports and registers all routes/blueprints
+- Async/Await mistakes (missing await, sync calls in async context)
+
+CROSS-FILE CONSISTENCY:
+- Verify all imports reference functions/classes that actually exist in the other files
+- Check that function signatures match how they are called from other files
+- Ensure HTML files reference correct CSS/JS file paths
+- Ensure API endpoint URLs in frontend JS match the backend route definitions
+- Verify model/schema field names are consistent across files
+
+DEPENDENCY FILES:
+- If this is requirements.txt or package.json, ensure ALL packages used in the code are listed
+- Verify version compatibility
 
 Also improve: exception handling, type hints, logging, structure.
 
@@ -278,6 +303,7 @@ Also improve: exception handling, type hints, logging, structure.
 STRICT RULES
 =========================================================
 - Return ONLY the corrected source code. NO markdown fences. NO explanations.
+- Do NOT wrap the code in ``` backtick blocks.
 - Do NOT truncate. Return the COMPLETE file.
 - Do NOT add TODO comments or placeholders.
 - PRESERVE all existing functionality.
@@ -286,19 +312,43 @@ STRICT RULES
 )
 
 import concurrent.futures
+import time as _time
+import re as _re
+
+
+def _strip_markdown_fences(content: str) -> str:
+    """Remove markdown code fences from LLM output, handling various formats."""
+    content = content.strip()
+    # Match opening fence with optional language tag: ```python, ```js, ```html, etc.
+    if _re.match(r'^```\w*\s*$', content.splitlines()[0] if content else ''):
+        lines = content.splitlines()
+        # Find the closing fence
+        if lines[-1].strip() == '```':
+            content = '\n'.join(lines[1:-1])
+        else:
+            content = '\n'.join(lines[1:])
+    return content
+
 
 def debugger_agent(generated_files: List[GeneratedFile], errors: str = None) -> List[GeneratedFile]:
-    blacklist_extensions = {'.md', '.txt', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.gitignore', '.env', '.toml', '.lock', '.zip'}
-    
+    """
+    Debug all generated files with cross-file context awareness.
+    Uses sequential processing with retry/backoff to avoid rate limits.
+    """
+    blacklist_extensions = {
+        '.md', '.txt', '.png', '.jpg', '.jpeg', '.gif', '.ico',
+        '.gitignore', '.env', '.toml', '.lock', '.zip', '.svg',
+    }
+
     files_to_debug = []
     skipped_files = []
-    
+
     for gf in generated_files:
         ext = Path(gf.path).suffix.lower()
         if ext in blacklist_extensions:
             skipped_files.append(gf)
             continue
-            
+
         if errors:
             filename = Path(gf.path).name
             if gf.path in errors or filename in errors:
@@ -308,41 +358,81 @@ def debugger_agent(generated_files: List[GeneratedFile], errors: str = None) -> 
         else:
             files_to_debug.append(gf)
 
-    print(f"\n[4/4] Debugger Agent reviewing {len(files_to_debug)}/{len(generated_files)} files (concurrently, skipped {len(skipped_files)})...")
+    print(f"\n[DEBUGGER] Reviewing {len(files_to_debug)}/{len(generated_files)} files (skipped {len(skipped_files)})...")
     if not files_to_debug:
         return generated_files
-        
+
     project_structure = "\n".join(f"  {f.path}" for f in generated_files)
     chain = DEBUGGER_PROMPT | LLM
-    
+
     error_section = ""
     if errors:
-        error_section = f"\n=========================================================\nPREVIOUS ERRORS (Address these!)\n=========================================================\n{errors}\n"
+        # Truncate very long error output to avoid token limits
+        truncated_errors = errors[:3000] if len(errors) > 3000 else errors
+        error_section = (
+            f"\n=========================================================\n"
+            f"PREVIOUS ERRORS (Address these!)\n"
+            f"=========================================================\n"
+            f"{truncated_errors}\n"
+        )
 
-    def debug_file(gf: GeneratedFile) -> GeneratedFile:
-        print(f"     [>] Debugging {gf.path} ...", flush=True)
-        try:
-            response = chain.invoke(
-                {
-                    "project_structure": project_structure,
-                    "file_path": gf.path,
-                    "code": gf.content,
-                    "error_section": error_section,
-                }
-            )
-            content = response.content.strip()
-            if content.startswith("```"):
-                lines = content.splitlines()
-                content = "\n".join(lines[1:-1]) if lines[-1].strip() == "```" else "\n".join(lines[1:])
-            print(f"     [OK] {gf.path}", flush=True)
-            return GeneratedFile(path=gf.path, content=content)
-        except Exception as exc:
-            print(f"     [FAILED] {gf.path} (keeping original -- {exc})", flush=True)
-            return gf
+    def _build_cross_file_context(current_path: str) -> str:
+        """Build a summary of all other files for cross-file consistency checking."""
+        context_parts = []
+        for gf in generated_files:
+            if gf.path == current_path:
+                continue
+            # For code files, include the full content (truncated if very large)
+            file_content = gf.content
+            if len(file_content) > 2000:
+                file_content = file_content[:2000] + "\n... (truncated)"
+            context_parts.append(f"--- {gf.path} ---\n{file_content}")
+        return "\n\n".join(context_parts) if context_parts else "(No other files in the project)"
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(files_to_debug))) as executor:
-        fixed_files = list(executor.map(debug_file, files_to_debug))
-        
+    def debug_file_with_retry(gf: GeneratedFile, max_retries: int = 3) -> GeneratedFile:
+        """Debug a single file with retry logic for rate limit errors."""
+        cross_context = _build_cross_file_context(gf.path)
+
+        for attempt in range(max_retries):
+            print(f"     [>] Debugging {gf.path} ...", flush=True)
+            try:
+                response = chain.invoke(
+                    {
+                        "project_structure": project_structure,
+                        "cross_file_context": cross_context,
+                        "file_path": gf.path,
+                        "code": gf.content,
+                        "error_section": error_section,
+                    }
+                )
+                content = _strip_markdown_fences(response.content.strip())
+                print(f"     [OK] {gf.path}", flush=True)
+                return GeneratedFile(path=gf.path, content=content)
+
+            except Exception as exc:
+                exc_str = str(exc)
+                # Handle rate limit errors with backoff
+                if "429" in exc_str or "rate_limit" in exc_str.lower():
+                    # Try to extract the retry delay from the error message
+                    wait_match = _re.search(r'try again in (\d+\.?\d*)', exc_str)
+                    wait_time = float(wait_match.group(1)) + 1.0 if wait_match else (5.0 * (attempt + 1))
+                    print(f"     [RATE LIMITED] {gf.path} — waiting {wait_time:.1f}s (attempt {attempt + 1}/{max_retries})", flush=True)
+                    _time.sleep(wait_time)
+                    continue
+                else:
+                    print(f"     [FAILED] {gf.path} (keeping original — {exc})", flush=True)
+                    return gf
+
+        print(f"     [FAILED] {gf.path} (max retries exhausted)", flush=True)
+        return gf
+
+    # Process files sequentially to avoid rate limits
+    # (Groq's free tier has very low TPM limits)
+    fixed_files = []
+    for gf in files_to_debug:
+        fixed = debug_file_with_retry(gf)
+        fixed_files.append(fixed)
+
     debug_map = {gf.path: gf for gf in fixed_files}
     result = []
     for gf in generated_files:
@@ -350,8 +440,9 @@ def debugger_agent(generated_files: List[GeneratedFile], errors: str = None) -> 
             result.append(debug_map[gf.path])
         else:
             result.append(gf)
-            
+
     return result
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
