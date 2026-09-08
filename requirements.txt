@@ -21,3 +21,4 @@ flask_cors
 tensorflow
 playwright
 openai 
+langchain-openai
