@@ -876,7 +876,7 @@ function generateProjectName(query) {
     return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('') || 'ForgeProject';
 }
 
-// Helper to build a script tag without the HTML parser seeing </script>
+
 function scriptTag(attrs) { return '<scr' + 'ipt' + (attrs ? ' ' + attrs : '') + '></scr' + 'ipt>'; }
 
 
@@ -963,144 +963,70 @@ function generateProject(query) {
         type,
         ...template,
     };
-}
 
 // ══════════════════════════════════════════════════════════════════════════════
 // SIMULATION ENGINE — Runs the agent pipeline with realistic delays
 // ══════════════════════════════════════════════════════════════════════════════
 
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function randomDelay(min, max) {
-    return delay(min + Math.random() * (max - min));
-}
-
-async function simulatePipeline(query) {
-    const project = generateProject(query);
-
-    // Session
-    sessionId = Math.random().toString(36).substring(2, 10);
-    sessionBadge.textContent = `STA_${sessionId.toUpperCase()}`;
-    addTerminalLine(`[SYS] Session established: ${sessionId}`, 'system');
-    await delay(300);
-
-    // ── AGENT 1: PLANNER ─────────────────────────────────────────────────
-    setAgentState('planner', 'active');
-    addTerminalLine('[PLANNER] Analyzing your prompt...', 'primary');
-    await randomDelay(800, 1400);
-    addTerminalLine(`  Project : ${project.projectName}`, 'on-surface');
-    await delay(200);
-    addTerminalLine(`  Type    : ${project.type}`, 'on-surface');
-    await delay(200);
-    addTerminalLine(`  Stack   : ${JSON.stringify(project.tech_stack)}`, 'on-surface');
-    await delay(200);
-    addTerminalLine(`  Features: ${project.features.length} identified`, 'on-surface');
-    for (const f of project.features.slice(0, 4)) {
-        addTerminalLine(`    → ${f}`, 'on-surface');
-        await delay(100);
-    }
-    if (project.features.length > 4) addTerminalLine(`    … and ${project.features.length - 4} more`, 'on-surface');
-    await randomDelay(400, 800);
-    setAgentState('planner', 'complete');
-    addTerminalLine('[PLANNER] ✓ Plan complete', 'tertiary');
-    await delay(400);
-
-    // ── AGENT 2: ARCHITECT ───────────────────────────────────────────────
-    setAgentState('architect', 'active');
-    addTerminalLine('[ARCHITECT] Designing project structure...', 'secondary');
-    await randomDelay(800, 1200);
-    addTerminalLine(`  Files planned : ${project.files.length}`, 'on-surface');
-    for (const f of project.files) {
-        addTerminalLine(`    📄 ${f.path}`, 'on-surface');
-        await delay(150);
-    }
-    addTerminalLine(`  Entrypoint    : ${project.entrypoint}`, 'on-surface');
-    addTerminalLine(`  Run command   : ${project.run_command}`, 'on-surface');
-    await randomDelay(400, 700);
-    setAgentState('architect', 'complete');
-    addTerminalLine('[ARCHITECT] ✓ Architecture defined', 'tertiary');
-    await delay(400);
-
-    // ── AGENT 3: CODER ───────────────────────────────────────────────────
-    setAgentState('coder', 'active');
-    addTerminalLine('[CODER] Generating code files...', 'primary');
-    await randomDelay(600, 1000);
-    for (const f of project.files) {
-        addTerminalLine(`  ✓ ${f.path} (${f.content.length} bytes)`, 'on-surface');
-        await randomDelay(300, 700);
-    }
-    setAgentState('coder', 'complete');
-    addTerminalLine(`[CODER] ✓ ${project.files.length} files generated`, 'tertiary');
-    await delay(400);
-
-    // ── AGENT 4: DEBUGGER ────────────────────────────────────────────────
-    setAgentState('debugger', 'active');
-    addTerminalLine('[DEBUGGER] Reviewing and fixing code...', 'primary-fixed');
-    await randomDelay(800, 1400);
-    addTerminalLine(`  Scanning ${project.files.length} files for issues...`, 'on-surface');
-    await delay(400);
-    addTerminalLine('  0 errors found', 'on-surface');
-    addTerminalLine('  0 warnings', 'on-surface');
-    await randomDelay(300, 600);
-    setAgentState('debugger', 'complete');
-    addTerminalLine(`[DEBUGGER] ✓ Debug pass complete — ${project.files.length} files reviewed`, 'tertiary');
-    await delay(400);
-
-    // ── AGENT 5: TERMINAL ────────────────────────────────────────────────
-    setAgentState('terminal', 'active');
-    addTerminalLine('[TERMINAL] Installing dependencies & compile-checking...', 'secondary-fixed');
-    await randomDelay(600, 1000);
-    addTerminalLine('  $ npm install', 'on-surface');
-    await delay(300);
-    addTerminalLine('  added 0 packages (vanilla project)', 'on-surface');
-    await delay(200);
-    addTerminalLine('  $ node --check app.js', 'on-surface');
-    await delay(400);
-    addTerminalLine('  All checks passed!', 'tertiary');
-    setAgentState('terminal', 'complete');
-    addTerminalLine('[TERMINAL] ✓ Compile check OK', 'tertiary');
-    await delay(400);
-
-    // ── AGENT 6: BROWSER ─────────────────────────────────────────────────
-    setAgentState('browser', 'active');
-    addTerminalLine('[BROWSER] Running smoke tests with Playwright...', 'primary');
-    await randomDelay(800, 1300);
-    addTerminalLine(`  Page title: ${project.projectName}`, 'on-surface');
-    await delay(200);
-    addTerminalLine('  All smoke tests passed!', 'tertiary');
-    setAgentState('browser', 'complete');
-    addTerminalLine('[BROWSER] ✓ Browser validation OK', 'tertiary');
-    await delay(300);
-
-    // ── PIPELINE COMPLETE ────────────────────────────────────────────────
-    addTerminalLine('', 'system');
-    addTerminalLine('[SYS] ═══ FORGE COMPLETE ═══', 'success');
-    addTerminalLine(`[SYS] Project: ${project.projectName}`, 'success');
-    addTerminalLine(`[SYS] Files: ${project.files.length} | Stack: ${JSON.stringify(project.tech_stack)}`, 'system');
-
-    // Set generated files for the file viewer
-    generatedFiles = project.files;
-    renderFileList();
-    if (generatedFiles.length > 0) selectFile(0);
-
-    // Build summary
-    buildSummary({
-        project_name: project.projectName,
-        description: project.description,
-        tech_stack: project.tech_stack,
-        features: project.features,
-        files_count: project.files.length,
-        entrypoint: project.entrypoint,
-        run_command: project.run_command,
-        install_command: project.install_command,
-        terminal_success: true,
-        browser_success: true,
+function simulatePipeline(query) {
+    return new Promise((resolve, reject) => {
+        // Connect to the real backend running workflow.py
+        const es = new EventSource('/api/forge/stream?query=' + encodeURIComponent(query));
+        
+        es.onmessage = async (e) => {
+            const ev = JSON.parse(e.data);
+            
+            if (ev.type === 'session') {
+                sessionId = ev.session_id;
+                sessionBadge.textContent = `STA_${sessionId.toUpperCase()}`;
+                addTerminalLine(`[SYS] Session established: ${sessionId}`, 'system');
+            }
+            else if (ev.type === 'agent_start') {
+                setAgentState(ev.agent, 'active');
+            }
+            else if (ev.type === 'agent_log') {
+                addTerminalLine(ev.text, ev.color || 'on-surface');
+            }
+            else if (ev.type === 'agent_complete') {
+                setAgentState(ev.agent, 'complete');
+            }
+            else if (ev.type === 'pipeline_complete') {
+                pipelineData = ev.data;
+                // Fetch generated files from the backend
+                try {
+                    const res = await fetch(`/api/forge/${sessionId}/files`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        generatedFiles = data.files || [];
+                        renderFileList();
+                        if (generatedFiles.length > 0) selectFile(0);
+                    }
+                } catch (err) {
+                    addTerminalLine(`[ERROR] Failed to fetch files: ${err.message}`, 'error');
+                }
+                
+                buildSummary(ev.data);
+                onPipelineEnd(true);
+            }
+            else if (ev.type === 'error') {
+                addTerminalLine(`[ERROR] ${ev.message}`, 'error');
+                onPipelineEnd(false);
+                es.close();
+                reject(new Error(ev.message));
+            }
+            else if (ev.type === 'done') {
+                es.close();
+                resolve();
+            }
+        };
+        
+        es.onerror = (err) => {
+            addTerminalLine(`[ERROR] SSE connection failed. Is the server running?`, 'error');
+            onPipelineEnd(false);
+            es.close();
+            reject(new Error("SSE connection failed"));
+        };
     });
-
-    pipelineData = project;
-    onPipelineEnd(true);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
