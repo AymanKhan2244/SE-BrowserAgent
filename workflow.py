@@ -24,9 +24,7 @@ from typing_extensions import TypedDict, Optional
 from pathlib import Path
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# Pipeline State
-# ══════════════════════════════════════════════════════════════════════════════
+
 
 class PipelineState(TypedDict):
     query: str
@@ -44,9 +42,7 @@ class PipelineState(TypedDict):
     error: Optional[str]
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# Node functions
-# ══════════════════════════════════════════════════════════════════════════════
+
 
 def planner_node(state: PipelineState):
     query = state.get("query", "")
@@ -77,7 +73,6 @@ def debugger_node(state: PipelineState):
 def save_project_node(state: PipelineState):
     """Save the project to disk using the planner's project_name as the folder name."""
     plan = state.get("plan")
-    # Use the project name from the planner as the folder name
     if plan and hasattr(plan, "project_name") and plan.project_name:
         project_slug = plan.project_name.strip().lower().replace(" ", "-")
         output_dir = str(Path("generated_projects") / project_slug)
@@ -106,9 +101,7 @@ def validate_node(state: PipelineState):
     return {}
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# Build the graph
-# ══════════════════════════════════════════════════════════════════════════════
+
 
 build = StateGraph(PipelineState)
 

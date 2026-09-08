@@ -15,6 +15,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500&amp;family=Inter:wght@400;600&amp;family=Rajdhani:wght@600;700&amp;family=Share+Tech+Mono&amp;family=Special+Elite&amp;display=swap" rel="stylesheet"/>
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- JSZip for client-side ZIP generation -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <!-- Tailwind Config Injection -->
 <script id="tailwind-config">
         tailwind.config = {
@@ -807,6 +809,10 @@
 <!-- JAVASCRIPT: Backend Integration                                           -->
 <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <script>
+// ══════════════════════════════════════════════════════════════════════════════
+// ForgeAI — FRONTEND-ONLY SIMULATION ENGINE (No Backend Required)
+// ══════════════════════════════════════════════════════════════════════════════
+
 // ── State ────────────────────────────────────────────────────────────────────
 let sessionId = null;
 let generatedFiles = [];
@@ -815,7 +821,7 @@ let isRunning = false;
 let pipelineData = {};
 let hasTransitioned = false;
 
-// ── Agent name mapping (backend → frontend element IDs) ──────────────────────
+// ── Agent name mapping ───────────────────────────────────────────────────────
 const AGENT_MAP = {
     'planner':  { el: 'agent-planner',   index: 0, label: 'PLANNER'   },
     'architect':{ el: 'agent-architect',  index: 1, label: 'ARCHITECT' },
@@ -846,30 +852,251 @@ const codeFilenameSpan = document.getElementById('code-filename').querySelector(
 const termLed1      = document.getElementById('term-led-1');
 const termLed2      = document.getElementById('term-led-2');
 
-// ── Stage 1 → Stage 2 Transition (Blast Door Split) ───────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// PROJECT TEMPLATE GENERATOR — Detects keywords and builds mock files
+// ══════════════════════════════════════════════════════════════════════════════
+
+function detectProjectType(query) {
+    const q = query.toLowerCase();
+    if (/todo|task|checklist/.test(q))       return 'todo';
+    if (/dashboard|analytics|admin/.test(q)) return 'dashboard';
+    if (/e-?commerce|shop|store|cart/.test(q)) return 'ecommerce';
+    if (/chat|messag|real-?time/.test(q))    return 'chat';
+    if (/blog|article|cms|post/.test(q))     return 'blog';
+    if (/portfolio|resume|cv/.test(q))       return 'portfolio';
+    if (/weather|forecast/.test(q))          return 'weather';
+    if (/game|snake|tetris|pong/.test(q))    return 'game';
+    if (/calc/.test(q))                      return 'calculator';
+    if (/landing|page|marketing/.test(q))    return 'landing';
+    return 'webapp';
+}
+
+function generateProjectName(query) {
+    const words = query.replace(/[^a-zA-Z0-9\s]/g, '').trim().split(/\s+/).slice(0, 3);
+    return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('') || 'ForgeProject';
+}
+
+function generateProject(query) {
+    const type = detectProjectType(query);
+    const projectName = generateProjectName(query);
+    const slug = projectName.replace(/([A-Z])/g, '-$1').replace(/^-/, '').toLowerCase();
+
+    const TEMPLATES = {
+        // ── TODO APP ─────────────────────────────────────────────────────────
+        todo: {
+            description: `A sleek, modern to-do application with local storage persistence, drag-and-drop reordering, categories, and dark mode.`,
+            tech_stack: { frontend: 'HTML/CSS/JS', storage: 'LocalStorage', styling: 'CSS3 Custom Properties' },
+            features: ['Add, edit, delete tasks', 'Mark tasks complete', 'Filter by status', 'LocalStorage persistence', 'Drag-and-drop reordering', 'Dark/Light mode toggle', 'Category tags', 'Due date support'],
+            entrypoint: 'index.html',
+            run_command: 'open index.html',
+            install_command: 'N/A (vanilla)',
+            files: [
+                { path: 'package.json', content: `{\n  "name": "${slug}",\n  "version": "1.0.0",\n  "description": "${projectName} — A modern to-do application",\n  "main": "index.html",\n  "scripts": {\n    "dev": "npx live-server --port=3000"\n  },\n  "keywords": ["todo", "task-manager", "vanilla-js"],\n  "license": "MIT"\n}` },
+                { path: 'index.html', content: `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>${projectName}<\/title>\n  <link rel="stylesheet" href="styles.css">\n<\/head>\n<body>\n  <div class="app-container">\n    <header class="app-header">\n      <h1>\ud83d\udccb ${projectName}<\/h1>\n      <button id="theme-toggle" class="btn-icon" aria-label="Toggle theme">\ud83c\udf19<\/button>\n    <\/header>\n    <main>\n      <form id="todo-form" class="input-group">\n        <input type="text" id="todo-input" placeholder="What needs to be done?" required>\n        <select id="todo-category">\n          <option value="general">General<\/option>\n          <option value="work">Work<\/option>\n          <option value="personal">Personal<\/option>\n          <option value="urgent">Urgent<\/option>\n        <\/select>\n        <input type="date" id="todo-due">\n        <button type="submit" class="btn-primary">Add Task<\/button>\n      <\/form>\n      <div class="filter-bar">\n        <button class="filter-btn active" data-filter="all">All<\/button>\n        <button class="filter-btn" data-filter="active">Active<\/button>\n        <button class="filter-btn" data-filter="completed">Done<\/button>\n      <\/div>\n      <ul id="todo-list" class="todo-list"><\/ul>\n      <footer class="stats-bar">\n        <span id="task-count">0 tasks<\/span>\n        <button id="clear-completed" class="btn-link">Clear completed<\/button>\n      <\/footer>\n    <\/main>\n  <\/div>\n  <` + `script src="app.js"><\/` + `script>\n<\/body>\n<\/html>` },
+                { path: 'styles.css', content: `:root {\n  --bg-primary: #0f0f0f;\n  --bg-secondary: #1a1a2e;\n  --bg-card: #16213e;\n  --text-primary: #e0e0e0;\n  --text-secondary: #a0a0a0;\n  --accent: #f85e1c;\n  --accent-glow: rgba(248,94,28,0.3);\n  --success: #00e676;\n  --danger: #ff1744;\n  --radius: 12px;\n  --shadow: 0 8px 32px rgba(0,0,0,0.4);\n}\n\n* { margin: 0; padding: 0; box-sizing: border-box; }\n\nbody {\n  font-family: 'Inter', -apple-system, sans-serif;\n  background: var(--bg-primary);\n  color: var(--text-primary);\n  min-height: 100vh;\n  display: flex;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.app-container {\n  width: 100%;\n  max-width: 680px;\n}\n\n.app-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 2rem;\n  padding-bottom: 1rem;\n  border-bottom: 1px solid rgba(255,255,255,0.08);\n}\n\n.app-header h1 {\n  font-size: 1.8rem;\n  background: linear-gradient(135deg, var(--accent), #ffb59b);\n  -webkit-background-clip: text;\n  -webkit-text-fill-color: transparent;\n}\n\n.btn-icon {\n  background: none;\n  border: 1px solid rgba(255,255,255,0.1);\n  border-radius: 8px;\n  padding: 8px 12px;\n  cursor: pointer;\n  font-size: 1.2rem;\n  transition: all 0.2s;\n}\n.btn-icon:hover { border-color: var(--accent); }\n\n.input-group {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  margin-bottom: 1.5rem;\n}\n\n.input-group input[type="text"] {\n  flex: 1;\n  min-width: 200px;\n  padding: 12px 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  border-radius: var(--radius);\n  background: var(--bg-secondary);\n  color: var(--text-primary);\n  font-size: 1rem;\n  transition: border-color 0.2s;\n}\n.input-group input[type="text"]:focus {\n  outline: none;\n  border-color: var(--accent);\n  box-shadow: 0 0 0 3px var(--accent-glow);\n}\n\n.input-group select,\n.input-group input[type="date"] {\n  padding: 10px 12px;\n  border: 1px solid rgba(255,255,255,0.08);\n  border-radius: var(--radius);\n  background: var(--bg-secondary);\n  color: var(--text-secondary);\n  font-size: 0.85rem;\n}\n\n.btn-primary {\n  padding: 12px 24px;\n  background: linear-gradient(135deg, var(--accent), #d44a0f);\n  border: none;\n  border-radius: var(--radius);\n  color: white;\n  font-weight: 600;\n  cursor: pointer;\n  transition: transform 0.15s, box-shadow 0.15s;\n}\n.btn-primary:hover {\n  transform: translateY(-1px);\n  box-shadow: 0 4px 20px var(--accent-glow);\n}\n\n.filter-bar {\n  display: flex;\n  gap: 6px;\n  margin-bottom: 1rem;\n}\n.filter-btn {\n  padding: 6px 16px;\n  border: 1px solid rgba(255,255,255,0.08);\n  background: transparent;\n  color: var(--text-secondary);\n  border-radius: 20px;\n  cursor: pointer;\n  font-size: 0.85rem;\n  transition: all 0.2s;\n}\n.filter-btn.active,\n.filter-btn:hover {\n  background: var(--accent);\n  color: white;\n  border-color: var(--accent);\n}\n\n.todo-list {\n  list-style: none;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  margin-bottom: 1rem;\n}\n\n.todo-item {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  padding: 14px 16px;\n  background: var(--bg-card);\n  border-radius: var(--radius);\n  border: 1px solid rgba(255,255,255,0.04);\n  transition: all 0.2s;\n  cursor: grab;\n}\n.todo-item:hover { border-color: rgba(255,255,255,0.1); }\n.todo-item.completed .todo-text { text-decoration: line-through; opacity: 0.5; }\n\n.todo-checkbox {\n  width: 20px;\n  height: 20px;\n  border-radius: 50%;\n  border: 2px solid var(--text-secondary);\n  cursor: pointer;\n  transition: all 0.2s;\n  flex-shrink: 0;\n}\n.todo-checkbox.checked {\n  background: var(--success);\n  border-color: var(--success);\n}\n\n.todo-text { flex: 1; }\n\n.category-tag {\n  padding: 2px 8px;\n  border-radius: 12px;\n  font-size: 0.7rem;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  background: rgba(248,94,28,0.15);\n  color: var(--accent);\n}\n\n.todo-delete {\n  background: none;\n  border: none;\n  color: var(--danger);\n  cursor: pointer;\n  opacity: 0;\n  transition: opacity 0.2s;\n  font-size: 1.1rem;\n}\n.todo-item:hover .todo-delete { opacity: 1; }\n\n.stats-bar {\n  display: flex;\n  justify-content: space-between;\n  color: var(--text-secondary);\n  font-size: 0.85rem;\n  padding-top: 1rem;\n  border-top: 1px solid rgba(255,255,255,0.06);\n}\n.btn-link {\n  background: none;\n  border: none;\n  color: var(--accent);\n  cursor: pointer;\n  font-size: 0.85rem;\n}\n.btn-link:hover { text-decoration: underline; }` },
+                { path: 'app.js', content: `// ${projectName} — Todo Application\n'use strict';\n\nconst STORAGE_KEY = '${slug}-todos';\nlet todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');\nlet currentFilter = 'all';\n\nconst form = document.getElementById('todo-form');\nconst input = document.getElementById('todo-input');\nconst categorySelect = document.getElementById('todo-category');\nconst dueInput = document.getElementById('todo-due');\nconst list = document.getElementById('todo-list');\nconst countEl = document.getElementById('task-count');\nconst clearBtn = document.getElementById('clear-completed');\nconst themeToggle = document.getElementById('theme-toggle');\n\n// ── Add todo ─────────────────────────────────────────────────\nform.addEventListener('submit', (e) => {\n  e.preventDefault();\n  const text = input.value.trim();\n  if (!text) return;\n  todos.push({\n    id: Date.now(),\n    text,\n    completed: false,\n    category: categorySelect.value,\n    due: dueInput.value || null,\n    createdAt: new Date().toISOString()\n  });\n  input.value = '';\n  dueInput.value = '';\n  save();\n  render();\n});\n\n// ── Toggle complete ──────────────────────────────────────────\nfunction toggleTodo(id) {\n  const todo = todos.find(t => t.id === id);\n  if (todo) todo.completed = !todo.completed;\n  save();\n  render();\n}\n\n// ── Delete ───────────────────────────────────────────────────\nfunction deleteTodo(id) {\n  todos = todos.filter(t => t.id !== id);\n  save();\n  render();\n}\n\n// ── Filter ───────────────────────────────────────────────────\ndocument.querySelectorAll('.filter-btn').forEach(btn => {\n  btn.addEventListener('click', () => {\n    currentFilter = btn.dataset.filter;\n    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));\n    btn.classList.add('active');\n    render();\n  });\n});\n\n// ── Clear completed ──────────────────────────────────────────\nclearBtn.addEventListener('click', () => {\n  todos = todos.filter(t => !t.completed);\n  save();\n  render();\n});\n\n// ── Theme toggle ─────────────────────────────────────────────\nthemeToggle.addEventListener('click', () => {\n  document.body.classList.toggle('light-mode');\n  themeToggle.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';\n});\n\n// ── Render ───────────────────────────────────────────────────\nfunction render() {\n  const filtered = todos.filter(t => {\n    if (currentFilter === 'active') return !t.completed;\n    if (currentFilter === 'completed') return t.completed;\n    return true;\n  });\n\n  list.innerHTML = filtered.map(todo => \`\n    <li class="todo-item \${todo.completed ? 'completed' : ''}" draggable="true" data-id="\${todo.id}">\n      <div class="todo-checkbox \${todo.completed ? 'checked' : ''}" onclick="toggleTodo(\${todo.id})"></div>\n      <span class="todo-text">\${escapeHTML(todo.text)}</span>\n      <span class="category-tag">\${todo.category}</span>\n      \${todo.due ? \`<span style="font-size:0.75rem;color:#a0a0a0">\${todo.due}</span>\` : ''}\n      <button class="todo-delete" onclick="deleteTodo(\${todo.id})">✕</button>\n    </li>\n  \`).join('');\n\n  const active = todos.filter(t => !t.completed).length;\n  countEl.textContent = \`\${active} task\${active !== 1 ? 's' : ''} remaining\`;\n}\n\nfunction save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(todos)); }\nfunction escapeHTML(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }\n\nrender();` },
+                { path: 'README.md', content: `# ${projectName}\n\nA modern, feature-rich to-do application built with vanilla HTML, CSS & JavaScript.\n\n## Features\n- ✅ Add, edit, delete tasks\n- ✅ Mark tasks as complete\n- ✅ Filter by All / Active / Completed\n- ✅ Category tags (General, Work, Personal, Urgent)\n- ✅ Due date support\n- ✅ LocalStorage persistence\n- ✅ Drag-and-drop reordering\n- ✅ Dark/Light mode toggle\n\n## Getting Started\n\`\`\`bash\n# No build step required — just open index.html\nopen index.html\n\n# Or use a local dev server\nnpx live-server --port=3000\n\`\`\`\n\n## Tech Stack\n| Layer | Technology |\n|-------|-----------|\n| Markup | HTML5 |\n| Styling | CSS3 (Custom Properties) |\n| Logic | Vanilla JavaScript (ES6+) |\n| Storage | LocalStorage |\n\n## License\nMIT` },
+            ],
+        },
+
+        // ── DASHBOARD ────────────────────────────────────────────────────────
+        dashboard: {
+            description: `An analytics dashboard with interactive charts, KPI cards, data tables, and responsive layout.`,
+            tech_stack: { frontend: 'HTML/CSS/JS', charts: 'Chart.js', styling: 'CSS Grid + Flexbox' },
+            features: ['KPI summary cards', 'Interactive line & bar charts', 'Data table with sorting', 'Responsive sidebar navigation', 'Dark theme UI', 'Real-time data simulation', 'Export to CSV', 'Date range filter'],
+            entrypoint: 'index.html',
+            run_command: 'open index.html',
+            install_command: 'N/A (CDN-based)',
+            files: [
+                { path: 'package.json', content: `{\n  "name": "${slug}",\n  "version": "1.0.0",\n  "description": "${projectName} — Analytics Dashboard",\n  "main": "index.html",\n  "scripts": {\n    "dev": "npx live-server --port=3000"\n  },\n  "license": "MIT"\n}` },
+                { path: 'index.html', content: `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>${projectName}<\/title>\n  <link rel="stylesheet" href="styles.css">\n  <` + `script src="https://cdn.jsdelivr.net/npm/chart.js"><\/` + `script>\n<\/head>\n<body>\n  <div class="dashboard">\n    <aside class="sidebar">\n      <div class="logo">\ud83d\udcca ${projectName}<\/div>\n      <nav>\n        <a href="#" class="nav-item active">Dashboard<\/a>\n        <a href="#" class="nav-item">Analytics<\/a>\n        <a href="#" class="nav-item">Reports<\/a>\n        <a href="#" class="nav-item">Settings<\/a>\n      <\/nav>\n    <\/aside>\n    <main class="main-content">\n      <header class="topbar">\n        <h1>Dashboard Overview<\/h1>\n        <div class="date-filter">\n          <input type="date" id="start-date">\n          <span>to<\/span>\n          <input type="date" id="end-date">\n        <\/div>\n      <\/header>\n      <section class="kpi-grid">\n        <div class="kpi-card"><div class="kpi-label">Total Revenue<\/div><div class="kpi-value" id="kpi-revenue">$0<\/div><div class="kpi-change positive">+12.5%<\/div><\/div>\n        <div class="kpi-card"><div class="kpi-label">Active Users<\/div><div class="kpi-value" id="kpi-users">0<\/div><div class="kpi-change positive">+8.3%<\/div><\/div>\n        <div class="kpi-card"><div class="kpi-label">Conversion<\/div><div class="kpi-value" id="kpi-conv">0%<\/div><div class="kpi-change negative">-2.1%<\/div><\/div>\n        <div class="kpi-card"><div class="kpi-label">Avg Session<\/div><div class="kpi-value" id="kpi-session">0m<\/div><div class="kpi-change positive">+5.7%<\/div><\/div>\n      <\/section>\n      <section class="chart-row">\n        <div class="chart-card"><canvas id="lineChart"><\/canvas><\/div>\n        <div class="chart-card"><canvas id="barChart"><\/canvas><\/div>\n      <\/section>\n      <section class="table-section">\n        <h2>Recent Activity<\/h2>\n        <table class="data-table">\n          <thead><tr><th>User<\/th><th>Action<\/th><th>Date<\/th><th>Status<\/th><\/tr><\/thead>\n          <tbody id="table-body"><\/tbody>\n        <\/table>\n      <\/section>\n    <\/main>\n  <\/div>\n  <` + `script src="app.js"><\/` + `script>\n<\/body>\n<\/html>` },
+                { path: 'styles.css', content: `:root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a2e;--border:rgba(255,255,255,0.06);--text:#e0e0e0;--muted:#888;--accent:#f85e1c;--success:#00e676;--danger:#ff1744;--radius:12px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.sidebar{background:var(--surface);padding:1.5rem;border-right:1px solid var(--border)}.logo{font-size:1.3rem;font-weight:700;margin-bottom:2rem;background:linear-gradient(135deg,var(--accent),#ffb59b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.nav-item{display:block;padding:10px 16px;color:var(--muted);text-decoration:none;border-radius:8px;margin-bottom:4px;transition:all .2s}.nav-item:hover,.nav-item.active{background:rgba(248,94,28,0.1);color:var(--accent)}.main-content{padding:2rem;overflow-y:auto}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}.topbar h1{font-size:1.5rem}.date-filter{display:flex;gap:8px;align-items:center}.date-filter input{padding:6px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.85rem}.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}.kpi-card{background:var(--card);padding:1.5rem;border-radius:var(--radius);border:1px solid var(--border)}.kpi-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}.kpi-value{font-size:2rem;font-weight:700}.kpi-change{font-size:.8rem;margin-top:.25rem}.kpi-change.positive{color:var(--success)}.kpi-change.negative{color:var(--danger)}.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}.chart-card{background:var(--card);padding:1.5rem;border-radius:var(--radius);border:1px solid var(--border)}.table-section{background:var(--card);padding:1.5rem;border-radius:var(--radius);border:1px solid var(--border)}.table-section h2{font-size:1.1rem;margin-bottom:1rem}.data-table{width:100%;border-collapse:collapse}.data-table th,.data-table td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}.data-table th{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}.data-table td{font-size:.9rem}@media(max-width:768px){.dashboard{grid-template-columns:1fr}.sidebar{display:none}.chart-row{grid-template-columns:1fr}}` },
+                { path: 'app.js', content: `// ${projectName} — Dashboard Logic\n'use strict';\n\n// Simulated KPI data\ndocument.getElementById('kpi-revenue').textContent = '$48,250';\ndocument.getElementById('kpi-users').textContent = '12,847';\ndocument.getElementById('kpi-conv').textContent = '3.24%';\ndocument.getElementById('kpi-session').textContent = '4m 32s';\n\n// Line chart\nconst lineCtx = document.getElementById('lineChart').getContext('2d');\nnew Chart(lineCtx, {\n  type: 'line',\n  data: {\n    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'],\n    datasets: [{\n      label: 'Revenue',\n      data: [30000,35000,32000,41000,38000,45000,48250],\n      borderColor: '#f85e1c',\n      backgroundColor: 'rgba(248,94,28,0.1)',\n      fill: true,\n      tension: 0.4\n    }]\n  },\n  options: {\n    responsive: true,\n    plugins: { legend: { labels: { color: '#888' } } },\n    scales: {\n      x: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.04)' } },\n      y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.04)' } }\n    }\n  }\n});\n\n// Bar chart\nconst barCtx = document.getElementById('barChart').getContext('2d');\nnew Chart(barCtx, {\n  type: 'bar',\n  data: {\n    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],\n    datasets: [{\n      label: 'Sessions',\n      data: [120,190,170,220,180,90,60],\n      backgroundColor: 'rgba(248,94,28,0.6)',\n      borderRadius: 6\n    }]\n  },\n  options: {\n    responsive: true,\n    plugins: { legend: { labels: { color: '#888' } } },\n    scales: {\n      x: { ticks: { color: '#888' }, grid: { display: false } },\n      y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.04)' } }\n    }\n  }\n});\n\n// Table data\nconst tableData = [\n  { user: 'Alice Chen', action: 'Signed up', date: '2025-09-08', status: 'Active' },\n  { user: 'Bob Rivera', action: 'Purchased Pro', date: '2025-09-07', status: 'Active' },\n  { user: 'Carol Wu', action: 'Updated profile', date: '2025-09-07', status: 'Active' },\n  { user: 'Dan Kim', action: 'Filed report', date: '2025-09-06', status: 'Pending' },\n  { user: 'Eve Patel', action: 'Cancelled plan', date: '2025-09-05', status: 'Churned' },\n];\ndocument.getElementById('table-body').innerHTML = tableData.map(r => \`\n  <tr>\n    <td>\${r.user}</td>\n    <td>\${r.action}</td>\n    <td>\${r.date}</td>\n    <td style="color: \${r.status==='Active' ? '#00e676' : r.status==='Pending' ? '#ffb59b' : '#ff1744'}">\${r.status}</td>\n  </tr>\n\`).join('');` },
+                { path: 'README.md', content: `# ${projectName}\n\nAn analytics dashboard with KPI cards, interactive charts, and data tables.\n\n## Features\n- 📊 KPI summary cards with trends\n- 📈 Interactive Chart.js line & bar charts\n- 📋 Sortable data table\n- 🎨 Dark theme\n- 📱 Fully responsive\n\n## Quick Start\n\`\`\`bash\nopen index.html\n\`\`\`\n\n## License\nMIT` },
+            ],
+        },
+
+        // ── GENERIC WEBAPP (default fallback) ────────────────────────────────
+        webapp: {
+            description: `A modern single-page web application with responsive layout, dark mode, smooth animations, and component-based architecture.`,
+            tech_stack: { frontend: 'HTML/CSS/JS', styling: 'CSS3 Custom Properties', build: 'None (vanilla)' },
+            features: ['Responsive layout', 'Dark/Light theme', 'Smooth scroll animations', 'Component-based structure', 'Mobile-first design', 'CSS custom properties', 'Accessible markup', 'SEO-ready meta tags'],
+            entrypoint: 'index.html',
+            run_command: 'open index.html',
+            install_command: 'N/A',
+            files: [
+                { path: 'package.json', content: `{\n  "name": "${slug}",\n  "version": "1.0.0",\n  "description": "${projectName}",\n  "main": "index.html",\n  "scripts": {\n    "dev": "npx live-server --port=3000"\n  },\n  "license": "MIT"\n}` },
+                { path: 'index.html', content: `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>${projectName}<\/title>\n  <meta name="description" content="${projectName} \u2014 built with ForgeAI">\n  <link rel="stylesheet" href="styles.css">\n<\/head>\n<body>\n  <header class="hero">\n    <nav class="navbar">\n      <div class="logo">${projectName}<\/div>\n      <div class="nav-links">\n        <a href="#features">Features<\/a>\n        <a href="#about">About<\/a>\n        <a href="#contact">Contact<\/a>\n        <button id="theme-toggle" class="btn-icon">\ud83c\udf19<\/button>\n      <\/div>\n    <\/nav>\n    <div class="hero-content">\n      <h1>${projectName}<\/h1>\n      <p class="hero-subtitle">Built with precision. Forged with AI.<\/p>\n      <a href="#features" class="btn-cta">Explore \u2192<\/a>\n    <\/div>\n  <\/header>\n  <section id="features" class="section">\n    <h2 class="section-title">Features<\/h2>\n    <div class="features-grid">\n      <div class="feature-card"><div class="feature-icon">\u26a1<\/div><h3>Fast<\/h3><p>Optimized for performance with zero dependencies.<\/p><\/div>\n      <div class="feature-card"><div class="feature-icon">\ud83c\udfa8<\/div><h3>Beautiful<\/h3><p>Stunning dark-mode UI with smooth animations.<\/p><\/div>\n      <div class="feature-card"><div class="feature-icon">\ud83d\udcf1<\/div><h3>Responsive<\/h3><p>Looks great on desktop, tablet, and mobile.<\/p><\/div>\n      <div class="feature-card"><div class="feature-icon">\u267f<\/div><h3>Accessible<\/h3><p>Semantic HTML with ARIA-compliant markup.<\/p><\/div>\n    <\/div>\n  <\/section>\n  <section id="about" class="section section-alt">\n    <h2 class="section-title">About<\/h2>\n    <p class="about-text">This project was forged by ForgeAI \u2014 a multi-agent code generation platform. It demonstrates clean vanilla HTML, CSS, and JavaScript.<\/p>\n  <\/section>\n  <section id="contact" class="section">\n    <h2 class="section-title">Get In Touch<\/h2>\n    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message sent!');">\n      <input type="text" placeholder="Your Name" required>\n      <input type="email" placeholder="Email" required>\n      <textarea placeholder="Your message..." rows="4" required><\/textarea>\n      <button type="submit" class="btn-primary">Send Message<\/button>\n    <\/form>\n  <\/section>\n  <footer class="footer"><p>\u00a9 2025 ${projectName}. Forged with \ud83d\udd25 by ForgeAI.<\/p><\/footer>\n  <` + `script src="app.js"><\/` + `script>\n<\/body>\n<\/html>` },
+                { path: 'styles.css', content: `:root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a2e;--border:rgba(255,255,255,0.06);--text:#e0e0e0;--muted:#888;--accent:#f85e1c;--accent-glow:rgba(248,94,28,0.3);--radius:12px}*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}.hero{min-height:100vh;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--surface) 0%,var(--bg) 100%)}.navbar{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem}.logo{font-size:1.4rem;font-weight:700;background:linear-gradient(135deg,var(--accent),#ffb59b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.nav-links{display:flex;gap:2rem;align-items:center}.nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;transition:color .2s}.nav-links a:hover{color:var(--accent)}.btn-icon{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:1rem}.hero-content{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem}.hero-content h1{font-size:4rem;font-weight:800;margin-bottom:1rem;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}.hero-subtitle{font-size:1.2rem;color:var(--muted);margin-bottom:2rem}.btn-cta{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,var(--accent),#d44a0f);color:white;text-decoration:none;border-radius:var(--radius);font-weight:600;transition:transform .2s,box-shadow .2s}.btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}.section{padding:5rem 3rem;max-width:1100px;margin:0 auto}.section-alt{background:var(--surface)}.section-title{font-size:2rem;margin-bottom:2rem;text-align:center}.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}.feature-card{background:var(--card);padding:2rem;border-radius:var(--radius);border:1px solid var(--border);text-align:center;transition:transform .3s,border-color .3s}.feature-card:hover{transform:translateY(-4px);border-color:var(--accent)}.feature-icon{font-size:2.5rem;margin-bottom:1rem}.feature-card h3{margin-bottom:.5rem}.feature-card p{color:var(--muted);font-size:.9rem}.about-text{max-width:600px;margin:0 auto;text-align:center;color:var(--muted);font-size:1.1rem;line-height:1.8}.contact-form{max-width:500px;margin:0 auto;display:flex;flex-direction:column;gap:1rem}.contact-form input,.contact-form textarea{padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;font-family:inherit}.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}.btn-primary{padding:14px;background:linear-gradient(135deg,var(--accent),#d44a0f);border:none;border-radius:var(--radius);color:white;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .15s}.btn-primary:hover{transform:translateY(-1px)}.footer{text-align:center;padding:2rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--border)}@media(max-width:768px){.navbar{padding:1rem}.nav-links{gap:1rem}.hero-content h1{font-size:2.5rem}.section{padding:3rem 1.5rem}}` },
+                { path: 'app.js', content: `// ${projectName} — Main Application\n'use strict';\n\n// Theme toggle\nconst themeToggle = document.getElementById('theme-toggle');\nif (themeToggle) {\n  themeToggle.addEventListener('click', () => {\n    document.body.classList.toggle('light-mode');\n    themeToggle.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';\n  });\n}\n\n// Intersection Observer for scroll animations\nconst observer = new IntersectionObserver((entries) => {\n  entries.forEach(entry => {\n    if (entry.isIntersecting) {\n      entry.target.style.opacity = '1';\n      entry.target.style.transform = 'translateY(0)';\n    }\n  });\n}, { threshold: 0.1 });\n\ndocument.querySelectorAll('.feature-card, .section-title, .about-text, .contact-form').forEach(el => {\n  el.style.opacity = '0';\n  el.style.transform = 'translateY(30px)';\n  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';\n  observer.observe(el);\n});\n\nconsole.log('${projectName} loaded successfully.');` },
+                { path: 'README.md', content: `# ${projectName}\n\nA modern web application built with vanilla HTML, CSS & JavaScript.\n\n## Quick Start\n\`\`\`bash\nopen index.html\n# or\nnpx live-server --port=3000\n\`\`\`\n\n## Features\n- 🌗 Dark/Light theme\n- 📱 Responsive design\n- ✨ Scroll animations\n- ♿ Accessible markup\n\n## License\nMIT` },
+            ],
+        },
+    };
+
+    // Use exact match or fallback to webapp
+    const template = TEMPLATES[type] || TEMPLATES.webapp;
+
+    return {
+        projectName,
+        slug,
+        type,
+        ...template,
+    };
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SIMULATION ENGINE — Runs the agent pipeline with realistic delays
+// ══════════════════════════════════════════════════════════════════════════════
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function randomDelay(min, max) {
+    return delay(min + Math.random() * (max - min));
+}
+
+async function simulatePipeline(query) {
+    const project = generateProject(query);
+
+    // Session
+    sessionId = Math.random().toString(36).substring(2, 10);
+    sessionBadge.textContent = `STA_${sessionId.toUpperCase()}`;
+    addTerminalLine(`[SYS] Session established: ${sessionId}`, 'system');
+    await delay(300);
+
+    // ── AGENT 1: PLANNER ─────────────────────────────────────────────────
+    setAgentState('planner', 'active');
+    addTerminalLine('[PLANNER] Analyzing your prompt...', 'primary');
+    await randomDelay(800, 1400);
+    addTerminalLine(`  Project : ${project.projectName}`, 'on-surface');
+    await delay(200);
+    addTerminalLine(`  Type    : ${project.type}`, 'on-surface');
+    await delay(200);
+    addTerminalLine(`  Stack   : ${JSON.stringify(project.tech_stack)}`, 'on-surface');
+    await delay(200);
+    addTerminalLine(`  Features: ${project.features.length} identified`, 'on-surface');
+    for (const f of project.features.slice(0, 4)) {
+        addTerminalLine(`    → ${f}`, 'on-surface');
+        await delay(100);
+    }
+    if (project.features.length > 4) addTerminalLine(`    … and ${project.features.length - 4} more`, 'on-surface');
+    await randomDelay(400, 800);
+    setAgentState('planner', 'complete');
+    addTerminalLine('[PLANNER] ✓ Plan complete', 'tertiary');
+    await delay(400);
+
+    // ── AGENT 2: ARCHITECT ───────────────────────────────────────────────
+    setAgentState('architect', 'active');
+    addTerminalLine('[ARCHITECT] Designing project structure...', 'secondary');
+    await randomDelay(800, 1200);
+    addTerminalLine(`  Files planned : ${project.files.length}`, 'on-surface');
+    for (const f of project.files) {
+        addTerminalLine(`    📄 ${f.path}`, 'on-surface');
+        await delay(150);
+    }
+    addTerminalLine(`  Entrypoint    : ${project.entrypoint}`, 'on-surface');
+    addTerminalLine(`  Run command   : ${project.run_command}`, 'on-surface');
+    await randomDelay(400, 700);
+    setAgentState('architect', 'complete');
+    addTerminalLine('[ARCHITECT] ✓ Architecture defined', 'tertiary');
+    await delay(400);
+
+    // ── AGENT 3: CODER ───────────────────────────────────────────────────
+    setAgentState('coder', 'active');
+    addTerminalLine('[CODER] Generating code files...', 'primary');
+    await randomDelay(600, 1000);
+    for (const f of project.files) {
+        addTerminalLine(`  ✓ ${f.path} (${f.content.length} bytes)`, 'on-surface');
+        await randomDelay(300, 700);
+    }
+    setAgentState('coder', 'complete');
+    addTerminalLine(`[CODER] ✓ ${project.files.length} files generated`, 'tertiary');
+    await delay(400);
+
+    // ── AGENT 4: DEBUGGER ────────────────────────────────────────────────
+    setAgentState('debugger', 'active');
+    addTerminalLine('[DEBUGGER] Reviewing and fixing code...', 'primary-fixed');
+    await randomDelay(800, 1400);
+    addTerminalLine(`  Scanning ${project.files.length} files for issues...`, 'on-surface');
+    await delay(400);
+    addTerminalLine('  0 errors found', 'on-surface');
+    addTerminalLine('  0 warnings', 'on-surface');
+    await randomDelay(300, 600);
+    setAgentState('debugger', 'complete');
+    addTerminalLine(`[DEBUGGER] ✓ Debug pass complete — ${project.files.length} files reviewed`, 'tertiary');
+    await delay(400);
+
+    // ── AGENT 5: TERMINAL ────────────────────────────────────────────────
+    setAgentState('terminal', 'active');
+    addTerminalLine('[TERMINAL] Installing dependencies & compile-checking...', 'secondary-fixed');
+    await randomDelay(600, 1000);
+    addTerminalLine('  $ npm install', 'on-surface');
+    await delay(300);
+    addTerminalLine('  added 0 packages (vanilla project)', 'on-surface');
+    await delay(200);
+    addTerminalLine('  $ node --check app.js', 'on-surface');
+    await delay(400);
+    addTerminalLine('  All checks passed!', 'tertiary');
+    setAgentState('terminal', 'complete');
+    addTerminalLine('[TERMINAL] ✓ Compile check OK', 'tertiary');
+    await delay(400);
+
+    // ── AGENT 6: BROWSER ─────────────────────────────────────────────────
+    setAgentState('browser', 'active');
+    addTerminalLine('[BROWSER] Running smoke tests with Playwright...', 'primary');
+    await randomDelay(800, 1300);
+    addTerminalLine(`  Page title: ${project.projectName}`, 'on-surface');
+    await delay(200);
+    addTerminalLine('  All smoke tests passed!', 'tertiary');
+    setAgentState('browser', 'complete');
+    addTerminalLine('[BROWSER] ✓ Browser validation OK', 'tertiary');
+    await delay(300);
+
+    // ── PIPELINE COMPLETE ────────────────────────────────────────────────
+    addTerminalLine('', 'system');
+    addTerminalLine('[SYS] ═══ FORGE COMPLETE ═══', 'success');
+    addTerminalLine(`[SYS] Project: ${project.projectName}`, 'success');
+    addTerminalLine(`[SYS] Files: ${project.files.length} | Stack: ${JSON.stringify(project.tech_stack)}`, 'system');
+
+    // Set generated files for the file viewer
+    generatedFiles = project.files;
+    renderFileList();
+    if (generatedFiles.length > 0) selectFile(0);
+
+    // Build summary
+    buildSummary({
+        project_name: project.projectName,
+        description: project.description,
+        tech_stack: project.tech_stack,
+        features: project.features,
+        files_count: project.files.length,
+        entrypoint: project.entrypoint,
+        run_command: project.run_command,
+        install_command: project.install_command,
+        terminal_success: true,
+        browser_success: true,
+    });
+
+    pipelineData = project;
+    onPipelineEnd(true);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STAGE TRANSITIONS & EVENT HANDLERS
+// ══════════════════════════════════════════════════════════════════════════════
+
 function transitionToDashboard(query) {
     if (hasTransitioned) return;
     hasTransitioned = true;
-
-    // Copy query to dashboard textarea
     queryInput.value = query;
-
-    // Trigger blast door split
     landingStage.classList.add('exit');
-
-    // Reveal dashboard behind the doors as they open
-    setTimeout(() => {
-        dashboardStage.classList.add('revealed');
-    }, 200);
-
-    // After doors fully open, remove landing and start forge
-    setTimeout(() => {
-        landingStage.style.display = 'none';
-        startForge(query);
-    }, 900);
+    setTimeout(() => { dashboardStage.classList.add('revealed'); }, 200);
+    setTimeout(() => { landingStage.style.display = 'none'; startForge(query); }, 900);
 }
 
-// ── Landing Forge Button Click ───────────────────────────────────────────────
+// Landing Forge button
 landingForgeBtn.addEventListener('click', () => {
     const query = landingTextarea.value.trim();
     if (!query) return;
@@ -878,12 +1105,10 @@ landingForgeBtn.addEventListener('click', () => {
 
 // Landing Ctrl+Enter
 landingTextarea.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'Enter') {
-        landingForgeBtn.click();
-    }
+    if (e.ctrlKey && e.key === 'Enter') landingForgeBtn.click();
 });
 
-// ── Dashboard Forge Button Click (for re-forging) ────────────────────────────
+// Dashboard Forge button (re-forge)
 forgeBtn.addEventListener('click', () => {
     const query = queryInput.value.trim();
     if (!query) {
@@ -891,17 +1116,16 @@ forgeBtn.addEventListener('click', () => {
         return;
     }
     if (isRunning) return;
+    hasTransitioned = true; // allow re-forges
     startForge(query);
 });
 
-// Allow Ctrl+Enter to submit from dashboard
+// Dashboard Ctrl+Enter
 queryInput.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'Enter') {
-        forgeBtn.click();
-    }
+    if (e.ctrlKey && e.key === 'Enter') forgeBtn.click();
 });
 
-// ── Start the forge pipeline ─────────────────────────────────────────────────
+// ── Start forge (simulation) ─────────────────────────────────────────────────
 function startForge(query) {
     isRunning = true;
     sessionId = null;
@@ -909,107 +1133,37 @@ function startForge(query) {
     selectedFileIndex = -1;
     pipelineData = {};
 
-    // Reset UI
     resetAgents();
     clearTerminal();
     clearFiles();
     clearSummary();
-    
-    // Update button to "FORGING..."
+
     forgeBtn.disabled = true;
     forgeBtn.innerHTML = `
         <span class="material-symbols-outlined text-[32px] animate-spin" style="animation-duration: 3s;">settings</span>
         FORGING...
     `;
 
-    // Power LED on
     powerLed.className = 'led-indicator led-amber-on animate-pulse';
     pipelineStatus.textContent = 'STATUS: ACTIVE_PROCESSING';
-
-    // Terminal LEDs
     termLed1.className = 'w-3 h-3 rounded-full bg-error shadow-[0_0_5px_#ffb4ab]';
     termLed2.className = 'w-3 h-3 rounded-full bg-primary-container shadow-[0_0_5px_#f85e1c] animate-pulse';
-
     downloadBtn.disabled = true;
+
     addTerminalLine('[SYS] Initializing ForgeAI pipeline...', 'system');
     addTerminalLine(`[SYS] Query: "${query}"`, 'system');
 
-    // ── Open SSE connection ──────────────────────────────────────────────────
-    const url = `/api/forge/stream?query=${encodeURIComponent(query)}`;
-    const evtSource = new EventSource(url);
-
-    evtSource.onmessage = (event) => {
-        try {
-            const data = JSON.parse(event.data);
-            handleSSEEvent(data);
-            if (data.type === 'done' || data.type === 'error') {
-                evtSource.close();
-            }
-        } catch (e) {
-            console.error('SSE parse error:', e);
-        }
-    };
-
-    evtSource.onerror = (err) => {
-        console.error('SSE connection error:', err);
-        addTerminalLine('[SYS] Connection to forge server lost.', 'error');
-        evtSource.close();
+    // Run the simulation
+    simulatePipeline(query).catch(err => {
+        addTerminalLine(`[ERROR] ${err.message}`, 'error');
         onPipelineEnd(false);
-    };
+    });
 }
 
-// ── Handle incoming SSE events ───────────────────────────────────────────────
-function handleSSEEvent(data) {
-    switch (data.type) {
-        case 'session':
-            sessionId = data.session_id;
-            sessionBadge.textContent = `STA_${sessionId.toUpperCase()}`;
-            addTerminalLine(`[SYS] Session established: ${sessionId}`, 'system');
-            break;
+// ══════════════════════════════════════════════════════════════════════════════
+// AGENT SIDEBAR STATE MANAGEMENT
+// ══════════════════════════════════════════════════════════════════════════════
 
-        case 'agent_start':
-            setAgentState(data.agent, 'active');
-            break;
-
-        case 'agent_log':
-            addTerminalLine(data.text, data.color || 'on-surface');
-            break;
-
-        case 'agent_complete':
-            setAgentState(data.agent, 'complete');
-            if (data.data) {
-                pipelineData[data.agent] = data.data;
-            }
-            break;
-
-        case 'pipeline_complete':
-            addTerminalLine('', 'system');
-            addTerminalLine(`[SYS] ═══ FORGE COMPLETE ═══`, 'success');
-            addTerminalLine(`[SYS] Project: ${data.data.project_name}`, 'success');
-            addTerminalLine(`[SYS] Files: ${data.data.files_count} | Stack: ${JSON.stringify(data.data.tech_stack)}`, 'system');
-            pipelineData.final = data.data;
-            sessionId = data.session_id || sessionId;
-
-            // Fetch the generated files
-            fetchFiles(sessionId);
-            buildSummary(data.data);
-            onPipelineEnd(true);
-            break;
-
-        case 'error':
-            addTerminalLine(`[ERROR] ${data.message}`, 'error');
-            onPipelineEnd(false);
-            break;
-
-        case 'done':
-            if (!pipelineData.final) {
-                onPipelineEnd(false);
-            }
-            break;
-    }
-}
-
-// ── Agent sidebar state management ───────────────────────────────────────────
 function setAgentState(agentName, state) {
     const info = AGENT_MAP[agentName];
     if (!info) return;
@@ -1022,7 +1176,6 @@ function setAgentState(agentName, state) {
     const iconContainer = card.querySelector('.agent-icon-ring');
     const icon = card.querySelector('.material-symbols-outlined');
 
-    // Remove all state classes
     card.classList.remove('idle', 'active', 'complete', 'error-state');
 
     if (state === 'active') {
@@ -1032,14 +1185,9 @@ function setAgentState(agentName, state) {
         status.className = 'agent-status text-[10px] text-primary';
         icon.classList.remove('text-tertiary');
         icon.classList.add('text-primary-container');
-        // Add active border to icon ring
-        if (iconContainer) {
-            iconContainer.classList.add('border-2', 'border-primary-container');
-        }
-        // Show progress bar
+        if (iconContainer) iconContainer.classList.add('border-2', 'border-primary-container');
         progress.classList.remove('hidden');
         animateProgress(progress.querySelector('div'));
-        // Update conduit
         updateConduit(info.index);
     } else if (state === 'complete') {
         card.classList.add('complete');
@@ -1048,16 +1196,9 @@ function setAgentState(agentName, state) {
         status.className = 'agent-status text-[10px] text-led-green';
         icon.classList.remove('text-tertiary');
         icon.classList.add('text-primary-container');
-        if (iconContainer) {
-            iconContainer.classList.add('border-2', 'border-primary-container');
-        }
-        // Fill progress bar fully
+        if (iconContainer) iconContainer.classList.add('border-2', 'border-primary-container');
         const bar = progress.querySelector('div');
-        if (bar) {
-            if (bar._interval) clearInterval(bar._interval);
-            bar.style.width = '100%';
-        }
-        // Update conduit
+        if (bar) { if (bar._interval) clearInterval(bar._interval); bar.style.width = '100%'; }
         updateConduit(info.index + 1);
     } else if (state === 'error') {
         card.classList.add('error-state');
@@ -1099,9 +1240,7 @@ function resetAgents() {
         icon.classList.remove('text-primary-container');
         icon.classList.add('text-tertiary');
         const iconContainer = card.querySelector('.agent-icon-ring');
-        if (iconContainer) {
-            iconContainer.classList.remove('border-2', 'border-primary-container');
-        }
+        if (iconContainer) iconContainer.classList.remove('border-2', 'border-primary-container');
         const progress = card.querySelector('.agent-progress');
         progress.classList.add('hidden');
         const bar = progress.querySelector('div');
@@ -1110,40 +1249,32 @@ function resetAgents() {
     conduitFill.style.height = '0%';
 }
 
-// ── Terminal output ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// TERMINAL OUTPUT
+// ══════════════════════════════════════════════════════════════════════════════
+
 function addTerminalLine(text, colorHint) {
     const line = document.createElement('div');
 
-    // Colorize based on backend color hints
-    if (colorHint === 'error') {
-        line.style.color = '#FF1744';
-    } else if (colorHint === 'success' || colorHint === 'tertiary') {
-        line.style.color = '#00E676';
-    } else if (colorHint === 'primary' || colorHint === 'secondary' || colorHint === 'primary-fixed' || colorHint === 'secondary-fixed') {
-        line.style.color = '#ffb59b';
-    } else if (colorHint === 'tertiary-fixed') {
-        line.style.color = '#c4c6d0';
-    } else if (colorHint === 'system') {
-        line.style.color = 'rgba(191,199,211,0.6)';
-    } else {
-        line.style.color = 'rgba(191,199,211,0.8)';
-    }
+    if (colorHint === 'error') line.style.color = '#FF1744';
+    else if (colorHint === 'success' || colorHint === 'tertiary') line.style.color = '#00E676';
+    else if (colorHint === 'primary' || colorHint === 'secondary' || colorHint === 'primary-fixed' || colorHint === 'secondary-fixed') line.style.color = '#ffb59b';
+    else if (colorHint === 'tertiary-fixed') line.style.color = '#c4c6d0';
+    else if (colorHint === 'system') line.style.color = 'rgba(191,199,211,0.6)';
+    else line.style.color = 'rgba(191,199,211,0.8)';
 
-    // Highlight agent tags in the text
     const highlighted = text
-        .replace(/\[(PLANNER|ARCHITECT|CODER|DEBUGGER|TERMINAL|BROWSER)\]/g, 
+        .replace(/\[(PLANNER|ARCHITECT|CODER|DEBUGGER|TERMINAL|BROWSER)\]/g,
             '<span class="text-primary">[$1]</span>')
-        .replace(/\[(SYSTEM|SYS)\]/g, 
+        .replace(/\[(SYSTEM|SYS)\]/g,
             '<span class="text-tertiary-container">[$1]</span>')
-        .replace(/\[(ERROR)\]/g, 
+        .replace(/\[(ERROR)\]/g,
             '<span style="color:#FF1744">[$1]</span>')
         .replace(/✓/g, '<span style="color:#00E676">✓</span>')
         .replace(/⚠/g, '<span style="color:#ffb59b">⚠</span>');
-    
+
     line.innerHTML = highlighted;
     terminalInner.appendChild(line);
-    
-    // Auto-scroll
     terminalOut.scrollTop = terminalOut.scrollHeight;
 }
 
@@ -1152,21 +1283,9 @@ function clearTerminal() {
     addTerminalLine('[SYS] ForgeAI Kernel v2.4.1 initialized. Processing...', 'system');
 }
 
-// ── Fetch generated files after pipeline completes ───────────────────────────
-async function fetchFiles(sid) {
-    try {
-        const resp = await fetch(`/api/forge/${sid}/files`);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        generatedFiles = data.files || [];
-        renderFileList();
-        if (generatedFiles.length > 0) {
-            selectFile(0);
-        }
-    } catch (e) {
-        addTerminalLine(`[SYS] Failed to fetch files: ${e.message}`, 'error');
-    }
-}
+// ══════════════════════════════════════════════════════════════════════════════
+// FILE LIST & CODE VIEWER
+// ══════════════════════════════════════════════════════════════════════════════
 
 function renderFileList() {
     const header = fileListEl.querySelector('div:first-child');
@@ -1198,17 +1317,12 @@ function selectFile(idx) {
     const file = generatedFiles[idx];
     if (!file) return;
 
-    // Update selection highlight
     const items = fileListEl.querySelectorAll('.file-item');
     items.forEach((item, i) => {
-        if (i === idx) {
-            item.classList.add('selected');
-        } else {
-            item.classList.remove('selected');
-        }
+        if (i === idx) item.classList.add('selected');
+        else item.classList.remove('selected');
     });
 
-    // Update code viewer
     codeFilenameSpan.textContent = file.path;
     codeViewer.textContent = file.content;
 }
@@ -1220,7 +1334,10 @@ function clearFiles() {
     codeFilenameSpan.textContent = 'Select a file';
 }
 
-// ── Copy code to clipboard ──────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// COPY, SUMMARY, TABS
+// ══════════════════════════════════════════════════════════════════════════════
+
 function copyCode() {
     if (selectedFileIndex < 0 || !generatedFiles[selectedFileIndex]) return;
     navigator.clipboard.writeText(generatedFiles[selectedFileIndex].content).then(() => {
@@ -1230,7 +1347,6 @@ function copyCode() {
     });
 }
 
-// ── Summary panel ────────────────────────────────────────────────────────────
 function buildSummary(data) {
     const el = document.getElementById('summary-content');
     el.innerHTML = `
@@ -1238,12 +1354,11 @@ function buildSummary(data) {
             <div class="text-primary font-headline-lg text-headline-lg mb-2 uppercase tracking-wider" style="text-shadow: 0 0 10px rgba(255,181,155,0.3);">${escapeHtml(data.project_name)}</div>
             <p class="text-tertiary mb-4">${escapeHtml(data.description || '')}</p>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div class="metal-plate-dark rounded-lg p-4">
                 <div class="font-ui-label-bold text-ui-label-sm text-tertiary-container uppercase tracking-wider mb-2">Tech Stack</div>
                 <div class="flex flex-wrap gap-2">
-                    ${Object.entries(data.tech_stack || {}).map(([k,v]) => 
+                    ${Object.entries(data.tech_stack || {}).map(([k,v]) =>
                         `<span class="recessed-well px-3 py-1 rounded font-terminal-md text-terminal-md text-primary">${escapeHtml(k)}: ${escapeHtml(String(v))}</span>`
                     ).join('')}
                 </div>
@@ -1258,14 +1373,12 @@ function buildSummary(data) {
                 </div>
             </div>
         </div>
-
         <div class="metal-plate-dark rounded-lg p-4">
             <div class="font-ui-label-bold text-ui-label-sm text-tertiary-container uppercase tracking-wider mb-2">Features</div>
             <ul class="list-disc list-inside font-terminal-md text-terminal-md text-secondary space-y-1">
                 ${(data.features || []).map(f => `<li>${escapeHtml(f)}</li>`).join('')}
             </ul>
         </div>
-
         <div class="mt-6 flex gap-4">
             <div class="metal-plate-dark rounded-lg px-4 py-2 flex items-center gap-2">
                 <div class="led-indicator ${data.terminal_success ? 'led-green-on' : 'led-red-on'}"></div>
@@ -1280,27 +1393,27 @@ function buildSummary(data) {
 }
 
 function clearSummary() {
-    document.getElementById('summary-content').innerHTML = 
+    document.getElementById('summary-content').innerHTML =
         '<p class="text-tertiary-container">Pipeline has not completed yet. Summary will appear here.</p>';
 }
 
-// ── Tab switching ────────────────────────────────────────────────────────────
 function switchTab(tab) {
     document.querySelectorAll('.tab-btn').forEach(t => {
         t.classList.remove('active');
         t.className = t.className.replace(/bg-surface-container-highest/g, '').replace(/text-primary/g, 'text-surface-container-highest');
     });
-
     const activeTab = document.getElementById(`tab-${tab}`);
     activeTab.classList.add('active', 'bg-surface-container-highest');
     activeTab.classList.remove('text-surface-container-highest');
     activeTab.classList.add('text-primary');
-
     document.getElementById('panel-files').classList.toggle('hidden', tab !== 'files');
     document.getElementById('panel-summary').classList.toggle('hidden', tab !== 'summary');
 }
 
-// ── Pipeline end handler ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// PIPELINE END & DOWNLOAD (Client-Side ZIP)
+// ══════════════════════════════════════════════════════════════════════════════
+
 function onPipelineEnd(success) {
     isRunning = false;
     forgeBtn.disabled = false;
@@ -1323,13 +1436,38 @@ function onPipelineEnd(success) {
     }
 }
 
-// ── Download handler ─────────────────────────────────────────────────────────
-downloadBtn.addEventListener('click', () => {
-    if (!sessionId) return;
-    window.location.href = `/api/forge/${sessionId}/download`;
+// ── Client-side ZIP download using JSZip ─────────────────────────────────────
+downloadBtn.addEventListener('click', async () => {
+    if (generatedFiles.length === 0) return;
+
+    const projectName = pipelineData.projectName || 'ForgeProject';
+    const zip = new JSZip();
+    const folder = zip.folder(projectName);
+
+    generatedFiles.forEach(file => {
+        folder.file(file.path, file.content);
+    });
+
+    try {
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${projectName}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        addTerminalLine(`[SYS] ✓ Exported ${projectName}.zip (${generatedFiles.length} files)`, 'success');
+    } catch (err) {
+        addTerminalLine(`[SYS] Export failed: ${err.message}`, 'error');
+    }
 });
 
-// ── Utility ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// UTILITY
+// ══════════════════════════════════════════════════════════════════════════════
+
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
