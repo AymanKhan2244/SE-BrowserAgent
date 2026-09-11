@@ -853,118 +853,6 @@ const termLed1      = document.getElementById('term-led-1');
 const termLed2      = document.getElementById('term-led-2');
 
 // ══════════════════════════════════════════════════════════════════════════════
-// PROJECT TEMPLATE GENERATOR — Detects keywords and builds mock files
-// ══════════════════════════════════════════════════════════════════════════════
-
-function detectProjectType(query) {
-    const q = query.toLowerCase();
-    if (/todo|task|checklist/.test(q))       return 'todo';
-    if (/dashboard|analytics|admin/.test(q)) return 'dashboard';
-    if (/e-?commerce|shop|store|cart/.test(q)) return 'ecommerce';
-    if (/chat|messag|real-?time/.test(q))    return 'chat';
-    if (/blog|article|cms|post/.test(q))     return 'blog';
-    if (/portfolio|resume|cv/.test(q))       return 'portfolio';
-    if (/weather|forecast/.test(q))          return 'weather';
-    if (/game|snake|tetris|pong/.test(q))    return 'game';
-    if (/calc/.test(q))                      return 'calculator';
-    if (/landing|page|marketing/.test(q))    return 'landing';
-    return 'webapp';
-}
-
-function generateProjectName(query) {
-    const words = query.replace(/[^a-zA-Z0-9\s]/g, '').trim().split(/\s+/).slice(0, 3);
-    return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('') || 'ForgeProject';
-}
-
-
-function scriptTag(attrs) { return '<scr' + 'ipt' + (attrs ? ' ' + attrs : '') + '></scr' + 'ipt>'; }
-
-
-
-function generateProject(query) {
-    const type = detectProjectType(query);
-    const projectName = generateProjectName(query);
-    const slug = projectName.replace(/([A-Z])/g, '-$1').replace(/^-/, '').toLowerCase();
-
-    // Build HTML files as regular strings (not template literals) to avoid parser issues
-    function buildTodoHtml() {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>' + projectName + '</title>\n  <link rel="stylesheet" href="styles.css">\n</head>\n<body>\n  <div class="app-container">\n    <header class="app-header">\n      <h1>' + projectName + '</h1>\n      <button id="theme-toggle" class="btn-icon" aria-label="Toggle theme">🌙</button>\n    </header>\n    <main>\n      <form id="todo-form" class="input-group">\n        <input type="text" id="todo-input" placeholder="What needs to be done?" required>\n        <select id="todo-category">\n          <option value="general">General</option>\n          <option value="work">Work</option>\n          <option value="personal">Personal</option>\n          <option value="urgent">Urgent</option>\n        </select>\n        <input type="date" id="todo-due">\n        <button type="submit" class="btn-primary">Add Task</button>\n      </form>\n      <div class="filter-bar">\n        <button class="filter-btn active" data-filter="all">All</button>\n        <button class="filter-btn" data-filter="active">Active</button>\n        <button class="filter-btn" data-filter="completed">Done</button>\n      </div>\n      <ul id="todo-list" class="todo-list"></ul>\n      <footer class="stats-bar">\n        <span id="task-count">0 tasks</span>\n        <button id="clear-completed" class="btn-link">Clear completed</button>\n      </footer>\n    </main>\n  </div>\n  ' + scriptTag('src="app.js"') + '\n</body>\n</html>';
-    }
-
-    function buildDashboardHtml() {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>' + projectName + '</title>\n  <link rel="stylesheet" href="styles.css">\n  ' + scriptTag('src="https://cdn.jsdelivr.net/npm/chart.js"') + '\n</head>\n<body>\n  <div class="dashboard">\n    <aside class="sidebar">\n      <div class="logo">' + projectName + '</div>\n      <nav>\n        <a href="#" class="nav-item active">Dashboard</a>\n        <a href="#" class="nav-item">Analytics</a>\n        <a href="#" class="nav-item">Reports</a>\n        <a href="#" class="nav-item">Settings</a>\n      </nav>\n    </aside>\n    <main class="main-content">\n      <header class="topbar">\n        <h1>Dashboard Overview</h1>\n        <div class="date-filter">\n          <input type="date" id="start-date">\n          <span>to</span>\n          <input type="date" id="end-date">\n        </div>\n      </header>\n      <section class="kpi-grid">\n        <div class="kpi-card"><div class="kpi-label">Total Revenue</div><div class="kpi-value" id="kpi-revenue">$0</div><div class="kpi-change positive">+12.5%</div></div>\n        <div class="kpi-card"><div class="kpi-label">Active Users</div><div class="kpi-value" id="kpi-users">0</div><div class="kpi-change positive">+8.3%</div></div>\n        <div class="kpi-card"><div class="kpi-label">Conversion</div><div class="kpi-value" id="kpi-conv">0%</div><div class="kpi-change negative">-2.1%</div></div>\n        <div class="kpi-card"><div class="kpi-label">Avg Session</div><div class="kpi-value" id="kpi-session">0m</div><div class="kpi-change positive">+5.7%</div></div>\n      </section>\n      <section class="chart-row">\n        <div class="chart-card"><canvas id="lineChart"></canvas></div>\n        <div class="chart-card"><canvas id="barChart"></canvas></div>\n      </section>\n      <section class="table-section">\n        <h2>Recent Activity</h2>\n        <table class="data-table">\n          <thead><tr><th>User</th><th>Action</th><th>Date</th><th>Status</th></tr></thead>\n          <tbody id="table-body"></tbody>\n        </table>\n      </section>\n    </main>\n  </div>\n  ' + scriptTag('src="app.js"') + '\n</body>\n</html>';
-    }
-
-    function buildWebappHtml() {
-        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>' + projectName + '</title>\n  <meta name="description" content="' + projectName + ' — built with ForgeAI">\n  <link rel="stylesheet" href="styles.css">\n</head>\n<body>\n  <header class="hero">\n    <nav class="navbar">\n      <div class="logo">' + projectName + '</div>\n      <div class="nav-links">\n        <a href="#features">Features</a>\n        <a href="#about">About</a>\n        <a href="#contact">Contact</a>\n        <button id="theme-toggle" class="btn-icon">🌙</button>\n      </div>\n    </nav>\n    <div class="hero-content">\n      <h1>' + projectName + '</h1>\n      <p class="hero-subtitle">Built with precision. Forged with AI.</p>\n      <a href="#features" class="btn-cta">Explore →</a>\n    </div>\n  </header>\n  <section id="features" class="section">\n    <h2 class="section-title">Features</h2>\n    <div class="features-grid">\n      <div class="feature-card"><div class="feature-icon">⚡</div><h3>Fast</h3><p>Optimized for performance.</p></div>\n      <div class="feature-card"><div class="feature-icon">🎨</div><h3>Beautiful</h3><p>Dark-mode UI with animations.</p></div>\n      <div class="feature-card"><div class="feature-icon">📱</div><h3>Responsive</h3><p>Desktop, tablet, and mobile.</p></div>\n      <div class="feature-card"><div class="feature-icon">♿</div><h3>Accessible</h3><p>Semantic, ARIA-compliant HTML.</p></div>\n    </div>\n  </section>\n  <section id="about" class="section section-alt">\n    <h2 class="section-title">About</h2>\n    <p class="about-text">Forged by ForgeAI — a multi-agent code generation platform.</p>\n  </section>\n  <section id="contact" class="section">\n    <h2 class="section-title">Get In Touch</h2>\n    <form class="contact-form" onsubmit="event.preventDefault(); alert(\'Message sent!\');">\n      <input type="text" placeholder="Your Name" required>\n      <input type="email" placeholder="Email" required>\n      <textarea placeholder="Your message..." rows="4" required></textarea>\n      <button type="submit" class="btn-primary">Send Message</button>\n    </form>\n  </section>\n  <footer class="footer"><p>© 2025 ' + projectName + '. Forged with 🔥 by ForgeAI.</p></footer>\n  ' + scriptTag('src="app.js"') + '\n</body>\n</html>';
-    }
-
-    const TEMPLATES = {
-        // ── TODO APP ─────────────────────────────────────────────────────────
-        todo: {
-            description: 'A sleek, modern to-do application with local storage persistence, drag-and-drop reordering, categories, and dark mode.',
-            tech_stack: { frontend: 'HTML/CSS/JS', storage: 'LocalStorage', styling: 'CSS3 Custom Properties' },
-            features: ['Add, edit, delete tasks', 'Mark tasks complete', 'Filter by status', 'LocalStorage persistence', 'Drag-and-drop reordering', 'Dark/Light mode toggle', 'Category tags', 'Due date support'],
-            entrypoint: 'index.html',
-            run_command: 'open index.html',
-            install_command: 'N/A (vanilla)',
-            files: [
-                { path: 'package.json', content: '{\n  "name": "' + slug + '",\n  "version": "1.0.0",\n  "description": "' + projectName + ' — A modern to-do application",\n  "main": "index.html",\n  "scripts": {\n    "dev": "npx live-server --port=3000"\n  },\n  "keywords": ["todo", "task-manager", "vanilla-js"],\n  "license": "MIT"\n}' },
-                { path: 'index.html', content: buildTodoHtml() },
-                { path: 'styles.css', content: ':root {\n  --bg-primary: #0f0f0f;\n  --bg-secondary: #1a1a2e;\n  --bg-card: #16213e;\n  --text-primary: #e0e0e0;\n  --text-secondary: #a0a0a0;\n  --accent: #f85e1c;\n  --accent-glow: rgba(248,94,28,0.3);\n  --success: #00e676;\n  --danger: #ff1744;\n  --radius: 12px;\n  --shadow: 0 8px 32px rgba(0,0,0,0.4);\n}\n\n* { margin: 0; padding: 0; box-sizing: border-box; }\n\nbody {\n  font-family: \'Inter\', -apple-system, sans-serif;\n  background: var(--bg-primary);\n  color: var(--text-primary);\n  min-height: 100vh;\n  display: flex;\n  justify-content: center;\n  padding: 2rem;\n}\n\n.app-container { width: 100%; max-width: 680px; }\n\n.app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }\n.app-header h1 { font-size: 1.8rem; background: linear-gradient(135deg, var(--accent), #ffb59b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }\n\n.btn-icon { background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; }\n.btn-icon:hover { border-color: var(--accent); }\n\n.input-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }\n.input-group input[type="text"] { flex: 1; min-width: 200px; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; }\n.input-group input[type="text"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }\n.input-group select, .input-group input[type="date"] { padding: 10px 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); background: var(--bg-secondary); color: var(--text-secondary); font-size: 0.85rem; }\n\n.btn-primary { padding: 12px 24px; background: linear-gradient(135deg, var(--accent), #d44a0f); border: none; border-radius: var(--radius); color: white; font-weight: 600; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }\n.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--accent-glow); }\n\n.filter-bar { display: flex; gap: 6px; margin-bottom: 1rem; }\n.filter-btn { padding: 6px 16px; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--text-secondary); border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }\n.filter-btn.active, .filter-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }\n\n.todo-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }\n.todo-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-card); border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.04); transition: all 0.2s; cursor: grab; }\n.todo-item:hover { border-color: rgba(255,255,255,0.1); }\n.todo-item.completed .todo-text { text-decoration: line-through; opacity: 0.5; }\n\n.todo-checkbox { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--text-secondary); cursor: pointer; transition: all 0.2s; flex-shrink: 0; }\n.todo-checkbox.checked { background: var(--success); border-color: var(--success); }\n\n.todo-text { flex: 1; }\n.category-tag { padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(248,94,28,0.15); color: var(--accent); }\n.todo-delete { background: none; border: none; color: var(--danger); cursor: pointer; opacity: 0; transition: opacity 0.2s; font-size: 1.1rem; }\n.todo-item:hover .todo-delete { opacity: 1; }\n\n.stats-bar { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); }\n.btn-link { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.85rem; }\n.btn-link:hover { text-decoration: underline; }' },
-                { path: 'app.js', content: '// ' + projectName + ' — Todo Application\n\'use strict\';\n\nconst STORAGE_KEY = \'' + slug + '-todos\';\nlet todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || \'[]\');\nlet currentFilter = \'all\';\n\nconst form = document.getElementById(\'todo-form\');\nconst input = document.getElementById(\'todo-input\');\nconst categorySelect = document.getElementById(\'todo-category\');\nconst dueInput = document.getElementById(\'todo-due\');\nconst list = document.getElementById(\'todo-list\');\nconst countEl = document.getElementById(\'task-count\');\nconst clearBtn = document.getElementById(\'clear-completed\');\nconst themeToggle = document.getElementById(\'theme-toggle\');\n\nform.addEventListener(\'submit\', (e) => {\n  e.preventDefault();\n  const text = input.value.trim();\n  if (!text) return;\n  todos.push({ id: Date.now(), text, completed: false, category: categorySelect.value, due: dueInput.value || null });\n  input.value = \'\';\n  dueInput.value = \'\';\n  save(); render();\n});\n\nfunction toggleTodo(id) { const t = todos.find(x => x.id === id); if (t) t.completed = !t.completed; save(); render(); }\nfunction deleteTodo(id) { todos = todos.filter(x => x.id !== id); save(); render(); }\n\ndocument.querySelectorAll(\'.filter-btn\').forEach(btn => {\n  btn.addEventListener(\'click\', () => {\n    currentFilter = btn.dataset.filter;\n    document.querySelectorAll(\'.filter-btn\').forEach(b => b.classList.remove(\'active\'));\n    btn.classList.add(\'active\');\n    render();\n  });\n});\n\nclearBtn.addEventListener(\'click\', () => { todos = todos.filter(t => !t.completed); save(); render(); });\n\nthemeToggle.addEventListener(\'click\', () => {\n  document.body.classList.toggle(\'light-mode\');\n  themeToggle.textContent = document.body.classList.contains(\'light-mode\') ? \'☀️\' : \'🌙\';\n});\n\nfunction render() {\n  const filtered = todos.filter(t => {\n    if (currentFilter === \'active\') return !t.completed;\n    if (currentFilter === \'completed\') return t.completed;\n    return true;\n  });\n  list.innerHTML = filtered.map(todo =>\n    \'<li class="todo-item \' + (todo.completed ? \'completed\' : \'\') + \'" data-id="\' + todo.id + \'">\' +\n      \'<div class="todo-checkbox \' + (todo.completed ? \'checked\' : \'\') + \'" onclick="toggleTodo(\' + todo.id + \')"></div>\' +\n      \'<span class="todo-text">\' + escapeHTML(todo.text) + \'</span>\' +\n      \'<span class="category-tag">\' + todo.category + \'</span>\' +\n      (todo.due ? \'<span style="font-size:0.75rem;color:#a0a0a0">\' + todo.due + \'</span>\' : \'\') +\n      \'<button class="todo-delete" onclick="deleteTodo(\' + todo.id + \')">✕</button>\' +\n    \'</li>\'\n  ).join(\'\');\n  const active = todos.filter(t => !t.completed).length;\n  countEl.textContent = active + \' task\' + (active !== 1 ? \'s\' : \'\') + \' remaining\';\n}\n\nfunction save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(todos)); }\nfunction escapeHTML(s) { const d = document.createElement(\'div\'); d.textContent = s; return d.innerHTML; }\n\nrender();' },
-                { path: 'README.md', content: '# ' + projectName + '\n\nA modern, feature-rich to-do application built with vanilla HTML, CSS & JavaScript.\n\n## Features\n- Add, edit, delete tasks\n- Mark tasks as complete\n- Filter by All / Active / Completed\n- Category tags\n- Due date support\n- LocalStorage persistence\n- Dark/Light mode toggle\n\n## Getting Started\nNo build step required — just open index.html.\n\n## License\nMIT' },
-            ],
-        },
-
-        // ── DASHBOARD ────────────────────────────────────────────────────────
-        dashboard: {
-            description: 'An analytics dashboard with interactive charts, KPI cards, data tables, and responsive layout.',
-            tech_stack: { frontend: 'HTML/CSS/JS', charts: 'Chart.js', styling: 'CSS Grid + Flexbox' },
-            features: ['KPI summary cards', 'Interactive line & bar charts', 'Data table with sorting', 'Responsive sidebar navigation', 'Dark theme UI', 'Real-time data simulation', 'Export to CSV', 'Date range filter'],
-            entrypoint: 'index.html',
-            run_command: 'open index.html',
-            install_command: 'N/A (CDN-based)',
-            files: [
-                { path: 'package.json', content: '{\n  "name": "' + slug + '",\n  "version": "1.0.0",\n  "description": "' + projectName + ' — Analytics Dashboard",\n  "main": "index.html",\n  "scripts": {\n    "dev": "npx live-server --port=3000"\n  },\n  "license": "MIT"\n}' },
-                { path: 'index.html', content: buildDashboardHtml() },
-                { path: 'styles.css', content: ':root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a2e;--border:rgba(255,255,255,0.06);--text:#e0e0e0;--muted:#888;--accent:#f85e1c;--success:#00e676;--danger:#ff1744;--radius:12px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:\'Inter\',sans-serif;background:var(--bg);color:var(--text)}.dashboard{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.sidebar{background:var(--surface);padding:1.5rem;border-right:1px solid var(--border)}.logo{font-size:1.3rem;font-weight:700;margin-bottom:2rem;background:linear-gradient(135deg,var(--accent),#ffb59b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.nav-item{display:block;padding:10px 16px;color:var(--muted);text-decoration:none;border-radius:8px;margin-bottom:4px;transition:all .2s}.nav-item:hover,.nav-item.active{background:rgba(248,94,28,0.1);color:var(--accent)}.main-content{padding:2rem;overflow-y:auto}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}.topbar h1{font-size:1.5rem}.date-filter{display:flex;gap:8px;align-items:center}.date-filter input{padding:6px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.85rem}.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}.kpi-card{background:var(--card);padding:1.5rem;border-radius:var(--radius);border:1px solid var(--border)}.kpi-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}.kpi-value{font-size:2rem;font-weight:700}.kpi-change{font-size:.8rem;margin-top:.25rem}.kpi-change.positive{color:var(--success)}.kpi-change.negative{color:var(--danger)}.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}.chart-card{background:var(--card);padding:1.5rem;border-radius:var(--radius);border:1px solid var(--border)}.table-section{background:var(--card);padding:1.5rem;border-radius:var(--radius);border:1px solid var(--border)}.table-section h2{font-size:1.1rem;margin-bottom:1rem}.data-table{width:100%;border-collapse:collapse}.data-table th,.data-table td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}.data-table th{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}.data-table td{font-size:.9rem}@media(max-width:768px){.dashboard{grid-template-columns:1fr}.sidebar{display:none}.chart-row{grid-template-columns:1fr}}' },
-                { path: 'app.js', content: '// ' + projectName + ' — Dashboard Logic\n\'use strict\';\n\ndocument.getElementById(\'kpi-revenue\').textContent = \'$48,250\';\ndocument.getElementById(\'kpi-users\').textContent = \'12,847\';\ndocument.getElementById(\'kpi-conv\').textContent = \'3.24%\';\ndocument.getElementById(\'kpi-session\').textContent = \'4m 32s\';\n\nconst lineCtx = document.getElementById(\'lineChart\').getContext(\'2d\');\nnew Chart(lineCtx, {\n  type: \'line\',\n  data: {\n    labels: [\'Jan\',\'Feb\',\'Mar\',\'Apr\',\'May\',\'Jun\',\'Jul\'],\n    datasets: [{ label: \'Revenue\', data: [30000,35000,32000,41000,38000,45000,48250], borderColor: \'#f85e1c\', backgroundColor: \'rgba(248,94,28,0.1)\', fill: true, tension: 0.4 }]\n  },\n  options: { responsive: true, plugins: { legend: { labels: { color: \'#888\' } } }, scales: { x: { ticks: { color: \'#888\' } }, y: { ticks: { color: \'#888\' } } } }\n});\n\nconst barCtx = document.getElementById(\'barChart\').getContext(\'2d\');\nnew Chart(barCtx, {\n  type: \'bar\',\n  data: {\n    labels: [\'Mon\',\'Tue\',\'Wed\',\'Thu\',\'Fri\',\'Sat\',\'Sun\'],\n    datasets: [{ label: \'Sessions\', data: [120,190,170,220,180,90,60], backgroundColor: \'rgba(248,94,28,0.6)\', borderRadius: 6 }]\n  },\n  options: { responsive: true, plugins: { legend: { labels: { color: \'#888\' } } }, scales: { x: { ticks: { color: \'#888\' } }, y: { ticks: { color: \'#888\' } } } }\n});\n\nvar tableData = [\n  { user: \'Alice Chen\', action: \'Signed up\', date: \'2025-09-08\', status: \'Active\' },\n  { user: \'Bob Rivera\', action: \'Purchased Pro\', date: \'2025-09-07\', status: \'Active\' },\n  { user: \'Carol Wu\', action: \'Updated profile\', date: \'2025-09-07\', status: \'Active\' },\n  { user: \'Dan Kim\', action: \'Filed report\', date: \'2025-09-06\', status: \'Pending\' },\n  { user: \'Eve Patel\', action: \'Cancelled plan\', date: \'2025-09-05\', status: \'Churned\' },\n];\ndocument.getElementById(\'table-body\').innerHTML = tableData.map(function(r) {\n  return \'<tr><td>\' + r.user + \'</td><td>\' + r.action + \'</td><td>\' + r.date + \'</td><td style="color:\' + (r.status===\'Active\' ? \'#00e676\' : r.status===\'Pending\' ? \'#ffb59b\' : \'#ff1744\') + \'">\' + r.status + \'</td></tr>\';\n}).join(\'\');' },
-                { path: 'README.md', content: '# ' + projectName + '\n\nAn analytics dashboard with KPI cards, interactive charts, and data tables.\n\n## Features\n- KPI summary cards with trends\n- Interactive Chart.js line & bar charts\n- Sortable data table\n- Dark theme\n- Fully responsive\n\n## Quick Start\nJust open index.html in your browser.\n\n## License\nMIT' },
-            ],
-        },
-
-        // ── GENERIC WEBAPP (default fallback) ────────────────────────────────
-        webapp: {
-            description: 'A modern single-page web application with responsive layout, dark mode, smooth animations, and component-based architecture.',
-            tech_stack: { frontend: 'HTML/CSS/JS', styling: 'CSS3 Custom Properties', build: 'None (vanilla)' },
-            features: ['Responsive layout', 'Dark/Light theme', 'Smooth scroll animations', 'Component-based structure', 'Mobile-first design', 'CSS custom properties', 'Accessible markup', 'SEO-ready meta tags'],
-            entrypoint: 'index.html',
-            run_command: 'open index.html',
-            install_command: 'N/A',
-            files: [
-                { path: 'package.json', content: '{\n  "name": "' + slug + '",\n  "version": "1.0.0",\n  "description": "' + projectName + '",\n  "main": "index.html",\n  "scripts": {\n    "dev": "npx live-server --port=3000"\n  },\n  "license": "MIT"\n}' },
-                { path: 'index.html', content: buildWebappHtml() },
-                { path: 'styles.css', content: ':root{--bg:#0a0a0f;--surface:#12121a;--card:#1a1a2e;--border:rgba(255,255,255,0.06);--text:#e0e0e0;--muted:#888;--accent:#f85e1c;--accent-glow:rgba(248,94,28,0.3);--radius:12px}*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}body{font-family:\'Inter\',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}.hero{min-height:100vh;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--surface) 0%,var(--bg) 100%)}.navbar{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem}.logo{font-size:1.4rem;font-weight:700;background:linear-gradient(135deg,var(--accent),#ffb59b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.nav-links{display:flex;gap:2rem;align-items:center}.nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;transition:color .2s}.nav-links a:hover{color:var(--accent)}.btn-icon{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:1rem}.hero-content{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem}.hero-content h1{font-size:4rem;font-weight:800;margin-bottom:1rem;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}.hero-subtitle{font-size:1.2rem;color:var(--muted);margin-bottom:2rem}.btn-cta{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,var(--accent),#d44a0f);color:white;text-decoration:none;border-radius:var(--radius);font-weight:600;transition:transform .2s,box-shadow .2s}.btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}.section{padding:5rem 3rem;max-width:1100px;margin:0 auto}.section-alt{background:var(--surface)}.section-title{font-size:2rem;margin-bottom:2rem;text-align:center}.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}.feature-card{background:var(--card);padding:2rem;border-radius:var(--radius);border:1px solid var(--border);text-align:center;transition:transform .3s,border-color .3s}.feature-card:hover{transform:translateY(-4px);border-color:var(--accent)}.feature-icon{font-size:2.5rem;margin-bottom:1rem}.feature-card h3{margin-bottom:.5rem}.feature-card p{color:var(--muted);font-size:.9rem}.about-text{max-width:600px;margin:0 auto;text-align:center;color:var(--muted);font-size:1.1rem;line-height:1.8}.contact-form{max-width:500px;margin:0 auto;display:flex;flex-direction:column;gap:1rem}.contact-form input,.contact-form textarea{padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem;font-family:inherit}.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}.btn-primary{padding:14px;background:linear-gradient(135deg,var(--accent),#d44a0f);border:none;border-radius:var(--radius);color:white;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .15s}.btn-primary:hover{transform:translateY(-1px)}.footer{text-align:center;padding:2rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--border)}@media(max-width:768px){.navbar{padding:1rem}.nav-links{gap:1rem}.hero-content h1{font-size:2.5rem}.section{padding:3rem 1.5rem}}' },
-                { path: 'app.js', content: '// ' + projectName + ' — Main Application\n\'use strict\';\n\nvar themeToggle = document.getElementById(\'theme-toggle\');\nif (themeToggle) {\n  themeToggle.addEventListener(\'click\', function() {\n    document.body.classList.toggle(\'light-mode\');\n    themeToggle.textContent = document.body.classList.contains(\'light-mode\') ? \'☀️\' : \'🌙\';\n  });\n}\n\nvar observer = new IntersectionObserver(function(entries) {\n  entries.forEach(function(entry) {\n    if (entry.isIntersecting) {\n      entry.target.style.opacity = \'1\';\n      entry.target.style.transform = \'translateY(0)\';\n    }\n  });\n}, { threshold: 0.1 });\n\ndocument.querySelectorAll(\'.feature-card, .section-title, .about-text, .contact-form\').forEach(function(el) {\n  el.style.opacity = \'0\';\n  el.style.transform = \'translateY(30px)\';\n  el.style.transition = \'opacity 0.6s ease, transform 0.6s ease\';\n  observer.observe(el);\n});\n\nconsole.log(\'' + projectName + ' loaded successfully.\');' },
-                { path: 'README.md', content: '# ' + projectName + '\n\nA modern web application built with vanilla HTML, CSS & JavaScript.\n\n## Quick Start\nOpen index.html or run: npx live-server --port=3000\n\n## Features\n- Dark/Light theme\n- Responsive design\n- Scroll animations\n- Accessible markup\n\n## License\nMIT' },
-            ],
-        },
-    };
-
-    };
-
-    // Use exact match or fallback to webapp
-    const template = TEMPLATES[type] || TEMPLATES.webapp;
-
-    return {
-        projectName,
-        slug,
-        type,
-        ...template,
-    };
-
-// ══════════════════════════════════════════════════════════════════════════════
 // SIMULATION ENGINE — Runs the agent pipeline with realistic delays
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -1370,6 +1258,7 @@ function onPipelineEnd(success) {
 
     if (success) {
         powerLed.className = 'led-indicator led-green-on';
+        
         pipelineStatus.textContent = 'STATUS: FORGE_COMPLETE';
         termLed1.className = 'w-3 h-3 rounded-full bg-led-green shadow-[0_0_5px_#00E676]';
         termLed2.className = 'w-3 h-3 rounded-full bg-led-green shadow-[0_0_5px_#00E676]';
@@ -1382,32 +1271,19 @@ function onPipelineEnd(success) {
     }
 }
 
-// ── Client-side ZIP download using JSZip ─────────────────────────────────────
-downloadBtn.addEventListener('click', async () => {
-    if (generatedFiles.length === 0) return;
-
-    const projectName = pipelineData.projectName || 'ForgeProject';
-    const zip = new JSZip();
-    const folder = zip.folder(projectName);
-
-    generatedFiles.forEach(file => {
-        folder.file(file.path, file.content);
-    });
-
-    try {
-        const blob = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${projectName}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        addTerminalLine(`[SYS] ✓ Exported ${projectName}.zip (${generatedFiles.length} files)`, 'success');
-    } catch (err) {
-        addTerminalLine(`[SYS] Export failed: ${err.message}`, 'error');
-    }
+downloadBtn.addEventListener('click', () => {
+    if (!sessionId) return;
+    const projectName = pipelineData.project_name || 'ForgeProject';
+    const url = `/api/forge/${sessionId}/download`;
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${projectName}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    addTerminalLine(`[SYS] ✓ Download started for ${projectName}.zip`, 'success');
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
