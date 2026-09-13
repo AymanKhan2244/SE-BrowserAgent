@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import os
 from typing import Final
-
+from dotenv import load_dotenv
 from flask import Flask
 
 # The application factory is defined in ``app/__init__.py``.
