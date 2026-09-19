@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForgeAI — Autonomous Software Engineer</title>
+<meta name="description" content="ForgeAI: AI-Powered Multi-Agent Software Engineering Pipeline. Describe your project. We build it."/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-container-lowest": "#0a0a0a",
+        "on-secondary-container": "#FBBF24",
+        "surface-dim": "#050505",
+        "inverse-on-surface": "#0a0a0a",
+        "inverse-surface": "#f5f5f5",
+        "tertiary-container": "#D97706",
+        "surface": "#000000",
+        "surface-container": "#111111",
+        "outline": "#3a3a3a",
+        "surface-tint": "#F59E0B",
+        "secondary-fixed-dim": "#D97706",
+        "surface-bright": "#1a1a1a",
+        "on-surface-variant": "#8a8a8a",
+        "surface-container-low": "#0d0d0d",
+        "on-secondary": "#000000",
+        "on-tertiary-fixed-variant": "#B45309",
+        "primary": "#F59E0B",
+        "on-secondary-fixed-variant": "#D97706",
+        "on-background": "#e5e5e5",
+        "on-primary-fixed-variant": "#D97706",
+        "tertiary-fixed": "#292524",
+        "primary-fixed": "#FDE68A",
+        "secondary": "#D97706",
+        "on-tertiary": "#000000",
+        "inverse-primary": "#92400E",
+        "on-secondary-fixed": "#000000",
+        "on-primary": "#000000",
+        "surface-variant": "#1a1a1a",
+        "on-error": "#ffffff",
+        "on-surface": "#e5e5e5",
+        "error": "#ef4444",
+        "on-tertiary-container": "#FDE68A",
+        "secondary-fixed": "#FDE68A",
+        "secondary-container": "#B45309",
+        "primary-container": "#D97706",
+        "on-primary-fixed": "#000000",
+        "outline-variant": "#2a2a2a",
+        "on-tertiary-fixed": "#000000",
+        "surface-container-highest": "#1f1f1f",
+        "tertiary-fixed-dim": "#92400E",
+        "background": "#000000",
+        "error-container": "#450a0a",
+        "on-error-container": "#fca5a5",
+        "on-primary-container": "#000000",
+        "surface-container-high": "#161616",
+        "primary-fixed-dim": "#D97706",
+        "tertiary": "#D97706",
+        "success": "#22c55e",
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: {
+        gutter: "1.5rem", "space-md": "1rem", "space-xl": "2.5rem",
+        "gutter-mobile": "1rem", margin: "2.5rem", "space-sm": "0.5rem",
+        "margin-mobile": "1.25rem", "space-xs": "0.25rem", "space-lg": "1.5rem"
+      },
+      fontFamily: {
+        "body-sm": ["Manrope"], "body-md": ["Manrope"], "headline-sm": ["Newsreader"],
+        display: ["Newsreader"], "headline-md": ["Newsreader"],
+        "headline-lg-mobile": ["Newsreader"], "label-md": ["Manrope"],
+        "display-mobile": ["Newsreader"], "title-md": ["Manrope"],
+        "body-lg": ["Manrope"], "label-sm": ["Manrope"], "headline-lg": ["Newsreader"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+      fontSize: {
+        "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400" }],
+        "body-md": ["15px", { lineHeight: "24px", fontWeight: "400" }],
+        "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "500" }],
+        display: ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "400" }],
+        "headline-md": ["26px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "400" }],
+        "headline-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "400" }],
+        "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "600" }],
+        "display-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "400" }],
+        "title-md": ["18px", { lineHeight: "26px", fontWeight: "600" }],
+        "body-lg": ["17px", { lineHeight: "28px", fontWeight: "400" }],
+        "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }],
+        "headline-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.015em", fontWeight: "400" }]
+      }
+    }
+  }
+};
+</script>
+<style>
+@layer base {
+  html, body { margin: 0; padding: 0; }
+  body { overscroll-behavior: none; background: #000000; }
+  main > :first-child { margin-top: 0 !important; }
+  main > :last-child { margin-bottom: 0 !important; }
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+}
+@keyframes typing {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.animate-fadeSlideIn { animation: fadeSlideIn 0.4s ease-out forwards; }
+.animate-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
+.animate-typing { animation: typing 0.8s step-end infinite; }
+.code-line { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; }
+.kw { color: #F59E0B; font-weight: 600; }
+.str { color: #FBBF24; }
+.fn { color: #D97706; font-weight: 600; }
+.cmt { color: #4a4a4a; font-style: italic; }
+.transition-smooth { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+</style>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface antialiased">
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(245,158,11,0.05)] border-b border-outline-variant/30">
+  <div class="h-16 w-full px-gutter flex items-center justify-between gap-space-md">
+    <div class="flex items-center gap-space-md">
+      <a class="flex items-center gap-space-xs text-on-surface group" href="#">
+        <span class="font-title-md text-title-md tracking-tight font-bold text-on-surface group-hover:text-primary transition-colors">ForgeAI</span>
+      </a>
+      <div class="h-4 w-px bg-outline-variant/40 hidden sm:block"></div>
+      <div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant">
+        <span id="header-status-dot" class="w-2 h-2 rounded-full bg-outline"></span>
+        <span class="font-label-sm text-label-sm font-medium">Forge Multi-Agent Engine</span>
+      </div>
+    </div>
+    <nav class="hidden lg:flex items-center gap-space-xs">
+      <a class="px-space-sm py-space-xs bg-surface-container-high text-on-surface font-semibold rounded-lg" href="#">Workspace</a>
+      <a class="px-space-sm py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" href="#">Run History</a>
+      <a class="px-space-sm py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" href="#">Reference</a>
+    </nav>
+    <div class="flex items-center gap-space-sm">
+      <div id="header-run-badge" class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+        <span class="material-symbols-outlined text-[14px] text-primary">bolt</span>
+        <span id="header-run-id">Idle</span>
+        <span class="text-outline-variant">•</span>
+        <span id="header-elapsed" class="font-mono text-[12px]">00:00:00</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="w-full pt-16 bg-surface min-h-[calc(100vh-4rem)]">
+<div class="flex flex-col w-full">
+<div class="w-full px-space-md lg:px-gutter py-space-md">
+
+  <!-- Top Banner -->
+  <div id="top-banner" class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md pb-space-sm">
+    <div class="flex items-center gap-space-sm">
+      <div id="banner-dot" class="w-2.5 h-2.5 rounded-full bg-outline hidden"></div>
+      <h1 id="banner-title" class="font-headline-sm text-headline-sm text-on-surface">New Synthesis</h1>
+    </div>
+    <div id="banner-actions" class="flex items-center gap-space-sm hidden">
+      <span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+        <span class="material-symbols-outlined text-[15px] text-primary">memory</span>
+        <span id="banner-velocity">—</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- 3-Column Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+
+    <!-- ═══════════ LEFT COLUMN ═══════════ -->
+    <aside class="lg:col-span-3 flex flex-col gap-space-md">
+
+      <!-- Intent Stream Card -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-primary text-[18px]">forum</span>
+            <span class="font-title-md text-title-md text-on-surface">Intent Stream</span>
+          </div>
+          <span id="intent-time" class="font-label-sm text-label-sm text-on-surface-variant"></span>
+        </div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">
+          Describe what you want to build. ForgeAI will plan, architect, code, debug, and test it autonomously.
+        </p>
+        <!-- User Intent Bubble (shown after submitting) -->
+        <div id="user-intent-bubble" class="hidden mt-space-xs rounded-xl bg-surface-container p-space-md shadow-sm">
+          <div class="flex items-center gap-space-xs mb-space-xs">
+            <div class="w-5 h-5 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary text-[10px] font-bold">U</div>
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold">User Specification</span>
+          </div>
+          <p id="user-intent-text" class="font-headline-sm text-[16px] leading-relaxed text-on-surface italic"></p>
+        </div>
+        <!-- Tech Stack Tags (shown after planner completes) -->
+        <div id="intent-tags" class="hidden flex flex-wrap gap-space-xs mt-space-xs"></div>
+      </div>
+
+      <!-- Project Context (shown after planner completes) -->
+      <div id="project-context-card" class="hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Project Context</span>
+        <div id="project-context-rows" class="flex flex-col gap-1"></div>
+        <div class="mt-space-xs">
+          <div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface-variant">
+            <span>Pipeline Progress</span>
+            <span id="pipeline-progress-pct">0%</span>
+          </div>
+          <div class="w-full h-1.5 rounded-full bg-surface-container-high overflow-hidden">
+            <div id="pipeline-progress-bar" class="h-full bg-primary-container rounded-full transition-all duration-500" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Composer -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-sm shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
+        <label class="sr-only" for="intent-input">Describe the project you want to build</label>
+        <textarea
+          class="w-full bg-transparent border-none text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none resize-none p-space-xs"
+          id="intent-input"
+          placeholder="Describe the project you want to build... e.g. 'Build me a real-time chat app with WebSocket support'"
+          rows="4"
+        ></textarea>
+        <div class="flex items-center justify-between pt-space-xs px-space-xs">
+          <div class="flex items-center gap-space-xs">
+            <button class="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Attach file" type="button">
+              <span class="material-symbols-outlined text-[18px]">attachment</span>
+            </button>
+          </div>
+          <button
+            id="forge-btn"
+            onclick="startForge()"
+            class="px-space-md py-1.5 rounded-full bg-primary-container text-surface-container-lowest hover:bg-primary transition-colors flex items-center gap-1.5 font-label-md text-label-md shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            type="button"
+          >
+            <span id="forge-btn-text">Forge It</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════ CENTER COLUMN ═══════════ -->
+    <main class="lg:col-span-6 flex flex-col gap-space-md">
+
+      <!-- Empty State -->
+      <div id="empty-state" class="rounded-xl bg-surface-container-lowest p-space-xl shadow-[0_2px_16px_rgba(245,158,11,0.05)] flex flex-col items-center justify-center text-center min-h-[400px]">
+        <span class="material-symbols-outlined text-[48px] text-outline-variant mb-space-md">auto_awesome</span>
+        <h2 class="font-headline-md text-headline-md text-on-surface mb-space-sm">Describe it. We build it.</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+          Enter your project description in the composer on the left. ForgeAI's 6-agent pipeline will plan, architect, code, debug, compile-check, and browser-test your entire application.
+        </p>
+        <div class="flex flex-wrap justify-center gap-space-sm mt-space-lg">
+          <button onclick="setExample('Build a todo list app with Flask backend and vanilla HTML/CSS/JS frontend. Features: add, complete, delete tasks.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
+            <span class="block font-semibold text-on-surface mb-0.5">📝 Todo App</span>
+            Flask + HTML/CSS/JS
+          </button>
+          <button onclick="setExample('Build a real-time chat application with WebSocket support, user authentication, and message history using FastAPI and React.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
+            <span class="block font-semibold text-on-surface mb-0.5">💬 Chat App</span>
+            FastAPI + WebSocket + React
+          </button>
+          <button onclick="setExample('Build a student grade tracker with CRUD operations, GPA calculator, and grade statistics dashboard using Flask.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
+            <span class="block font-semibold text-on-surface mb-0.5">🎓 Grade Tracker</span>
+            Flask + SQLite
+          </button>
+        </div>
+      </div>
+
+      <!-- Agent Blocks Container (hidden until pipeline starts) -->
+      <div id="agent-blocks" class="flex flex-col gap-space-md hidden"></div>
+
+      <!-- Pipeline Complete Card (hidden until done) -->
+      <div id="pipeline-complete-card" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_4px_24px_rgba(46,125,50,0.12)] overflow-hidden animate-fadeSlideIn">
+        <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low">
+          <div class="flex items-center gap-space-sm">
+            <span class="material-symbols-outlined text-[20px] text-success" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <span class="font-title-md text-[15px] text-on-surface font-semibold">Pipeline Complete</span>
+          </div>
+          <button id="download-btn" onclick="downloadProject()" class="px-space-md py-1.5 rounded-full bg-primary text-on-primary hover:bg-secondary transition-colors flex items-center gap-1.5 font-label-md text-label-md shadow-sm">
+            <span class="material-symbols-outlined text-[16px]">download</span>
+            Download ZIP
+          </button>
+        </div>
+        <div id="pipeline-complete-body" class="p-space-md">
+          <div id="complete-summary" class="flex flex-col gap-space-sm"></div>
+        </div>
+      </div>
+
+      <!-- Generated Files Explorer (hidden until pipeline complete) -->
+      <div id="files-explorer" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden animate-fadeSlideIn">
+        <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors" onclick="document.getElementById('files-explorer-body').classList.toggle('hidden')">
+          <div class="flex items-center gap-space-sm">
+            <span class="material-symbols-outlined text-primary text-[18px]">folder_open</span>
+            <span class="font-title-md text-[15px] text-on-surface font-semibold">Generated Files</span>
+            <span id="files-count-badge" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm"></span>
+          </div>
+          <span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+        </div>
+        <div id="files-explorer-body" class="p-space-md flex flex-col gap-space-xs"></div>
+      </div>
+
+    </main>
+
+    <!-- ═══════════ RIGHT COLUMN ═══════════ -->
+    <aside class="lg:col-span-3 flex flex-col gap-space-md">
+
+      <!-- Agent Workflow Stepper -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-md">
+        <div class="flex items-center justify-between">
+          <span class="font-title-md text-title-md text-on-surface font-semibold">Agent Workflow</span>
+          <span id="step-counter" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Idle</span>
+        </div>
+        <div class="flex flex-col gap-space-sm relative" id="stepper-list">
+          <!-- Step 1: Planner -->
+          <div id="step-planner" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-planner-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">1. Planner</span>
+                <span id="step-planner-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Requirements Analysis &amp; Stack</span>
+            </div>
+          </div>
+          <!-- Step 2: Architect -->
+          <div id="step-architect" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-architect-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">2. Architect</span>
+                <span id="step-architect-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">File Manifest &amp; Schemas</span>
+            </div>
+          </div>
+          <!-- Step 3: Coder -->
+          <div id="step-coder" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-coder-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">3. Coding Agent</span>
+                <span id="step-coder-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Synthesis &amp; Assembly</span>
+            </div>
+          </div>
+          <!-- Step 4: Debugger -->
+          <div id="step-debugger" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-debugger-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">4. Debugger</span>
+                <span id="step-debugger-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">AST Review &amp; Self-Healing</span>
+            </div>
+          </div>
+          <!-- Step 5: Terminal -->
+          <div id="step-terminal" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-terminal-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">5. Terminal</span>
+                <span id="step-terminal-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Build &amp; Dependency Resolution</span>
+            </div>
+          </div>
+          <!-- Step 6: Browser -->
+          <div id="step-browser" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-browser-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">6. Browser Agent</span>
+                <span id="step-browser-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Playwright E2E Verification</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Telemetry &amp; Status</span>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Total Elapsed</span>
+          <span id="telemetry-elapsed" class="font-title-md text-[14px] text-on-surface font-mono">0.0s</span>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Agents Completed</span>
+          <span id="telemetry-agents" class="font-title-md text-[14px] text-on-surface font-mono">0 / 6</span>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Pipeline Status</span>
+          <div class="flex items-center gap-1.5">
+            <span id="telemetry-dot" class="w-2 h-2 rounded-full bg-outline"></span>
+            <span id="telemetry-status" class="font-label-sm text-label-sm text-on-surface font-semibold">Idle</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Log Lines</span>
+          <span id="telemetry-logs" class="font-title-md text-[14px] text-on-surface font-mono">0</span>
+        </div>
+      </div>
+
+      <!-- Terminal Log -->
+      <div class="rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.04)] overflow-hidden">
+        <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors" onclick="document.getElementById('terminal-log-body').classList.toggle('hidden')">
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-primary text-[16px]">terminal</span>
+            <span class="font-title-md text-[14px] text-on-surface font-semibold">Live Terminal</span>
+          </div>
+          <span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+        </div>
+        <div id="terminal-log-body" class="max-h-[300px] overflow-y-auto p-space-sm bg-inverse-surface">
+          <div id="terminal-lines" class="font-mono text-[12px] leading-relaxed text-inverse-on-surface flex flex-col gap-0.5">
+            <span class="text-outline">$ Waiting for pipeline to start...</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+</div>
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="w-full bg-surface-container-low shadow-[0_-1px_8px_rgba(245,158,11,0.03)] py-space-lg">
+  <div class="w-full px-gutter flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant">
+    <div class="flex items-center gap-space-md">
+      <span class="font-title-md text-on-surface font-semibold text-[15px]">ForgeAI</span>
+      <span>© 2025 — Built with LangGraph × Groq</span>
+    </div>
+    <div class="flex items-center gap-space-md font-label-md text-label-md">
+      <span class="text-on-surface-variant">Multi-Agent Autonomous Software Engineering</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════ JAVASCRIPT — Full SSE Integration ═══════════ -->
+<script>
+// ── State ──
+let sessionId = null;
+let startTime = null;
+let elapsedInterval = null;
+let logCount = 0;
+let completedAgents = 0;
+let currentActiveAgent = null;
+const agentOrder = ['planner', 'architect', 'coder', 'debugger', 'terminal', 'browser'];
+const agentLabels = {
+  planner: 'Planner Agent',
+  architect: 'Architect Agent',
+  coder: 'Coding Agent',
+  debugger: 'Debugger Agent',
+  terminal: 'Terminal Agent',
+  browser: 'Browser Agent',
+};
+const agentSubtitles = {
+  planner: 'Reasoning',
+  architect: 'File Manifest Design',
+  coder: 'Generating Code',
+  debugger: 'AST Review & Self-Healing',
+  terminal: 'Build & Compile Check',
+  browser: 'Playwright E2E Verification',
+};
+
+// ── Helpers ──
+function setExample(text) {
+  document.getElementById('intent-input').value = text;
+  document.getElementById('intent-input').focus();
+}
+
+function formatElapsed(ms) {
+  const secs = Math.floor(ms / 1000);
+  const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+  const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+  const s = String(secs % 60).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+function updateElapsed() {
+  if (!startTime) return;
+  const elapsed = Date.now() - startTime;
+  document.getElementById('header-elapsed').textContent = formatElapsed(elapsed);
+  document.getElementById('telemetry-elapsed').textContent = (elapsed / 1000).toFixed(1) + 's';
+}
+
+function addTerminalLine(text, color = 'inverse-on-surface') {
+  const container = document.getElementById('terminal-lines');
+  const line = document.createElement('span');
+  const colorMap = {
+    'primary': '#F59E0B',
+    'secondary': '#D97706',
+    'tertiary': '#D97706',
+    'tertiary-fixed': '#FDE68A',
+    'error': '#ef4444',
+    'on-surface': '#e5e5e5',
+    'inverse-on-surface': '#a3a3a3',
+  };
+  line.style.color = colorMap[color] || colorMap['inverse-on-surface'];
+  line.textContent = text;
+  container.appendChild(line);
+  container.parentElement.scrollTop = container.parentElement.scrollHeight;
+  logCount++;
+  document.getElementById('telemetry-logs').textContent = logCount;
+}
+
+function updateStepperActive(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-60');
+  el.classList.add('p-space-xs', 'rounded-xl', 'bg-surface-container');
+  icon.className = 'w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span>';
+  status.innerHTML = '<span class="px-1.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-[10px]">Active</span>';
+}
+
+function updateStepperDone(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-60', 'p-space-xs', 'rounded-xl', 'bg-surface-container');
+  icon.className = 'w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[15px] text-tertiary" style="font-variation-settings: \'FILL\' 1;">check</span>';
+  status.className = 'font-label-sm text-label-sm text-tertiary font-semibold';
+  status.textContent = 'Done';
+}
+
+function updateStepperFailed(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-60', 'p-space-xs', 'rounded-xl', 'bg-surface-container');
+  icon.className = 'w-6 h-6 rounded-full bg-error-container flex items-center justify-center shrink-0 mt-0.5';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[15px] text-error" style="font-variation-settings: \'FILL\' 1;">error</span>';
+  status.className = 'font-label-sm text-label-sm text-error font-semibold';
+  status.textContent = 'Failed';
+}
+
+function updateProgress() {
+  const pct = Math.round((completedAgents / 6) * 100);
+  document.getElementById('pipeline-progress-pct').textContent = pct + '%';
+  document.getElementById('pipeline-progress-bar').style.width = pct + '%';
+  document.getElementById('telemetry-agents').textContent = `${completedAgents} / 6`;
+  document.getElementById('step-counter').textContent = completedAgents < 6 ? `Step ${completedAgents + 1} of 6` : 'Complete';
+}
+
+// ── Agent Block Builder ──
+function createAgentBlock(agentName, isActive = true) {
+  const container = document.getElementById('agent-blocks');
+  const blockId = `agent-block-${agentName}`;
+
+  // Don't create duplicate blocks
+  if (document.getElementById(blockId)) return;
+
+  const article = document.createElement('article');
+  article.id = blockId;
+  article.className = isActive
+    ? 'rounded-xl bg-surface-container-lowest shadow-[0_4px_24px_rgba(217,119,87,0.12)] overflow-hidden animate-fadeSlideIn'
+    : 'rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden animate-fadeSlideIn';
+
+  const headerBg = isActive ? 'bg-surface-container-high' : 'bg-surface-container-low';
+  const statusIcon = isActive
+    ? `<span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span></span>`
+    : '';
+  const statusLabel = isActive
+    ? `<span class="font-body-sm text-body-sm text-primary font-medium">— ${agentSubtitles[agentName]}</span>`
+    : `<span class="font-body-sm text-body-sm text-on-surface-variant">— ${agentSubtitles[agentName]}</span>`;
+  const badge = isActive
+    ? `<span class="px-space-xs py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm">Streaming</span>`
+    : '';
+
+  article.innerHTML = `
+    <div class="flex items-center justify-between px-space-md py-space-sm ${headerBg} cursor-pointer hover:bg-surface-container transition-colors" onclick="document.getElementById('${blockId}-body').classList.toggle('hidden')">
+      <div class="flex items-center gap-space-sm">
+        ${statusIcon}
+        <div class="flex items-center gap-space-xs">
+          <span class="font-title-md text-[15px] text-on-surface font-semibold">${agentLabels[agentName]}</span>
+          ${statusLabel}
+        </div>
+      </div>
+      <div class="flex items-center gap-space-sm">
+        ${badge}
+        <span id="${blockId}-time" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm hidden"></span>
+        <span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+      </div>
+    </div>
+    <div class="p-space-md flex flex-col gap-space-md" id="${blockId}-body">
+      <div class="rounded-xl bg-surface-container p-space-md shadow-sm" id="${blockId}-thinking">
+        <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-space-xs">
+          <span class="material-symbols-outlined text-[14px]">${isActive ? 'bolt' : 'psychology'}</span>
+          <span>${isActive ? 'Active Processing' : 'Latent Synthesis Track'}</span>
+        </div>
+        <p class="font-headline-sm text-body-md text-on-surface-variant italic leading-relaxed" id="${blockId}-thought">
+          Processing...
+        </p>
+      </div>
+      <div id="${blockId}-output" class="flex flex-col gap-space-sm"></div>
+    </div>
+  `;
+  container.appendChild(article);
+}
+
+function finalizeAgentBlock(agentName, data) {
+  const blockId = `agent-block-${agentName}`;
+  const block = document.getElementById(blockId);
+  if (!block) return;
+
+  // Remove active glow
+  block.className = 'rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden transition-all';
+
+  // Update header: replace ping dot with check icon
+  const header = block.querySelector(':scope > div:first-child');
+  if (header) {
+    header.className = 'flex items-center justify-between px-space-md py-space-sm bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors';
+    const iconArea = header.querySelector('.flex.items-center.gap-space-sm');
+    if (iconArea) {
+      // Replace the ping dot
+      const pingDot = iconArea.querySelector('.relative.flex');
+      if (pingDot) {
+        pingDot.outerHTML = '<div class="w-6 h-6 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: \'FILL\' 1;">check_circle</span></div>';
+      }
+    }
+    // Remove streaming badge, show completed time
+    const badges = header.querySelector('.flex.items-center.gap-space-sm:last-child');
+    if (badges) {
+      const streamBadge = badges.querySelector('.bg-primary-container');
+      if (streamBadge) streamBadge.remove();
+      const timeEl = document.getElementById(`${blockId}-time`);
+      if (timeEl) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        timeEl.textContent = `Completed`;
+        timeEl.classList.remove('hidden');
+      }
+    }
+  }
+
+  // Update thinking block label
+  const thinkingLabel = block.querySelector(`#${blockId}-thinking .uppercase`);
+  if (thinkingLabel) {
+    thinkingLabel.innerHTML = '<span class="material-symbols-outlined text-[14px]">psychology</span><span>Latent Synthesis Track</span>';
+  }
+
+  // Add output data
+  const outputArea = document.getElementById(`${blockId}-output`);
+  if (!outputArea) return;
+
+  if (agentName === 'planner' && data) {
+    const techStack = data.tech_stack || {};
+    const features = data.features || [];
+    const tags = Object.entries(techStack).map(([k, v]) =>
+      `<span class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}</span>`
+    ).join('');
+
+    outputArea.innerHTML = `
+      <div class="rounded-xl bg-surface-container-low p-space-md shadow-sm flex flex-col gap-space-sm">
+        <div class="flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-primary text-[18px]">account_tree</span>
+          <h2 class="font-title-md text-title-md text-on-surface">Architecture Blueprint: ${data.project_name || 'Project'}</h2>
+        </div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">${data.description || ''}</p>
+        <div class="flex flex-wrap gap-space-xs pt-space-xs">${tags}</div>
+        ${features.length > 0 ? `<div class="mt-space-xs"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Features (${features.length})</span><ul class="mt-1 flex flex-col gap-0.5">${features.map(f => `<li class="font-body-sm text-body-sm text-on-surface flex items-start gap-1.5"><span class="material-symbols-outlined text-[14px] text-primary mt-0.5">chevron_right</span>${f}</li>`).join('')}</ul></div>` : ''}
+      </div>
+    `;
+
+    // Show intent tags
+    const tagsContainer = document.getElementById('intent-tags');
+    tagsContainer.innerHTML = Object.entries(techStack).map(([k, v]) =>
+      `<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-primary">code</span>${typeof v === 'object' ? JSON.stringify(v) : v}</span>`
+    ).join('');
+    tagsContainer.classList.remove('hidden');
+
+    // Show project context
+    const ctx = document.getElementById('project-context-card');
+    ctx.classList.remove('hidden');
+    const rows = document.getElementById('project-context-rows');
+    rows.innerHTML = `
+      <div class="flex items-center justify-between text-body-sm font-body-sm"><span class="text-on-surface-variant">Project</span><span class="font-semibold text-on-surface">${data.project_name || '—'}</span></div>
+      <div class="flex items-center justify-between text-body-sm font-body-sm"><span class="text-on-surface-variant">Backend</span><span class="font-semibold text-on-surface">${techStack.backend || '—'}</span></div>
+      <div class="flex items-center justify-between text-body-sm font-body-sm"><span class="text-on-surface-variant">Frontend</span><span class="font-semibold text-on-surface">${techStack.frontend || '—'}</span></div>
+    `;
+  }
+
+  if (agentName === 'architect' && data) {
+    const fileList = data.file_list || [];
+    outputArea.innerHTML = `
+      <div class="rounded-xl bg-surface-container-low p-space-md shadow-sm flex flex-col gap-space-xs font-body-sm text-body-sm">
+        <div class="flex items-center justify-between pb-space-xs">
+          <span class="font-title-md text-[14px] text-on-surface font-semibold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-primary text-[18px]">folder_open</span>
+            Project Root Tree (${fileList.length} Files Planned)
+          </span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Staged for generation</span>
+        </div>
+        ${fileList.map(f => `
+          <div class="flex items-center justify-between py-1 px-space-xs rounded-lg hover:bg-surface-container transition-colors">
+            <div class="flex items-center gap-2 pl-2">
+              <span class="material-symbols-outlined text-[16px] ${f === data.entrypoint ? 'text-primary' : 'text-outline'}">draft</span>
+              <span class="text-on-surface">${f}</span>
+              ${f === data.entrypoint ? '<span class="text-label-sm font-label-sm text-primary font-semibold">(Entrypoint)</span>' : ''}
+            </div>
+          </div>
+        `).join('')}
+        <div class="mt-space-xs pt-space-xs border-t border-outline-variant/20">
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Run: <code class="font-mono text-[12px] text-on-surface bg-surface-container px-1 rounded">${data.run_command || ''}</code></span>
+        </div>
+      </div>
+    `;
+  }
+
+  if (agentName === 'coder' && data) {
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-primary">check_circle</span> ${data.files_generated || 0} files generated successfully</span>
+      </div>
+    `;
+  }
+
+  if (agentName === 'debugger' && data) {
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-primary">bug_report</span> ${data.files_reviewed || 0} files reviewed and patched</span>
+      </div>
+    `;
+  }
+
+  if (agentName === 'terminal' && data) {
+    const icon = data.success ? 'check_circle' : 'warning';
+    const color = data.success ? 'text-success' : 'text-error';
+    const msg = data.success ? 'All checks passed — build successful' : 'Some checks had warnings';
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] ${color}" style="font-variation-settings: 'FILL' 1;">${icon}</span> ${msg}</span>
+      </div>
+    `;
+    if (!data.success) updateStepperFailed('terminal');
+  }
+
+  if (agentName === 'browser' && data) {
+    const icon = data.success ? 'check_circle' : 'warning';
+    const color = data.success ? 'text-success' : 'text-error';
+    const msg = data.success
+      ? `E2E smoke tests passed — Page: "${data.page_title || 'N/A'}"`
+      : 'Browser tests had issues';
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] ${color}" style="font-variation-settings: 'FILL' 1;">${icon}</span> ${msg}</span>
+      </div>
+    `;
+    if (!data.success) updateStepperFailed('browser');
+  }
+}
+
+// ── Download ──
+function downloadProject() {
+  if (!sessionId) return;
+  window.open(`/api/forge/${sessionId}/download`, '_blank');
+}
+
+// ── Load files ──
+async function loadFiles() {
+  if (!sessionId) return;
+  try {
+    const resp = await fetch(`/api/forge/${sessionId}/files`);
+    const data = await resp.json();
+    if (!data.files) return;
+
+    const explorer = document.getElementById('files-explorer');
+    const body = document.getElementById('files-explorer-body');
+    const countBadge = document.getElementById('files-count-badge');
+    explorer.classList.remove('hidden');
+    countBadge.textContent = `${data.files.length} files`;
+
+    body.innerHTML = data.files.map((f, i) => `
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between py-1.5 px-space-xs rounded-lg hover:bg-surface-container transition-colors cursor-pointer" onclick="document.getElementById('file-preview-${i}').classList.toggle('hidden')">
+          <div class="flex items-center gap-2 pl-2">
+            <span class="material-symbols-outlined text-[16px] text-primary">draft</span>
+            <span class="text-on-surface font-body-sm text-body-sm">${f.path}</span>
+          </div>
+          <div class="flex items-center gap-space-sm">
+            <span class="font-label-sm text-label-sm text-outline">${(f.content.length / 1024).toFixed(1)} KB</span>
+            <span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+          </div>
+        </div>
+        <div id="file-preview-${i}" class="hidden mt-1 mb-2 rounded-lg bg-inverse-surface overflow-hidden">
+          <div class="flex items-center justify-between px-space-sm py-space-xs bg-surface-container-highest/10">
+            <span class="font-mono text-[11px] text-inverse-on-surface/70">${f.path}</span>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('file-code-${i}').textContent)" class="text-inverse-on-surface/50 hover:text-inverse-on-surface transition-colors">
+              <span class="material-symbols-outlined text-[14px]">content_copy</span>
+            </button>
+          </div>
+          <pre class="p-space-sm overflow-x-auto max-h-[300px] overflow-y-auto"><code id="file-code-${i}" class="font-mono text-[12px] leading-relaxed text-inverse-on-surface whitespace-pre">${escapeHtml(f.content)}</code></pre>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    console.error('Failed to load files:', e);
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ── Main Forge Function ──
+function startForge() {
+  const input = document.getElementById('intent-input');
+  const query = input.value.trim();
+  if (!query) return;
+
+  // Reset state
+  sessionId = null;
+  startTime = Date.now();
+  logCount = 0;
+  completedAgents = 0;
+  currentActiveAgent = null;
+
+  // Update UI to running state
+  document.getElementById('forge-btn').disabled = true;
+  document.getElementById('forge-btn-text').textContent = 'Forging...';
+  document.getElementById('empty-state').classList.add('hidden');
+  document.getElementById('agent-blocks').classList.remove('hidden');
+  document.getElementById('agent-blocks').innerHTML = '';
+  document.getElementById('pipeline-complete-card').classList.add('hidden');
+  document.getElementById('files-explorer').classList.add('hidden');
+  document.getElementById('terminal-lines').innerHTML = '<span class="text-[#d97757]">$ Pipeline started...</span>';
+  document.getElementById('header-status-dot').className = 'w-2 h-2 rounded-full bg-primary animate-pulse';
+  document.getElementById('header-run-id').textContent = 'Running';
+  document.getElementById('telemetry-dot').className = 'w-2 h-2 rounded-full bg-primary animate-pulse';
+  document.getElementById('telemetry-status').textContent = 'Running';
+  document.getElementById('banner-dot').classList.remove('hidden');
+  document.getElementById('banner-dot').className = 'w-2.5 h-2.5 rounded-full bg-primary animate-ping';
+  document.getElementById('banner-title').textContent = 'Synthesis Run';
+  document.getElementById('banner-actions').classList.remove('hidden');
+
+  // Show user intent bubble
+  document.getElementById('user-intent-bubble').classList.remove('hidden');
+  document.getElementById('user-intent-text').textContent = `"${query}"`;
+  document.getElementById('intent-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  // Show project context card
+  document.getElementById('project-context-card').classList.remove('hidden');
+
+  // Reset stepper
+  agentOrder.forEach(a => {
+    const el = document.getElementById(`step-${a}`);
+    const icon = document.getElementById(`step-${a}-icon`);
+    const status = document.getElementById(`step-${a}-status`);
+    if (el) {
+      el.className = 'flex items-start gap-space-sm relative opacity-60 transition-smooth';
+      icon.className = 'w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5';
+      icon.innerHTML = '<span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>';
+      status.className = 'font-label-sm text-label-sm text-outline';
+      status.textContent = 'Queued';
+    }
+  });
+
+  updateProgress();
+
+  // Start elapsed timer
+  if (elapsedInterval) clearInterval(elapsedInterval);
+  elapsedInterval = setInterval(updateElapsed, 100);
+
+  // ── SSE Connection ──
+  const evtSource = new EventSource(`/api/forge/stream?query=${encodeURIComponent(query)}`);
+
+  evtSource.onmessage = function (event) {
+    try {
+      const data = JSON.parse(event.data);
+      handleSSEEvent(data);
+    } catch (e) {
+      console.error('SSE parse error:', e);
+    }
+  };
+
+  evtSource.onerror = function () {
+    evtSource.close();
+    addTerminalLine('[ERROR] Connection lost.', 'error');
+    finishPipeline(false);
+  };
+}
+
+function handleSSEEvent(event) {
+  switch (event.type) {
+    case 'session':
+      sessionId = event.session_id;
+      document.getElementById('header-run-id').textContent = `#${sessionId}`;
+      addTerminalLine(`[SESSION] ID: ${sessionId}`, 'primary');
+      break;
+
+    case 'agent_start':
+      currentActiveAgent = event.agent;
+      createAgentBlock(event.agent, true);
+      updateStepperActive(event.agent);
+      break;
+
+    case 'agent_log':
+      addTerminalLine(event.text, event.color || 'on-surface');
+      // Update the active agent's thinking text
+      if (currentActiveAgent) {
+        const thoughtEl = document.getElementById(`agent-block-${currentActiveAgent}-thought`);
+        if (thoughtEl) {
+          const currentText = thoughtEl.textContent;
+          if (currentText === 'Processing...') {
+            thoughtEl.textContent = event.text;
+          } else {
+            thoughtEl.textContent += '\n' + event.text;
+          }
+        }
+      }
+      break;
+
+    case 'agent_complete':
+      const agent = event.agent;
+      completedAgents++;
+      finalizeAgentBlock(agent, event.data);
+      updateStepperDone(agent);
+      updateProgress();
+      currentActiveAgent = null;
+      break;
+
+    case 'pipeline_complete':
+      sessionId = event.session_id || sessionId;
+      const d = event.data || {};
+      addTerminalLine(`\n[COMPLETE] Project: ${d.project_name || 'unknown'}`, 'tertiary');
+      document.getElementById('banner-title').textContent = `Synthesis Complete: ${d.project_name || 'Project'}`;
+
+      // Show complete card
+      const completeCard = document.getElementById('pipeline-complete-card');
+      completeCard.classList.remove('hidden');
+      document.getElementById('complete-summary').innerHTML = `
+        <div class="grid grid-cols-2 gap-space-sm">
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Project</span><span class="font-title-md text-[14px] text-on-surface">${d.project_name || '—'}</span></div>
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Files Generated</span><span class="font-title-md text-[14px] text-on-surface">${d.files_count || 0}</span></div>
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Terminal Check</span><span class="font-title-md text-[14px] ${d.terminal_success ? 'text-success' : 'text-error'}">${d.terminal_success ? '✓ Passed' : '⚠ Warnings'}</span></div>
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Browser Test</span><span class="font-title-md text-[14px] ${d.browser_success ? 'text-success' : 'text-error'}">${d.browser_success ? '✓ Passed' : '⚠ Warnings'}</span></div>
+        </div>
+        <div class="mt-space-sm"><span class="font-label-sm text-label-sm text-on-surface-variant">Run Command</span><div class="mt-1 px-space-sm py-space-xs rounded-lg bg-inverse-surface"><code class="font-mono text-[12px] text-inverse-on-surface">${d.run_command || ''}</code></div></div>
+      `;
+
+      // Load files
+      loadFiles();
+      finishPipeline(true);
+      break;
+
+    case 'error':
+      addTerminalLine(`[ERROR] ${event.message}`, 'error');
+      finishPipeline(false);
+      break;
+
+    case 'done':
+      // Stream closed
+      break;
+  }
+}
+
+function finishPipeline(success) {
+  if (elapsedInterval) clearInterval(elapsedInterval);
+  updateElapsed(); // final update
+
+  document.getElementById('forge-btn').disabled = false;
+  document.getElementById('forge-btn-text').textContent = 'Forge It';
+  document.getElementById('header-status-dot').className = success
+    ? 'w-2 h-2 rounded-full bg-success'
+    : 'w-2 h-2 rounded-full bg-error';
+  document.getElementById('telemetry-dot').className = success
+    ? 'w-2 h-2 rounded-full bg-success'
+    : 'w-2 h-2 rounded-full bg-error';
+  document.getElementById('telemetry-status').textContent = success ? 'Complete' : 'Error';
+  document.getElementById('banner-dot').className = success
+    ? 'w-2.5 h-2.5 rounded-full bg-success'
+    : 'w-2.5 h-2.5 rounded-full bg-error';
+  document.getElementById('header-run-id').textContent = success ? 'Complete' : 'Error';
+}
+
+// ── Set the time on load ──
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('intent-time').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+});
+</script>
+
+</body>
+</html>
