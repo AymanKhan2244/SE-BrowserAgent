@@ -16,6 +16,7 @@ def _detect_port(run_command: str) -> int:
         return 5000
     if 'node' in cmd or 'npm' in cmd:
         return 3000
+        
     if 'uvicorn' in cmd or 'fastapi' in cmd:
         return 8000
     return 8000
