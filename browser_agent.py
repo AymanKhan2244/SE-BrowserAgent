@@ -32,21 +32,20 @@ def _find_chromium_executable() -> Optional[str]:
     import os
     import glob
 
-    # Common Playwright browser cache locations
     candidates = [
-        os.path.expandvars(r"%LOCALAPPDATA%\ms-playwright"),   # Windows
-        os.path.expanduser("~/.cache/ms-playwright"),            # Linux
-        os.path.expanduser("~/Library/Caches/ms-playwright"),   # macOS
+        os.path.expandvars(r"%LOCALAPPDATA%\ms-playwright"),   
+        os.path.expanduser("~/.cache/ms-playwright"),           
+        os.path.expanduser("~/Library/Caches/ms-playwright"),   
     ]
 
     for base in candidates:
         if not os.path.isdir(base):
             continue
-        # Find all chromium-XXXX folders (not headless-shell)
+
         pattern = os.path.join(base, "chromium-*")
         dirs = sorted(
             [d for d in glob.glob(pattern) if os.path.isdir(d) and "headless" not in d],
-            reverse=True,  # latest version first
+            reverse=True,
         )
         for d in dirs:
             for exe_name in ("chrome-win64/chrome.exe", "chrome-linux/chrome", "chrome-mac/Chromium.app/Contents/MacOS/Chromium"):
@@ -64,7 +63,7 @@ def _wait_for_server(host: str, port: int, timeout: int = 30) -> bool:
             urllib.request.urlopen(url, timeout=2)
             return True
         except urllib.error.HTTPError as e:
-            # If we got an HTTP error, the server responded, so it is up
+          
             return True
         except (urllib.error.URLError, OSError):
             time.sleep(0.5)
@@ -126,8 +125,7 @@ def browser_agent(
         from playwright.sync_api import sync_playwright
 
         with sync_playwright() as pw:
-            # Use the full Chromium executable directly to avoid
-            # dependency on chromium-headless-shell (which may not be installed)
+           
             chromium_exe = _find_chromium_executable()
             launch_kwargs = dict(headless=True)
             if chromium_exe:
