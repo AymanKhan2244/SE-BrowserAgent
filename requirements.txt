@@ -22,3 +22,5 @@ tensorflow
 playwright
 openai 
 langchain-openai
+httpx
+websockets

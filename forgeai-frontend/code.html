@@ -243,6 +243,18 @@ tailwind.config = {
         </div>
       </div>
 
+      <!-- POST-COMPLETION ACTIONS -->
+      <div id="completion-actions" class="hidden mb-space-md flex flex-col sm:flex-row gap-space-sm">
+        <button onclick="launchPreview()" class="flex-1 px-space-md py-space-sm rounded-xl bg-primary-container text-surface-container-lowest hover:bg-primary transition-colors flex items-center justify-center gap-space-xs font-title-md text-[15px] font-semibold shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+          <span id="preview-btn-text">Launch Preview</span>
+        </button>
+        <button onclick="downloadZip()" class="flex-1 px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center gap-space-xs font-title-md text-[15px] font-semibold shadow-sm border border-outline-variant/30">
+          <span class="material-symbols-outlined text-[18px]">download</span>
+          <span>Download ZIP</span>
+        </button>
+      </div>
+
       <!-- FILE EXPLORER (shown on completion) -->
       <div id="files-explorer" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden animate-fadeSlideIn">
         <button class="w-full flex items-center justify-between px-space-md py-space-sm bg-surface-container-low hover:bg-surface-container transition-colors" aria-expanded="false" aria-controls="files-explorer-body" onclick="toggleFilesExplorer()">
@@ -368,6 +380,7 @@ function startForge() {
   document.getElementById('activity-timeline').innerHTML = '';
   document.getElementById('files-explorer').classList.add('hidden');
   document.getElementById('project-context-card').classList.add('hidden');
+  document.getElementById('completion-actions').classList.add('hidden');
 
   document.getElementById('forge-btn').disabled = true;
   document.getElementById('forge-btn-text').textContent = 'Forging...';
@@ -481,6 +494,7 @@ function handleSSEEvent(event) {
     }
   } else if (event.type === 'pipeline_complete') {
     finishPipeline(true, "Completed");
+    document.getElementById('completion-actions').classList.remove('hidden');
     loadFiles();
   } else if (event.type === 'error') {
     finishPipeline(false, event.message || "Pipeline Error");
@@ -576,6 +590,35 @@ function toggleFilesExplorer() {
     body.classList.remove('hidden');
     icon.textContent = 'expand_less';
   }
+}
+
+// --- Preview & Download Actions ---
+async function launchPreview() {
+  if (!sessionId) return;
+  const btn = document.getElementById('preview-btn-text');
+  const originalText = btn.textContent;
+  btn.textContent = 'Starting...';
+  
+  try {
+    const resp = await fetch(`/api/forge/${sessionId}/preview`, { method: 'POST' });
+    const data = await resp.json();
+    if (data.error) {
+      alert(`Preview failed: ${data.error}`);
+    } else if (data.preview_url) {
+      // Open in a new tab
+      window.open(data.preview_url, '_blank');
+    }
+  } catch (e) {
+    console.error(e);
+    alert('Failed to launch preview');
+  } finally {
+    btn.textContent = originalText;
+  }
+}
+
+function downloadZip() {
+  if (!sessionId) return;
+  window.location.href = `/api/forge/${sessionId}/download`;
 }
 
 function renderFileTree() {
