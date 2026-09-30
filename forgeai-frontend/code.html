@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -102,6 +102,8 @@ tailwind.config = {
 @layer base {
   html, body { margin: 0; padding: 0; }
   body { overscroll-behavior: none; background: #000000; }
+  main > :first-child { margin-top: 0 !important; }
+  main > :last-child { margin-bottom: 0 !important; }
 }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #0a0a0a; }
@@ -120,465 +122,344 @@ tailwind.config = {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
 .animate-fadeSlideIn { animation: fadeSlideIn 0.4s ease-out forwards; }
 .animate-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
 .animate-typing { animation: typing 0.8s step-end infinite; }
-.animate-spin-slow { animation: spin 1.5s linear infinite; }
-.transition-smooth { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-/* Code viewer */
 .code-line { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; }
-.code-line-number { color: #4a4a4a; user-select: none; text-align: right; padding-right: 1em; min-width: 3em; display: inline-block; }
-.code-line-content { white-space: pre; }
-.code-line-added { background: rgba(34, 197, 94, 0.08); border-left: 2px solid #22c55e; }
-.code-line-removed { background: rgba(239, 68, 68, 0.08); border-left: 2px solid #ef4444; }
-
-/* File tree */
-.file-tree-item { cursor: pointer; user-select: none; }
-.file-tree-item:hover { background: #161616; }
-.file-tree-item:focus-visible { outline: 2px solid #F59E0B; outline-offset: -2px; border-radius: 0.25rem; }
-
-/* Timeline */
-.timeline-dot { position: relative; z-index: 1; }
-.timeline-line { position: absolute; left: 11px; top: 24px; bottom: 0; width: 1px; background: #2a2a2a; }
-
-/* Active agent glow */
-.active-agent-border { border: 1px solid rgba(245, 158, 11, 0.3); box-shadow: 0 0 24px rgba(245, 158, 11, 0.06); }
-
-/* Dialog */
-dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
-dialog { border: 1px solid #2a2a2a; border-radius: 0.75rem; background: #0a0a0a; color: #e5e5e5; padding: 0; }
-
-/* Tab styles */
-.nav-tab { position: relative; }
-.nav-tab[aria-selected="true"]::after {
-  content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
-  width: 60%; height: 2px; background: #F59E0B; border-radius: 1px;
-}
-
-/* Focus styles */
-button:focus-visible, a:focus-visible, textarea:focus-visible, [tabindex="0"]:focus-visible {
-  outline: 2px solid #F59E0B; outline-offset: 2px; border-radius: 0.25rem;
-}
-
-/* Code word wrap toggle */
-.code-wrap pre code { white-space: pre-wrap; word-break: break-all; }
+.kw { color: #F59E0B; font-weight: 600; }
+.str { color: #FBBF24; }
+.fn { color: #D97706; font-weight: 600; }
+.cmt { color: #4a4a4a; font-style: italic; }
+.transition-smooth { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 </style>
 </head>
 
 <body class="bg-surface font-body-md text-on-surface antialiased">
 
 <!-- ═══════════ HEADER ═══════════ -->
-<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(245,158,11,0.05)] border-b border-outline-variant/30" role="banner">
-  <div class="h-14 w-full px-gutter flex items-center justify-between gap-space-md">
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(245,158,11,0.05)] border-b border-outline-variant/30">
+  <div class="h-16 w-full px-gutter flex items-center justify-between gap-space-md">
     <div class="flex items-center gap-space-md">
-      <a class="flex items-center gap-space-xs text-on-surface group" href="/" aria-label="ForgeAI Home">
+      <a class="flex items-center gap-space-xs text-on-surface group" href="#">
         <span class="font-title-md text-title-md tracking-tight font-bold text-on-surface group-hover:text-primary transition-colors">ForgeAI</span>
       </a>
       <div class="h-4 w-px bg-outline-variant/40 hidden sm:block"></div>
       <div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant">
-        <span id="header-status-dot" class="w-2 h-2 rounded-full bg-outline transition-colors"></span>
+        <span id="header-status-dot" class="w-2 h-2 rounded-full bg-outline"></span>
         <span class="font-label-sm text-label-sm font-medium">Forge Multi-Agent Engine</span>
       </div>
     </div>
-
-    <!-- Navigation Tabs -->
-    <nav class="hidden lg:flex items-center gap-1" role="tablist" aria-label="Main navigation">
-      <button role="tab" aria-selected="true" class="nav-tab px-space-sm py-space-xs rounded-lg font-label-md text-label-md transition-colors bg-surface-container-high text-on-surface font-semibold" data-view="workspace" onclick="navigateTo('workspace')">Workspace</button>
-      <button role="tab" aria-selected="false" class="nav-tab px-space-sm py-space-xs rounded-lg font-label-md text-label-md transition-colors text-on-surface-variant hover:bg-surface-container hover:text-on-surface" data-view="history" onclick="navigateTo('history')">Run History</button>
-      <button role="tab" aria-selected="false" class="nav-tab px-space-sm py-space-xs rounded-lg font-label-md text-label-md transition-colors text-on-surface-variant hover:bg-surface-container hover:text-on-surface" data-view="reference" onclick="navigateTo('reference')">Reference</button>
+    <nav class="hidden lg:flex items-center gap-space-xs">
+      <a class="px-space-sm py-space-xs bg-surface-container-high text-on-surface font-semibold rounded-lg" href="#">Workspace</a>
+      <a class="px-space-sm py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" href="#">Run History</a>
+      <a class="px-space-sm py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" href="#">Reference</a>
     </nav>
-
     <div class="flex items-center gap-space-sm">
-      <!-- Connection Status -->
-      <div id="connection-badge" class="hidden items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm" aria-live="polite">
-        <span id="connection-dot" class="w-1.5 h-1.5 rounded-full bg-outline"></span>
-        <span id="connection-text">Disconnected</span>
-      </div>
-
-      <!-- Run Badge -->
       <div id="header-run-badge" class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
         <span class="material-symbols-outlined text-[14px] text-primary">bolt</span>
         <span id="header-run-id">Idle</span>
         <span class="text-outline-variant">•</span>
         <span id="header-elapsed" class="font-mono text-[12px]">00:00:00</span>
       </div>
-
-      <!-- Stop Button -->
-      <button id="stop-btn" class="hidden items-center gap-1 px-space-sm py-1 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors font-label-md text-label-md" onclick="stopPipeline()" aria-label="Stop pipeline">
-        <span class="material-symbols-outlined text-[14px]">stop</span>
-        <span class="hidden sm:inline">Stop</span>
-      </button>
-
-      <!-- User Avatar -->
-      <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center" aria-label="User profile">
+      <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
         <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
       </div>
     </div>
   </div>
 </header>
 
-<!-- ═══════════ APP CONTENT ═══════════ -->
-<div id="app-content" class="w-full pt-14 bg-surface min-h-[calc(100vh-3.5rem)]">
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="w-full pt-16 bg-surface min-h-[calc(100vh-4rem)]">
+<div class="flex flex-col w-full">
+<div class="w-full px-space-md lg:px-gutter py-space-md">
 
-  <!-- ═══════════ WORKSPACE VIEW ═══════════ -->
-  <div id="view-workspace" class="flex flex-col w-full" role="tabpanel" aria-label="Workspace">
-    <div class="w-full px-space-md lg:px-gutter py-space-md">
+  <!-- Top Banner -->
+  <div id="top-banner" class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md pb-space-sm">
+    <div class="flex items-center gap-space-sm">
+      <div id="banner-dot" class="w-2.5 h-2.5 rounded-full bg-outline hidden"></div>
+      <h1 id="banner-title" class="font-headline-sm text-headline-sm text-on-surface">New Synthesis</h1>
+    </div>
+    <div id="banner-actions" class="flex items-center gap-space-sm hidden">
+      <span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+        <span class="material-symbols-outlined text-[15px] text-primary">memory</span>
+        <span id="banner-velocity">—</span>
+      </span>
+    </div>
+  </div>
 
-      <!-- Top Banner -->
-      <div id="top-banner" class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md pb-space-sm">
-        <div class="flex items-center gap-space-sm">
-          <div id="banner-dot" class="w-2.5 h-2.5 rounded-full bg-outline hidden" aria-hidden="true"></div>
-          <h1 id="banner-title" class="font-headline-sm text-headline-sm text-on-surface">New Synthesis</h1>
+  <!-- 3-Column Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+
+    <!-- ═══════════ LEFT COLUMN ═══════════ -->
+    <aside class="lg:col-span-3 flex flex-col gap-space-md">
+
+      <!-- Intent Stream Card -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-primary text-[18px]">forum</span>
+            <span class="font-title-md text-title-md text-on-surface">Intent Stream</span>
+          </div>
+          <span id="intent-time" class="font-label-sm text-label-sm text-on-surface-variant"></span>
         </div>
-        <div id="banner-actions" class="flex items-center gap-space-sm hidden">
-          <span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
-            <span class="material-symbols-outlined text-[15px] text-primary">memory</span>
-            <span id="banner-velocity">—</span>
-          </span>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">
+          Describe what you want to build. ForgeAI will plan, architect, code, debug, and test it autonomously.
+        </p>
+        <!-- User Intent Bubble (shown after submitting) -->
+        <div id="user-intent-bubble" class="hidden mt-space-xs rounded-xl bg-surface-container p-space-md shadow-sm">
+          <div class="flex items-center gap-space-xs mb-space-xs">
+            <div class="w-5 h-5 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary text-[10px] font-bold">U</div>
+            <span class="font-label-sm text-label-sm text-on-surface font-semibold">User Specification</span>
+          </div>
+          <p id="user-intent-text" class="font-headline-sm text-[16px] leading-relaxed text-on-surface italic"></p>
+        </div>
+        <!-- Tech Stack Tags (shown after planner completes) -->
+        <div id="intent-tags" class="hidden flex flex-wrap gap-space-xs mt-space-xs"></div>
+      </div>
+
+      <!-- Project Context (shown after planner completes) -->
+      <div id="project-context-card" class="hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Project Context</span>
+        <div id="project-context-rows" class="flex flex-col gap-1"></div>
+        <div class="mt-space-xs">
+          <div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface-variant">
+            <span>Pipeline Progress</span>
+            <span id="pipeline-progress-pct">0%</span>
+          </div>
+          <div class="w-full h-1.5 rounded-full bg-surface-container-high overflow-hidden">
+            <div id="pipeline-progress-bar" class="h-full bg-primary-container rounded-full transition-all duration-500" style="width: 0%;"></div>
+          </div>
         </div>
       </div>
 
-      <!-- 3-Column Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
-
-        <!-- ═══════════ LEFT COLUMN ═══════════ -->
-        <aside class="lg:col-span-3 flex flex-col gap-space-md" aria-label="Project input and context">
-
-          <!-- Intent Stream Card -->
-          <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-space-xs">
-                <span class="material-symbols-outlined text-primary text-[18px]" aria-hidden="true">forum</span>
-                <span class="font-title-md text-title-md text-on-surface">Intent Stream</span>
-              </div>
-              <span id="intent-time" class="font-label-sm text-label-sm text-on-surface-variant"></span>
-            </div>
-            <p class="font-body-sm text-body-sm text-on-surface-variant">
-              Describe what you want to build. ForgeAI will plan, architect, code, debug, and test it autonomously.
-            </p>
-            <!-- User Intent Bubble (shown after submitting) -->
-            <div id="user-intent-bubble" class="hidden mt-space-xs rounded-xl bg-surface-container p-space-md shadow-sm">
-              <div class="flex items-center gap-space-xs mb-space-xs">
-                <div class="w-5 h-5 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary text-[10px] font-bold">U</div>
-                <span class="font-label-sm text-label-sm text-on-surface font-semibold">User Specification</span>
-              </div>
-              <p id="user-intent-text" class="font-headline-sm text-[16px] leading-relaxed text-on-surface italic"></p>
-            </div>
-            <!-- Tech Stack Tags (shown after planner completes) -->
-            <div id="intent-tags" class="hidden flex flex-wrap gap-space-xs mt-space-xs"></div>
-          </div>
-
-          <!-- Plan Preview Card (hidden until planner completes) -->
-          <div id="plan-preview-card" class="hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm animate-fadeSlideIn">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-space-xs">
-                <span class="material-symbols-outlined text-primary text-[18px]" aria-hidden="true">assignment</span>
-                <span class="font-title-md text-[15px] text-on-surface font-semibold">Project Plan</span>
-              </div>
-              <span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Auto</span>
-            </div>
-            <div id="plan-preview-content" class="flex flex-col gap-space-xs"></div>
-          </div>
-
-          <!-- Project Context (shown after planner completes) -->
-          <div id="project-context-card" class="hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
-            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Project Context</span>
-            <div id="project-context-rows" class="flex flex-col gap-1"></div>
-            <div class="mt-space-xs">
-              <div class="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface-variant">
-                <span>Pipeline Progress</span>
-                <span id="pipeline-progress-pct">0%</span>
-              </div>
-              <div class="w-full h-1.5 rounded-full bg-surface-container-high overflow-hidden" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="pipeline-progress-container">
-                <div id="pipeline-progress-bar" class="h-full bg-primary-container rounded-full transition-all duration-500" style="width: 0%;"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Input Composer -->
-          <div class="rounded-xl bg-surface-container-lowest p-space-sm shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
-            <label class="sr-only" for="intent-input">Describe the project you want to build</label>
-            <textarea
-              class="w-full bg-transparent border-none text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none resize-none p-space-xs"
-              id="intent-input"
-              placeholder="Describe the project you want to build... e.g. 'Build me a real-time chat app with WebSocket support'"
-              rows="4"
-              aria-describedby="input-hint"
-            ></textarea>
-            <div id="input-hint" class="sr-only">Press Ctrl+Enter to submit, or click the Forge It button</div>
-            <div class="flex items-center justify-between pt-space-xs px-space-xs">
-              <div class="flex items-center gap-space-xs">
-                <button class="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Attach file" type="button" aria-label="Attach file">
-                  <span class="material-symbols-outlined text-[18px]">attachment</span>
-                </button>
-              </div>
-              <button
-                id="forge-btn"
-                onclick="startForge()"
-                class="px-space-md py-1.5 rounded-full bg-primary-container text-surface-container-lowest hover:bg-primary transition-colors flex items-center gap-1.5 font-label-md text-label-md shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                type="button"
-              >
-                <span id="forge-btn-text">Forge It</span>
-                <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
-              </button>
-            </div>
-          </div>
-        </aside>
-
-        <!-- ═══════════ CENTER COLUMN ═══════════ -->
-        <section class="lg:col-span-6 flex flex-col gap-space-md" aria-label="Pipeline output">
-
-          <!-- Empty State -->
-          <div id="empty-state" class="rounded-xl bg-surface-container-lowest p-space-xl shadow-[0_2px_16px_rgba(245,158,11,0.05)] flex flex-col items-center justify-center text-center min-h-[400px]">
-            <span class="material-symbols-outlined text-[48px] text-outline-variant mb-space-md" aria-hidden="true">auto_awesome</span>
-            <h2 class="font-headline-md text-headline-md text-on-surface mb-space-sm">Describe it. We build it.</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
-              Enter your project description in the composer on the left. ForgeAI's multi-agent pipeline will plan, architect, code, debug, compile-check, and browser-test your entire application.
-            </p>
-            <div class="flex flex-wrap justify-center gap-space-sm mt-space-lg">
-              <button onclick="setExample('Build a todo list app with Flask backend and vanilla HTML/CSS/JS frontend. Features: add, complete, delete tasks.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
-                <span class="block font-semibold text-on-surface mb-0.5">📝 Todo App</span>
-                Flask + HTML/CSS/JS
-              </button>
-              <button onclick="setExample('Build a real-time chat application with WebSocket support, user authentication, and message history using FastAPI and React.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
-                <span class="block font-semibold text-on-surface mb-0.5">💬 Chat App</span>
-                FastAPI + WebSocket + React
-              </button>
-              <button onclick="setExample('Build a student grade tracker with CRUD operations, GPA calculator, and grade statistics dashboard using Flask.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
-                <span class="block font-semibold text-on-surface mb-0.5">🎓 Grade Tracker</span>
-                Flask + SQLite
-              </button>
-            </div>
-          </div>
-
-          <!-- Active Agent Panel (visible during runs) -->
-          <div id="active-agent-panel" class="hidden rounded-xl bg-surface-container-lowest active-agent-border overflow-hidden animate-fadeSlideIn">
-            <div id="active-agent-header" class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-high">
-              <div class="flex items-center gap-space-sm">
-                <span class="relative flex h-3 w-3" aria-hidden="true">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
-                </span>
-                <div class="flex items-center gap-space-xs">
-                  <span id="active-agent-name" class="font-title-md text-[15px] text-on-surface font-semibold"></span>
-                  <span id="active-agent-subtitle" class="font-body-sm text-body-sm text-primary font-medium"></span>
-                </div>
-              </div>
-              <div class="flex items-center gap-space-sm">
-                <span class="px-space-xs py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm">Active</span>
-                <span id="active-agent-duration" class="font-mono text-[12px] text-on-surface-variant"></span>
-              </div>
-            </div>
-            <div id="active-agent-body" class="p-space-md">
-              <div class="rounded-xl bg-surface-container p-space-md shadow-sm">
-                <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-space-xs">
-                  <span class="material-symbols-outlined text-[14px]" aria-hidden="true">bolt</span>
-                  <span>Active Processing</span>
-                </div>
-                <div id="active-agent-logs" class="font-mono text-[12px] text-on-surface-variant leading-relaxed max-h-[200px] overflow-y-auto flex flex-col gap-0.5">
-                  <span class="text-outline">Processing...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Agent Activity Timeline -->
-          <div id="activity-timeline" class="hidden flex flex-col gap-0 animate-fadeSlideIn">
-            <div class="flex items-center gap-space-xs mb-space-sm">
-              <span class="material-symbols-outlined text-primary text-[16px]" aria-hidden="true">timeline</span>
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Agent Timeline</span>
-            </div>
-            <div id="timeline-entries" class="flex flex-col gap-0 relative" role="log" aria-label="Agent activity timeline"></div>
-          </div>
-
-          <!-- Pipeline Complete Card (hidden until done) -->
-          <div id="pipeline-complete-card" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_4px_24px_rgba(46,125,50,0.12)] overflow-hidden animate-fadeSlideIn">
-            <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low">
-              <div class="flex items-center gap-space-sm">
-                <span class="material-symbols-outlined text-[20px] text-success" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
-                <span class="font-title-md text-[15px] text-on-surface font-semibold">Pipeline Complete</span>
-              </div>
-              <button id="download-btn" onclick="downloadProject()" class="px-space-md py-1.5 rounded-full bg-primary text-on-primary hover:bg-secondary transition-colors flex items-center gap-1.5 font-label-md text-label-md shadow-sm" aria-label="Download project as ZIP">
-                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span>
-                Download ZIP
-              </button>
-            </div>
-            <div id="pipeline-complete-body" class="p-space-md">
-              <div id="complete-summary" class="flex flex-col gap-space-sm"></div>
-            </div>
-          </div>
-
-          <!-- Generated Files Explorer (hidden until pipeline complete) -->
-          <div id="files-explorer" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden animate-fadeSlideIn">
-            <button class="w-full flex items-center justify-between px-space-md py-space-sm bg-surface-container-low hover:bg-surface-container transition-colors text-left" onclick="toggleSection('files-explorer-body')" aria-expanded="true" aria-controls="files-explorer-body">
-              <div class="flex items-center gap-space-sm">
-                <span class="material-symbols-outlined text-primary text-[18px]" aria-hidden="true">folder_open</span>
-                <span class="font-title-md text-[15px] text-on-surface font-semibold">Project Explorer</span>
-                <span id="files-count-badge" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm"></span>
-              </div>
-              <span class="material-symbols-outlined text-outline text-[20px] transition-transform" aria-hidden="true">expand_more</span>
+      <!-- Input Composer -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-sm shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
+        <label class="sr-only" for="intent-input">Describe the project you want to build</label>
+        <textarea
+          class="w-full bg-transparent border-none text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none resize-none p-space-xs"
+          id="intent-input"
+          placeholder="Describe the project you want to build... e.g. 'Build me a real-time chat app with WebSocket support'"
+          rows="4"
+        ></textarea>
+        <div class="flex items-center justify-between pt-space-xs px-space-xs">
+          <div class="flex items-center gap-space-xs">
+            <button class="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Attach file" type="button">
+              <span class="material-symbols-outlined text-[18px]">attachment</span>
             </button>
-            <div id="files-explorer-body" class="flex flex-col lg:flex-row">
-              <!-- File Tree (left pane) -->
-              <div id="file-tree-pane" class="lg:w-[280px] lg:min-w-[280px] border-b lg:border-b-0 lg:border-r border-outline-variant/20 p-space-sm max-h-[500px] overflow-y-auto">
-                <div class="flex items-center gap-space-xs px-space-xs mb-space-xs">
-                  <span class="material-symbols-outlined text-[14px] text-on-surface-variant" aria-hidden="true">search</span>
-                  <input id="file-search-input" type="text" placeholder="Search files..." class="w-full bg-transparent text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none" oninput="filterFileTree(this.value)" aria-label="Search files">
-                </div>
-                <div id="file-tree" role="tree" aria-label="Project file tree" class="flex flex-col"></div>
-              </div>
-              <!-- Code Viewer (right pane) -->
-              <div id="code-viewer-pane" class="flex-1 flex flex-col min-w-0">
-                <div id="code-viewer-empty" class="flex items-center justify-center p-space-xl text-on-surface-variant font-body-sm text-body-sm">
-                  <span class="material-symbols-outlined text-[24px] text-outline mr-space-sm" aria-hidden="true">draft</span>
-                  Select a file to view its contents
-                </div>
-                <div id="code-viewer" class="hidden flex flex-col">
-                  <div class="flex items-center justify-between px-space-sm py-space-xs bg-surface-container-high border-b border-outline-variant/20">
-                    <div class="flex items-center gap-space-xs min-w-0">
-                      <span class="material-symbols-outlined text-[14px] text-primary" aria-hidden="true">draft</span>
-                      <span id="code-viewer-filename" class="font-mono text-[12px] text-on-surface truncate"></span>
-                      <span id="code-viewer-lang" class="font-label-sm text-[10px] text-on-surface-variant px-1 py-0.5 rounded bg-surface-container"></span>
-                    </div>
-                    <div class="flex items-center gap-space-xs">
-                      <button onclick="toggleCodeWrap()" class="p-1 rounded text-on-surface-variant hover:text-on-surface transition-colors" title="Toggle word wrap" aria-label="Toggle word wrap">
-                        <span class="material-symbols-outlined text-[14px]">wrap_text</span>
-                      </button>
-                      <button onclick="copyCodeContent()" class="p-1 rounded text-on-surface-variant hover:text-on-surface transition-colors" title="Copy code" aria-label="Copy code">
-                        <span class="material-symbols-outlined text-[14px]">content_copy</span>
-                      </button>
-                    </div>
-                  </div>
-                  <div id="code-viewer-content" class="overflow-auto max-h-[400px] bg-inverse-surface"></div>
-                </div>
-              </div>
-            </div>
           </div>
-
-        </section>
-
-        <!-- ═══════════ RIGHT COLUMN ═══════════ -->
-        <aside class="lg:col-span-3 flex flex-col gap-space-md" aria-label="Pipeline status and tools">
-
-          <!-- Agent Workflow Stepper -->
-          <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-md">
-            <div class="flex items-center justify-between">
-              <span class="font-title-md text-title-md text-on-surface font-semibold">Agent Workflow</span>
-              <span id="step-counter" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Idle</span>
-            </div>
-            <div class="flex flex-col gap-space-sm relative" id="stepper-list" role="list" aria-label="Pipeline steps"></div>
-          </div>
-
-          <!-- Browser Agent Panel -->
-          <div id="browser-panel" class="hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm animate-fadeSlideIn">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-space-xs">
-                <span class="material-symbols-outlined text-primary text-[18px]" aria-hidden="true">language</span>
-                <span class="font-title-md text-[15px] text-on-surface font-semibold">Browser Agent</span>
-              </div>
-              <span id="browser-status-badge" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Idle</span>
-            </div>
-            <div id="browser-url-bar" class="hidden flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container font-mono text-[12px] text-on-surface-variant">
-              <span class="material-symbols-outlined text-[12px]" aria-hidden="true">lock</span>
-              <span id="browser-url-text" class="truncate">—</span>
-            </div>
-            <div id="browser-preview-area" class="rounded-lg bg-surface-container overflow-hidden min-h-[120px] flex items-center justify-center">
-              <div class="flex flex-col items-center gap-space-xs text-on-surface-variant p-space-md text-center">
-                <span class="material-symbols-outlined text-[28px] text-outline" aria-hidden="true">browser_not_supported</span>
-                <span class="font-body-sm text-body-sm">Browser preview unavailable</span>
-                <span class="font-label-sm text-label-sm text-outline">Waiting for browser frame...</span>
-              </div>
-            </div>
-            <div id="browser-actions-list" class="hidden flex flex-col gap-1"></div>
-            <div id="browser-results" class="hidden flex flex-col gap-space-xs"></div>
-          </div>
-
-          <!-- Tool Activity -->
-          <div id="tool-activity-panel" class="hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm animate-fadeSlideIn">
-            <div class="flex items-center justify-between">
-              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Tool Activity</span>
-              <span id="tool-count-badge" class="font-label-sm text-label-sm text-on-surface-variant">0 calls</span>
-            </div>
-            <div id="tool-activity-list" class="flex flex-col gap-1 max-h-[150px] overflow-y-auto"></div>
-          </div>
-
-          <!-- Telemetry -->
-          <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
-            <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Telemetry &amp; Status</span>
-            <div class="flex items-center justify-between py-1">
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Total Elapsed</span>
-              <span id="telemetry-elapsed" class="font-title-md text-[14px] text-on-surface font-mono">0.0s</span>
-            </div>
-            <div class="flex items-center justify-between py-1">
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Agents Completed</span>
-              <span id="telemetry-agents" class="font-title-md text-[14px] text-on-surface font-mono">0 / 0</span>
-            </div>
-            <div class="flex items-center justify-between py-1">
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Pipeline Status</span>
-              <div class="flex items-center gap-1.5">
-                <span id="telemetry-dot" class="w-2 h-2 rounded-full bg-outline" aria-hidden="true"></span>
-                <span id="telemetry-status" class="font-label-sm text-label-sm text-on-surface font-semibold">Idle</span>
-              </div>
-            </div>
-            <div class="flex items-center justify-between py-1">
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Log Lines</span>
-              <span id="telemetry-logs" class="font-title-md text-[14px] text-on-surface font-mono">0</span>
-            </div>
-            <div class="flex items-center justify-between py-1">
-              <span class="font-body-sm text-body-sm text-on-surface-variant">Files Generated</span>
-              <span id="telemetry-files" class="font-title-md text-[14px] text-on-surface font-mono">N/A</span>
-            </div>
-          </div>
-
-          <!-- Terminal Log -->
-          <div class="rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.04)] overflow-hidden">
-            <button class="w-full flex items-center justify-between px-space-md py-space-sm bg-surface-container-low hover:bg-surface-container transition-colors text-left" onclick="toggleSection('terminal-log-body')" aria-expanded="true" aria-controls="terminal-log-body">
-              <div class="flex items-center gap-space-xs">
-                <span class="material-symbols-outlined text-primary text-[16px]" aria-hidden="true">terminal</span>
-                <span class="font-title-md text-[14px] text-on-surface font-semibold">Live Terminal</span>
-              </div>
-              <span class="material-symbols-outlined text-outline text-[20px] transition-transform" aria-hidden="true">expand_more</span>
-            </button>
-            <div id="terminal-log-body" class="max-h-[300px] overflow-y-auto p-space-sm bg-inverse-surface" role="log" aria-label="Terminal output" aria-live="polite">
-              <div id="terminal-lines" class="font-mono text-[12px] leading-relaxed text-inverse-on-surface flex flex-col gap-0.5">
-                <span class="text-outline">$ Waiting for pipeline to start...</span>
-              </div>
-            </div>
-          </div>
-
-        </aside>
+          <button
+            id="forge-btn"
+            onclick="startForge()"
+            class="px-space-md py-1.5 rounded-full bg-primary-container text-surface-container-lowest hover:bg-primary transition-colors flex items-center gap-1.5 font-label-md text-label-md shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            type="button"
+          >
+            <span id="forge-btn-text">Forge It</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
+    </aside>
 
-  <!-- ═══════════ RUN HISTORY VIEW ═══════════ -->
-  <div id="view-history" class="hidden w-full px-space-md lg:px-gutter py-space-md" role="tabpanel" aria-label="Run History">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface mb-space-md">Run History</h2>
-      <div id="history-empty" class="rounded-xl bg-surface-container-lowest p-space-xl flex flex-col items-center justify-center text-center min-h-[300px]">
-        <span class="material-symbols-outlined text-[40px] text-outline-variant mb-space-md" aria-hidden="true">history</span>
-        <p class="font-body-md text-body-md text-on-surface-variant">No runs yet. Start a forge to see history here.</p>
+    <!-- ═══════════ CENTER COLUMN ═══════════ -->
+    <main class="lg:col-span-6 flex flex-col gap-space-md">
+
+      <!-- Empty State -->
+      <div id="empty-state" class="rounded-xl bg-surface-container-lowest p-space-xl shadow-[0_2px_16px_rgba(245,158,11,0.05)] flex flex-col items-center justify-center text-center min-h-[400px]">
+        <span class="material-symbols-outlined text-[48px] text-outline-variant mb-space-md">auto_awesome</span>
+        <h2 class="font-headline-md text-headline-md text-on-surface mb-space-sm">Describe it. We build it.</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+          Enter your project description in the composer on the left. ForgeAI's 6-agent pipeline will plan, architect, code, debug, compile-check, and browser-test your entire application.
+        </p>
+        <div class="flex flex-wrap justify-center gap-space-sm mt-space-lg">
+          <button onclick="setExample('Build a todo list app with Flask backend and vanilla HTML/CSS/JS frontend. Features: add, complete, delete tasks.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
+            <span class="block font-semibold text-on-surface mb-0.5">📝 Todo App</span>
+            Flask + HTML/CSS/JS
+          </button>
+          <button onclick="setExample('Build a real-time chat application with WebSocket support, user authentication, and message history using FastAPI and React.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
+            <span class="block font-semibold text-on-surface mb-0.5">💬 Chat App</span>
+            FastAPI + WebSocket + React
+          </button>
+          <button onclick="setExample('Build a student grade tracker with CRUD operations, GPA calculator, and grade statistics dashboard using Flask.')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
+            <span class="block font-semibold text-on-surface mb-0.5">🎓 Grade Tracker</span>
+            Flask + SQLite
+          </button>
+        </div>
       </div>
-      <div id="history-list" class="flex flex-col gap-space-sm"></div>
-    </div>
-  </div>
 
-  <!-- ═══════════ REFERENCE VIEW ═══════════ -->
-  <div id="view-reference" class="hidden w-full px-space-md lg:px-gutter py-space-md" role="tabpanel" aria-label="Reference">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface mb-space-md">Agent Reference</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md" id="reference-grid"></div>
-    </div>
-  </div>
+      <!-- Agent Blocks Container (hidden until pipeline starts) -->
+      <div id="agent-blocks" class="flex flex-col gap-space-md hidden"></div>
 
+      <!-- Pipeline Complete Card (hidden until done) -->
+      <div id="pipeline-complete-card" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_4px_24px_rgba(46,125,50,0.12)] overflow-hidden animate-fadeSlideIn">
+        <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low">
+          <div class="flex items-center gap-space-sm">
+            <span class="material-symbols-outlined text-[20px] text-success" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <span class="font-title-md text-[15px] text-on-surface font-semibold">Pipeline Complete</span>
+          </div>
+          <button id="download-btn" onclick="downloadProject()" class="px-space-md py-1.5 rounded-full bg-primary text-on-primary hover:bg-secondary transition-colors flex items-center gap-1.5 font-label-md text-label-md shadow-sm">
+            <span class="material-symbols-outlined text-[16px]">download</span>
+            Download ZIP
+          </button>
+        </div>
+        <div id="pipeline-complete-body" class="p-space-md">
+          <div id="complete-summary" class="flex flex-col gap-space-sm"></div>
+        </div>
+      </div>
+
+      <!-- Generated Files Explorer (hidden until pipeline complete) -->
+      <div id="files-explorer" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden animate-fadeSlideIn">
+        <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors" onclick="document.getElementById('files-explorer-body').classList.toggle('hidden')">
+          <div class="flex items-center gap-space-sm">
+            <span class="material-symbols-outlined text-primary text-[18px]">folder_open</span>
+            <span class="font-title-md text-[15px] text-on-surface font-semibold">Generated Files</span>
+            <span id="files-count-badge" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm"></span>
+          </div>
+          <span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+        </div>
+        <div id="files-explorer-body" class="p-space-md flex flex-col gap-space-xs"></div>
+      </div>
+
+    </main>
+
+    <!-- ═══════════ RIGHT COLUMN ═══════════ -->
+    <aside class="lg:col-span-3 flex flex-col gap-space-md">
+
+      <!-- Agent Workflow Stepper -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-md">
+        <div class="flex items-center justify-between">
+          <span class="font-title-md text-title-md text-on-surface font-semibold">Agent Workflow</span>
+          <span id="step-counter" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Idle</span>
+        </div>
+        <div class="flex flex-col gap-space-sm relative" id="stepper-list">
+          <!-- Step 1: Planner -->
+          <div id="step-planner" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-planner-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">1. Planner</span>
+                <span id="step-planner-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Requirements Analysis &amp; Stack</span>
+            </div>
+          </div>
+          <!-- Step 2: Architect -->
+          <div id="step-architect" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-architect-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">2. Architect</span>
+                <span id="step-architect-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">File Manifest &amp; Schemas</span>
+            </div>
+          </div>
+          <!-- Step 3: Coder -->
+          <div id="step-coder" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-coder-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">3. Coding Agent</span>
+                <span id="step-coder-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Synthesis &amp; Assembly</span>
+            </div>
+          </div>
+          <!-- Step 4: Debugger -->
+          <div id="step-debugger" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-debugger-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">4. Debugger</span>
+                <span id="step-debugger-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">AST Review &amp; Self-Healing</span>
+            </div>
+          </div>
+          <!-- Step 5: Terminal -->
+          <div id="step-terminal" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-terminal-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">5. Terminal</span>
+                <span id="step-terminal-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Build &amp; Dependency Resolution</span>
+            </div>
+          </div>
+          <!-- Step 6: Browser -->
+          <div id="step-browser" class="flex items-start gap-space-sm relative opacity-60 transition-smooth">
+            <div id="step-browser-icon" class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-[14px] text-on-surface font-medium">6. Browser Agent</span>
+                <span id="step-browser-status" class="font-label-sm text-label-sm text-outline">Queued</span>
+              </div>
+              <span class="font-body-sm text-body-sm text-on-surface-variant truncate">Playwright E2E Verification</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry -->
+      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Telemetry &amp; Status</span>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Total Elapsed</span>
+          <span id="telemetry-elapsed" class="font-title-md text-[14px] text-on-surface font-mono">0.0s</span>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Agents Completed</span>
+          <span id="telemetry-agents" class="font-title-md text-[14px] text-on-surface font-mono">0 / 6</span>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Pipeline Status</span>
+          <div class="flex items-center gap-1.5">
+            <span id="telemetry-dot" class="w-2 h-2 rounded-full bg-outline"></span>
+            <span id="telemetry-status" class="font-label-sm text-label-sm text-on-surface font-semibold">Idle</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">Log Lines</span>
+          <span id="telemetry-logs" class="font-title-md text-[14px] text-on-surface font-mono">0</span>
+        </div>
+      </div>
+
+      <!-- Terminal Log -->
+      <div class="rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.04)] overflow-hidden">
+        <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors" onclick="document.getElementById('terminal-log-body').classList.toggle('hidden')">
+          <div class="flex items-center gap-space-xs">
+            <span class="material-symbols-outlined text-primary text-[16px]">terminal</span>
+            <span class="font-title-md text-[14px] text-on-surface font-semibold">Live Terminal</span>
+          </div>
+          <span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+        </div>
+        <div id="terminal-log-body" class="max-h-[300px] overflow-y-auto p-space-sm bg-inverse-surface">
+          <div id="terminal-lines" class="font-mono text-[12px] leading-relaxed text-inverse-on-surface flex flex-col gap-0.5">
+            <span class="text-outline">$ Waiting for pipeline to start...</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
 </div>
+</div>
+</main>
 
 <!-- ═══════════ FOOTER ═══════════ -->
-<footer class="w-full bg-surface-container-low shadow-[0_-1px_8px_rgba(245,158,11,0.03)] py-space-lg" role="contentinfo">
+<footer class="w-full bg-surface-container-low shadow-[0_-1px_8px_rgba(245,158,11,0.03)] py-space-lg">
   <div class="w-full px-gutter flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant">
     <div class="flex items-center gap-space-md">
       <span class="font-title-md text-on-surface font-semibold text-[15px]">ForgeAI</span>
@@ -590,245 +471,34 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, [tabindex="0"]:fo
   </div>
 </footer>
 
-<!-- ═══════════ CONFIRMATION DIALOG ═══════════ -->
-<dialog id="confirm-dialog" class="max-w-md w-full">
-  <div class="p-space-md">
-    <div class="flex items-center gap-space-sm mb-space-md">
-      <span class="material-symbols-outlined text-[24px] text-primary" aria-hidden="true">warning</span>
-      <h3 id="confirm-title" class="font-title-md text-title-md text-on-surface font-semibold">Confirm Action</h3>
-    </div>
-    <p id="confirm-message" class="font-body-sm text-body-sm text-on-surface-variant mb-space-md"></p>
-    <div class="flex items-center justify-end gap-space-sm">
-      <button id="confirm-cancel" class="px-space-md py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md">Cancel</button>
-      <button id="confirm-action" class="px-space-md py-1.5 rounded-full bg-error text-on-error hover:bg-error-container hover:text-on-error-container transition-colors font-label-md text-label-md">Confirm</button>
-    </div>
-  </div>
-</dialog>
-
-<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<!-- ═══════════ JAVASCRIPT — Full SSE Integration ═══════════ -->
 <script>
-// ══════════════════════════════════════════════════════════════════════════════
-// 1. SAFE DOM UTILITIES
-// ══════════════════════════════════════════════════════════════════════════════
-
-/** Escape HTML entities to prevent XSS when inserting into innerHTML */
-function escapeHtml(text) {
-  if (text == null) return '';
-  const str = String(text);
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-/** Create a DOM element safely with attributes and children */
-function el(tag, attrs = {}, children = []) {
-  const element = document.createElement(tag);
-  for (const [key, value] of Object.entries(attrs)) {
-    if (key === 'className') element.className = value;
-    else if (key === 'textContent') element.textContent = value;
-    else if (key === 'onclick') element.onclick = value;
-    else if (key === 'style' && typeof value === 'object') Object.assign(element.style, value);
-    else if (key.startsWith('aria') || key === 'role' || key === 'tabindex') element.setAttribute(key.replace(/([A-Z])/g, '-$1').toLowerCase(), value);
-    else element.setAttribute(key, value);
-  }
-  for (const child of (Array.isArray(children) ? children : [children])) {
-    if (child == null) continue;
-    if (typeof child === 'string') element.appendChild(document.createTextNode(child));
-    else element.appendChild(child);
-  }
-  return element;
-}
-
-/** Create a Material Symbols icon span */
-function icon(name, extraClass = '', filled = false) {
-  const span = document.createElement('span');
-  span.className = `material-symbols-outlined ${extraClass}`.trim();
-  if (filled) span.style.fontVariationSettings = "'FILL' 1";
-  span.textContent = name;
-  span.setAttribute('aria-hidden', 'true');
-  return span;
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 2. CONFIGURATION — SINGLE SOURCE OF TRUTH
-// ══════════════════════════════════════════════════════════════════════════════
-
-const AGENT_PIPELINE = [
-  { id: 'planner',   label: 'Planner Agent',   icon: 'psychology',    subtitle: 'Requirements Analysis & Stack' },
-  { id: 'architect', label: 'Architect Agent',  icon: 'architecture',  subtitle: 'File Manifest & Schemas' },
-  { id: 'coder',     label: 'Coding Agent',     icon: 'code',          subtitle: 'Synthesis & Assembly' },
-  { id: 'debugger',  label: 'Debugger Agent',   icon: 'bug_report',    subtitle: 'AST Review & Self-Healing' },
-  { id: 'terminal',  label: 'Terminal Agent',   icon: 'terminal',      subtitle: 'Build & Dependency Resolution' },
-  { id: 'browser',   label: 'Browser Agent',    icon: 'language',      subtitle: 'Playwright E2E Verification' },
-];
-
-const AGENT_MAP = {};
-AGENT_PIPELINE.forEach((a, i) => { AGENT_MAP[a.id] = { ...a, index: i }; });
-
-const AGENT_STATES = {
-  QUEUED: 'queued', RUNNING: 'running', COMPLETED: 'completed',
-  FAILED: 'failed', SKIPPED: 'skipped', RETRYING: 'retrying',
+// ── State ──
+let sessionId = null;
+let startTime = null;
+let elapsedInterval = null;
+let logCount = 0;
+let completedAgents = 0;
+let currentActiveAgent = null;
+const agentOrder = ['planner', 'architect', 'coder', 'debugger', 'terminal', 'browser'];
+const agentLabels = {
+  planner: 'Planner Agent',
+  architect: 'Architect Agent',
+  coder: 'Coding Agent',
+  debugger: 'Debugger Agent',
+  terminal: 'Terminal Agent',
+  browser: 'Browser Agent',
+};
+const agentSubtitles = {
+  planner: 'Reasoning',
+  architect: 'File Manifest Design',
+  coder: 'Generating Code',
+  debugger: 'AST Review & Self-Healing',
+  terminal: 'Build & Compile Check',
+  browser: 'Playwright E2E Verification',
 };
 
-const CONNECTION_STATES = {
-  CONNECTING: 'connecting', CONNECTED: 'connected', RECONNECTING: 'reconnecting',
-  DISCONNECTED: 'disconnected', COMPLETED: 'completed', FAILED: 'failed',
-};
-
-// Color map for terminal lines
-const TERMINAL_COLORS = {
-  'primary': '#F59E0B', 'secondary': '#D97706', 'tertiary': '#D97706',
-  'tertiary-fixed': '#FDE68A', 'error': '#ef4444', 'on-surface': '#e5e5e5',
-  'inverse-on-surface': '#a3a3a3', 'primary-fixed': '#FDE68A',
-  'secondary-fixed': '#FDE68A', 'success': '#22c55e',
-};
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 3. APPLICATION STATE
-// ══════════════════════════════════════════════════════════════════════════════
-
-const App = {
-  // SSE
-  eventSource: null,
-  connectionState: CONNECTION_STATES.DISCONNECTED,
-  pipelineFinished: false,
-
-  // Run state
-  sessionId: null,
-  startTime: null,
-  elapsedInterval: null,
-  isRunning: false,
-  query: '',
-
-  // Counters
-  logCount: 0,
-  completedAgents: 0,
-  currentActiveAgent: null,
-
-  // Agent states: agent_id -> { state, startTime, endTime, data, logs }
-  agentStates: {},
-
-  // Timeline events: [{ timestamp, agent, type, message, status }]
-  timeline: [],
-
-  // Files
-  generatedFiles: [],
-  selectedFileIndex: -1,
-  codeWrap: false,
-
-  // Run history (in-memory)
-  runHistory: [],
-
-  // Current view
-  currentView: 'workspace',
-
-  // Agent duration interval
-  agentDurationInterval: null,
-};
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 4. SSE MANAGER
-// ══════════════════════════════════════════════════════════════════════════════
-
-const SSE = {
-  connect(query) {
-    this.close();
-    App.pipelineFinished = false;
-    updateConnectionState(CONNECTION_STATES.CONNECTING);
-
-    App.eventSource = new EventSource(`/api/forge/stream?query=${encodeURIComponent(query)}`);
-
-    App.eventSource.onopen = () => {
-      updateConnectionState(CONNECTION_STATES.CONNECTED);
-    };
-
-    App.eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        handleSSEEvent(data);
-
-        // Close on 'done' sentinel
-        if (data.type === 'done') {
-          App.pipelineFinished = true;
-          this.close();
-          if (App.connectionState !== CONNECTION_STATES.FAILED) {
-            updateConnectionState(CONNECTION_STATES.COMPLETED);
-          }
-        }
-      } catch (e) {
-        console.error('SSE parse error:', e);
-      }
-    };
-
-    App.eventSource.onerror = () => {
-      if (App.pipelineFinished) {
-        // Expected close after 'done' event — ignore
-        this.close();
-        return;
-      }
-
-      // Check readyState
-      if (App.eventSource && App.eventSource.readyState === EventSource.CLOSED) {
-        // Server closed unexpectedly
-        this.close();
-        updateConnectionState(CONNECTION_STATES.DISCONNECTED);
-        addTerminalLine('[CONNECTION] Connection closed unexpectedly. The pipeline may have encountered an error.', 'error');
-        if (!App.pipelineFinished) {
-          finishPipeline(false);
-        }
-      } else {
-        // Transient error — EventSource will auto-reconnect
-        updateConnectionState(CONNECTION_STATES.RECONNECTING);
-        addTerminalLine('[CONNECTION] Connection interrupted. Reconnecting...', 'secondary');
-      }
-    };
-  },
-
-  close() {
-    if (App.eventSource) {
-      App.eventSource.close();
-      App.eventSource = null;
-    }
-  },
-};
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 5. NAVIGATION
-// ══════════════════════════════════════════════════════════════════════════════
-
-function navigateTo(view) {
-  App.currentView = view;
-  const views = ['workspace', 'history', 'reference'];
-  views.forEach(v => {
-    const el = document.getElementById(`view-${v}`);
-    if (el) el.classList.toggle('hidden', v !== view);
-  });
-
-  // Update tabs
-  document.querySelectorAll('[role="tab"]').forEach(tab => {
-    const isSelected = tab.dataset.view === view;
-    tab.setAttribute('aria-selected', String(isSelected));
-    if (isSelected) {
-      tab.className = 'nav-tab px-space-sm py-space-xs rounded-lg font-label-md text-label-md transition-colors bg-surface-container-high text-on-surface font-semibold';
-    } else {
-      tab.className = 'nav-tab px-space-sm py-space-xs rounded-lg font-label-md text-label-md transition-colors text-on-surface-variant hover:bg-surface-container hover:text-on-surface';
-    }
-  });
-
-  // Refresh view-specific content
-  if (view === 'history') renderRunHistory();
-  if (view === 'reference') renderReference();
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 6. UI HELPERS
-// ══════════════════════════════════════════════════════════════════════════════
-
+// ── Helpers ──
 function setExample(text) {
   document.getElementById('intent-input').value = text;
   document.getElementById('intent-input').focus();
@@ -843,875 +513,363 @@ function formatElapsed(ms) {
 }
 
 function updateElapsed() {
-  if (!App.startTime) return;
-  const elapsed = Date.now() - App.startTime;
+  if (!startTime) return;
+  const elapsed = Date.now() - startTime;
   document.getElementById('header-elapsed').textContent = formatElapsed(elapsed);
   document.getElementById('telemetry-elapsed').textContent = (elapsed / 1000).toFixed(1) + 's';
-}
-
-function toggleSection(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const isHidden = el.classList.toggle('hidden');
-  // Update aria-expanded on the toggle button
-  const btn = el.previousElementSibling;
-  if (btn && btn.getAttribute('aria-expanded') != null) {
-    btn.setAttribute('aria-expanded', String(!isHidden));
-  }
-}
-
-function updateConnectionState(state) {
-  App.connectionState = state;
-  const badge = document.getElementById('connection-badge');
-  const dot = document.getElementById('connection-dot');
-  const text = document.getElementById('connection-text');
-
-  badge.classList.remove('hidden');
-  badge.classList.add('flex');
-
-  const states = {
-    connecting:    { color: 'bg-primary animate-pulse', label: 'Connecting' },
-    connected:     { color: 'bg-success', label: 'Connected' },
-    reconnecting:  { color: 'bg-primary animate-pulse', label: 'Reconnecting' },
-    disconnected:  { color: 'bg-outline', label: 'Disconnected' },
-    completed:     { color: 'bg-success', label: 'Completed' },
-    failed:        { color: 'bg-error', label: 'Failed' },
-  };
-
-  const s = states[state] || states.disconnected;
-  dot.className = `w-1.5 h-1.5 rounded-full ${s.color}`;
-  text.textContent = s.label;
 }
 
 function addTerminalLine(text, color = 'inverse-on-surface') {
   const container = document.getElementById('terminal-lines');
   const line = document.createElement('span');
-  line.style.color = TERMINAL_COLORS[color] || TERMINAL_COLORS['inverse-on-surface'];
-  line.textContent = text; // SAFE: textContent, not innerHTML
-  container.appendChild(line);
-
-  // Auto-scroll — only if near bottom
-  const parent = container.parentElement;
-  const isNearBottom = parent.scrollHeight - parent.scrollTop - parent.clientHeight < 80;
-  if (isNearBottom) {
-    parent.scrollTop = parent.scrollHeight;
-  }
-
-  App.logCount++;
-  document.getElementById('telemetry-logs').textContent = App.logCount;
-}
-
-function addTimelineEvent(agent, type, message, status = 'info') {
-  const event = {
-    timestamp: new Date(),
-    agent: agent,
-    type: type,
-    message: message,
-    status: status,
+  const colorMap = {
+    'primary': '#F59E0B',
+    'secondary': '#D97706',
+    'tertiary': '#D97706',
+    'tertiary-fixed': '#FDE68A',
+    'error': '#ef4444',
+    'on-surface': '#e5e5e5',
+    'inverse-on-surface': '#a3a3a3',
   };
-  App.timeline.push(event);
-  renderTimelineEntry(event);
+  line.style.color = colorMap[color] || colorMap['inverse-on-surface'];
+  line.textContent = text;
+  container.appendChild(line);
+  container.parentElement.scrollTop = container.parentElement.scrollHeight;
+  logCount++;
+  document.getElementById('telemetry-logs').textContent = logCount;
 }
 
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 7. STEPPER (Right column Agent Workflow)
-// ══════════════════════════════════════════════════════════════════════════════
-
-function buildStepper() {
-  const list = document.getElementById('stepper-list');
-  list.innerHTML = '';
-  AGENT_PIPELINE.forEach((agent, i) => {
-    const step = el('div', {
-      id: `step-${agent.id}`,
-      className: 'flex items-start gap-space-sm relative opacity-60 transition-smooth',
-      role: 'listitem',
-    }, [
-      el('div', {
-        id: `step-${agent.id}-icon`,
-        className: 'w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5',
-      }, [icon('hourglass_empty', 'text-[14px] text-outline')]),
-      el('div', { className: 'flex flex-col flex-1 min-w-0' }, [
-        el('div', { className: 'flex items-center justify-between' }, [
-          el('span', { className: 'font-title-md text-[14px] text-on-surface font-medium', textContent: `${i + 1}. ${agent.label.replace(' Agent', '')}` }),
-          el('span', { id: `step-${agent.id}-status`, className: 'font-label-sm text-label-sm text-outline', textContent: 'Queued' }),
-        ]),
-        el('span', { className: 'font-body-sm text-body-sm text-on-surface-variant truncate', textContent: agent.subtitle }),
-      ]),
-    ]);
-    list.appendChild(step);
-  });
+function updateStepperActive(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-60');
+  el.classList.add('p-space-xs', 'rounded-xl', 'bg-surface-container');
+  icon.className = 'w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span>';
+  status.innerHTML = '<span class="px-1.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-[10px]">Active</span>';
 }
 
-function updateStepperActive(agentId) {
-  const step = document.getElementById(`step-${agentId}`);
-  const iconEl = document.getElementById(`step-${agentId}-icon`);
-  const status = document.getElementById(`step-${agentId}-status`);
-  if (!step) return;
-  step.classList.remove('opacity-60');
-  step.classList.add('p-space-xs', 'rounded-xl', 'bg-surface-container');
-  iconEl.className = 'w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
-  iconEl.innerHTML = '';
-  iconEl.appendChild(icon('sync', 'text-[14px] animate-spin-slow'));
-
-  status.className = 'font-label-sm text-label-sm';
-  status.innerHTML = '';
-  const badge = el('span', { className: 'px-1.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-[10px]', textContent: 'Active' });
-  status.appendChild(badge);
-}
-
-function updateStepperDone(agentId) {
-  const step = document.getElementById(`step-${agentId}`);
-  const iconEl = document.getElementById(`step-${agentId}-icon`);
-  const status = document.getElementById(`step-${agentId}-status`);
-  if (!step) return;
-  step.classList.remove('opacity-60', 'p-space-xs', 'rounded-xl', 'bg-surface-container');
-  iconEl.className = 'w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5';
-  iconEl.innerHTML = '';
-  iconEl.appendChild(icon('check', 'text-[15px] text-tertiary', true));
+function updateStepperDone(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-60', 'p-space-xs', 'rounded-xl', 'bg-surface-container');
+  icon.className = 'w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[15px] text-tertiary" style="font-variation-settings: \'FILL\' 1;">check</span>';
   status.className = 'font-label-sm text-label-sm text-tertiary font-semibold';
   status.textContent = 'Done';
 }
 
-function updateStepperFailed(agentId) {
-  const step = document.getElementById(`step-${agentId}`);
-  const iconEl = document.getElementById(`step-${agentId}-icon`);
-  const status = document.getElementById(`step-${agentId}-status`);
-  if (!step) return;
-  step.classList.remove('opacity-60', 'p-space-xs', 'rounded-xl', 'bg-surface-container');
-  iconEl.className = 'w-6 h-6 rounded-full bg-error-container flex items-center justify-center shrink-0 mt-0.5';
-  iconEl.innerHTML = '';
-  iconEl.appendChild(icon('error', 'text-[15px] text-error', true));
+function updateStepperFailed(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-60', 'p-space-xs', 'rounded-xl', 'bg-surface-container');
+  icon.className = 'w-6 h-6 rounded-full bg-error-container flex items-center justify-center shrink-0 mt-0.5';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[15px] text-error" style="font-variation-settings: \'FILL\' 1;">error</span>';
   status.className = 'font-label-sm text-label-sm text-error font-semibold';
   status.textContent = 'Failed';
 }
 
 function updateProgress() {
-  const total = AGENT_PIPELINE.length;
-  const pct = Math.round((App.completedAgents / total) * 100);
+  const pct = Math.round((completedAgents / 6) * 100);
   document.getElementById('pipeline-progress-pct').textContent = pct + '%';
   document.getElementById('pipeline-progress-bar').style.width = pct + '%';
-  const progressBar = document.getElementById('pipeline-progress-container');
-  if (progressBar) progressBar.setAttribute('aria-valuenow', pct);
-  document.getElementById('telemetry-agents').textContent = `${App.completedAgents} / ${total}`;
-  document.getElementById('step-counter').textContent = App.completedAgents < total
-    ? `Step ${App.completedAgents + 1} of ${total}`
-    : 'Complete';
+  document.getElementById('telemetry-agents').textContent = `${completedAgents} / 6`;
+  document.getElementById('step-counter').textContent = completedAgents < 6 ? `Step ${completedAgents + 1} of 6` : 'Complete';
 }
 
+// ── Agent Block Builder ──
+function createAgentBlock(agentName, isActive = true) {
+  const container = document.getElementById('agent-blocks');
+  const blockId = `agent-block-${agentName}`;
 
-// ══════════════════════════════════════════════════════════════════════════════
-// 8. ACTIVE AGENT PANEL
-// ══════════════════════════════════════════════════════════════════════════════
+  // Don't create duplicate blocks
+  if (document.getElementById(blockId)) return;
 
-function showActiveAgent(agentId) {
-  const agent = AGENT_MAP[agentId];
-  if (!agent) return;
+  const article = document.createElement('article');
+  article.id = blockId;
+  article.className = isActive
+    ? 'rounded-xl bg-surface-container-lowest shadow-[0_4px_24px_rgba(217,119,87,0.12)] overflow-hidden animate-fadeSlideIn'
+    : 'rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden animate-fadeSlideIn';
 
-  const panel = document.getElementById('active-agent-panel');
-  panel.classList.remove('hidden');
+  const headerBg = isActive ? 'bg-surface-container-high' : 'bg-surface-container-low';
+  const statusIcon = isActive
+    ? `<span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span></span>`
+    : '';
+  const statusLabel = isActive
+    ? `<span class="font-body-sm text-body-sm text-primary font-medium">— ${agentSubtitles[agentName]}</span>`
+    : `<span class="font-body-sm text-body-sm text-on-surface-variant">— ${agentSubtitles[agentName]}</span>`;
+  const badge = isActive
+    ? `<span class="px-space-xs py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm">Streaming</span>`
+    : '';
 
-  document.getElementById('active-agent-name').textContent = agent.label;
-  document.getElementById('active-agent-subtitle').textContent = '— ' + agent.subtitle;
-
-  // Clear previous logs
-  const logsEl = document.getElementById('active-agent-logs');
-  logsEl.innerHTML = '';
-  const initLine = document.createElement('span');
-  initLine.className = 'text-outline';
-  initLine.textContent = 'Processing...';
-  logsEl.appendChild(initLine);
-
-  // Track agent start time
-  App.agentStates[agentId] = {
-    state: AGENT_STATES.RUNNING,
-    startTime: Date.now(),
-    endTime: null,
-    data: null,
-    logs: [],
-  };
-
-  // Update duration display
-  updateActiveAgentDuration();
+  article.innerHTML = `
+    <div class="flex items-center justify-between px-space-md py-space-sm ${headerBg} cursor-pointer hover:bg-surface-container transition-colors" onclick="document.getElementById('${blockId}-body').classList.toggle('hidden')">
+      <div class="flex items-center gap-space-sm">
+        ${statusIcon}
+        <div class="flex items-center gap-space-xs">
+          <span class="font-title-md text-[15px] text-on-surface font-semibold">${agentLabels[agentName]}</span>
+          ${statusLabel}
+        </div>
+      </div>
+      <div class="flex items-center gap-space-sm">
+        ${badge}
+        <span id="${blockId}-time" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm hidden"></span>
+        <span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+      </div>
+    </div>
+    <div class="p-space-md flex flex-col gap-space-md" id="${blockId}-body">
+      <div class="rounded-xl bg-surface-container p-space-md shadow-sm" id="${blockId}-thinking">
+        <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-space-xs">
+          <span class="material-symbols-outlined text-[14px]">${isActive ? 'bolt' : 'psychology'}</span>
+          <span>${isActive ? 'Active Processing' : 'Latent Synthesis Track'}</span>
+        </div>
+        <p class="font-headline-sm text-body-md text-on-surface-variant italic leading-relaxed" id="${blockId}-thought">
+          Processing...
+        </p>
+      </div>
+      <div id="${blockId}-output" class="flex flex-col gap-space-sm"></div>
+    </div>
+  `;
+  container.appendChild(article);
 }
 
-function updateActiveAgentDuration() {
-  if (!App.currentActiveAgent) return;
-  const state = App.agentStates[App.currentActiveAgent];
-  if (!state || !state.startTime) return;
-  const elapsed = ((Date.now() - state.startTime) / 1000).toFixed(1);
-  document.getElementById('active-agent-duration').textContent = elapsed + 's';
-}
+function finalizeAgentBlock(agentName, data) {
+  const blockId = `agent-block-${agentName}`;
+  const block = document.getElementById(blockId);
+  if (!block) return;
 
-function appendActiveAgentLog(text) {
-  if (!App.currentActiveAgent) return;
-  const logsEl = document.getElementById('active-agent-logs');
-  // Remove "Processing..." placeholder
-  const placeholder = logsEl.querySelector('.text-outline');
-  if (placeholder && placeholder.textContent === 'Processing...') {
-    placeholder.remove();
-  }
-  const line = document.createElement('span');
-  line.className = 'text-on-surface-variant';
-  line.textContent = text;
-  logsEl.appendChild(line);
-  logsEl.scrollTop = logsEl.scrollHeight;
+  // Remove active glow
+  block.className = 'rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden transition-all';
 
-  // Store in agent state
-  const state = App.agentStates[App.currentActiveAgent];
-  if (state) state.logs.push(text);
-}
-
-function hideActiveAgent() {
-  document.getElementById('active-agent-panel').classList.add('hidden');
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 9. ACTIVITY TIMELINE
-// ══════════════════════════════════════════════════════════════════════════════
-
-function renderTimelineEntry(event) {
-  const container = document.getElementById('timeline-entries');
-  const timeline = document.getElementById('activity-timeline');
-  timeline.classList.remove('hidden');
-
-  const timeStr = event.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  const agent = AGENT_MAP[event.agent];
-
-  const statusIcons = {
-    'started':   { icon: 'play_arrow', color: 'text-primary', bg: 'bg-primary' },
-    'completed': { icon: 'check', color: 'text-tertiary', bg: 'bg-tertiary' },
-    'failed':    { icon: 'close', color: 'text-error', bg: 'bg-error' },
-    'info':      { icon: 'info', color: 'text-on-surface-variant', bg: 'bg-outline' },
-    'handoff':   { icon: 'arrow_downward', color: 'text-primary', bg: 'bg-primary-container' },
-  };
-  const si = statusIcons[event.status] || statusIcons.info;
-
-  const entry = el('div', { className: 'flex items-start gap-space-sm py-1.5 relative' }, [
-    // Timestamp
-    el('span', { className: 'font-mono text-[11px] text-outline shrink-0 mt-0.5 w-16', textContent: timeStr }),
-    // Dot
-    el('div', { className: `timeline-dot w-5 h-5 rounded-full ${si.bg} flex items-center justify-center shrink-0` }, [
-      icon(si.icon, `text-[12px] ${event.status === 'completed' || event.status === 'failed' ? 'text-surface' : si.color}`, true),
-    ]),
-    // Content
-    el('div', { className: 'flex flex-col flex-1 min-w-0' }, [
-      el('div', { className: 'flex items-center gap-space-xs' }, [
-        agent ? el('span', { className: 'font-label-sm text-label-sm text-on-surface font-semibold', textContent: agent.label }) : null,
-        el('span', { className: 'font-body-sm text-body-sm text-on-surface-variant truncate', textContent: event.message }),
-      ]),
-    ]),
-  ]);
-
-  container.appendChild(entry);
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 10. AGENT COMPLETION & HANDOFF
-// ══════════════════════════════════════════════════════════════════════════════
-
-function finalizeAgent(agentId, data) {
-  const state = App.agentStates[agentId];
-  if (state) {
-    state.state = AGENT_STATES.COMPLETED;
-    state.endTime = Date.now();
-    state.data = data;
+  // Update header: replace ping dot with check icon
+  const header = block.querySelector(':scope > div:first-child');
+  if (header) {
+    header.className = 'flex items-center justify-between px-space-md py-space-sm bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors';
+    const iconArea = header.querySelector('.flex.items-center.gap-space-sm');
+    if (iconArea) {
+      // Replace the ping dot
+      const pingDot = iconArea.querySelector('.relative.flex');
+      if (pingDot) {
+        pingDot.outerHTML = '<div class="w-6 h-6 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: \'FILL\' 1;">check_circle</span></div>';
+      }
+    }
+    // Remove streaming badge, show completed time
+    const badges = header.querySelector('.flex.items-center.gap-space-sm:last-child');
+    if (badges) {
+      const streamBadge = badges.querySelector('.bg-primary-container');
+      if (streamBadge) streamBadge.remove();
+      const timeEl = document.getElementById(`${blockId}-time`);
+      if (timeEl) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        timeEl.textContent = `Completed`;
+        timeEl.classList.remove('hidden');
+      }
+    }
   }
 
-  const agent = AGENT_MAP[agentId];
-  const duration = state ? ((state.endTime - state.startTime) / 1000).toFixed(1) + 's' : '';
-
-  // Add completion to timeline
-  let completionMsg = 'Completed';
-  if (agentId === 'planner' && data) completionMsg = `${(data.features || []).length} features, ${data.project_name || 'Project'}`;
-  if (agentId === 'architect' && data) completionMsg = `${(data.file_list || []).length} files planned`;
-  if (agentId === 'coder' && data) completionMsg = `${data.files_generated || 0} files generated`;
-  if (agentId === 'debugger' && data) completionMsg = `${data.files_reviewed || 0} files reviewed`;
-  if (agentId === 'terminal' && data) completionMsg = data.success ? 'All checks passed' : 'Some checks had warnings';
-  if (agentId === 'browser' && data) completionMsg = data.success ? `Tests passed — ${data.page_title || 'N/A'}` : 'Tests had issues';
-
-  addTimelineEvent(agentId, 'agent_complete', `${completionMsg} — ${duration}`, 'completed');
-
-  // Show agent-specific output in timeline
-  renderAgentOutput(agentId, data);
-
-  // Update plan preview
-  if (agentId === 'planner' && data) renderPlanPreview(data);
-
-  // Update browser panel
-  if (agentId === 'browser' && data) updateBrowserPanel(data);
-
-  // Update telemetry files count
-  if (agentId === 'coder' && data) {
-    document.getElementById('telemetry-files').textContent = String(data.files_generated || 0);
+  // Update thinking block label
+  const thinkingLabel = block.querySelector(`#${blockId}-thinking .uppercase`);
+  if (thinkingLabel) {
+    thinkingLabel.innerHTML = '<span class="material-symbols-outlined text-[14px]">psychology</span><span>Latent Synthesis Track</span>';
   }
-}
 
-function renderAgentOutput(agentId, data) {
-  if (!data) return;
+  // Add output data
+  const outputArea = document.getElementById(`${blockId}-output`);
+  if (!outputArea) return;
 
-  if (agentId === 'planner') {
-    // Show tech stack tags in intent card
-    const tagsContainer = document.getElementById('intent-tags');
-    tagsContainer.innerHTML = '';
+  if (agentName === 'planner' && data) {
     const techStack = data.tech_stack || {};
-    Object.entries(techStack).forEach(([k, v]) => {
-      const val = typeof v === 'object' ? JSON.stringify(v) : String(v);
-      const tag = el('span', {
-        className: 'px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm flex items-center gap-1',
-      }, [icon('code', 'text-[12px] text-primary'), document.createTextNode(val)]);
-      tagsContainer.appendChild(tag);
-    });
+    const features = data.features || [];
+    const tags = Object.entries(techStack).map(([k, v]) =>
+      `<span class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}</span>`
+    ).join('');
+
+    outputArea.innerHTML = `
+      <div class="rounded-xl bg-surface-container-low p-space-md shadow-sm flex flex-col gap-space-sm">
+        <div class="flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-primary text-[18px]">account_tree</span>
+          <h2 class="font-title-md text-title-md text-on-surface">Architecture Blueprint: ${data.project_name || 'Project'}</h2>
+        </div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">${data.description || ''}</p>
+        <div class="flex flex-wrap gap-space-xs pt-space-xs">${tags}</div>
+        ${features.length > 0 ? `<div class="mt-space-xs"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Features (${features.length})</span><ul class="mt-1 flex flex-col gap-0.5">${features.map(f => `<li class="font-body-sm text-body-sm text-on-surface flex items-start gap-1.5"><span class="material-symbols-outlined text-[14px] text-primary mt-0.5">chevron_right</span>${f}</li>`).join('')}</ul></div>` : ''}
+      </div>
+    `;
+
+    // Show intent tags
+    const tagsContainer = document.getElementById('intent-tags');
+    tagsContainer.innerHTML = Object.entries(techStack).map(([k, v]) =>
+      `<span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-primary">code</span>${typeof v === 'object' ? JSON.stringify(v) : v}</span>`
+    ).join('');
     tagsContainer.classList.remove('hidden');
 
     // Show project context
     const ctx = document.getElementById('project-context-card');
     ctx.classList.remove('hidden');
     const rows = document.getElementById('project-context-rows');
-    rows.innerHTML = '';
-    const contextData = [
-      ['Project', data.project_name || '—'],
-      ['Backend', techStack.backend || '—'],
-      ['Frontend', techStack.frontend || '—'],
-    ];
-    contextData.forEach(([label, value]) => {
-      const row = el('div', { className: 'flex items-center justify-between text-body-sm font-body-sm' }, [
-        el('span', { className: 'text-on-surface-variant', textContent: label }),
-        el('span', { className: 'font-semibold text-on-surface', textContent: String(value) }),
-      ]);
-      rows.appendChild(row);
-    });
+    rows.innerHTML = `
+      <div class="flex items-center justify-between text-body-sm font-body-sm"><span class="text-on-surface-variant">Project</span><span class="font-semibold text-on-surface">${data.project_name || '—'}</span></div>
+      <div class="flex items-center justify-between text-body-sm font-body-sm"><span class="text-on-surface-variant">Backend</span><span class="font-semibold text-on-surface">${techStack.backend || '—'}</span></div>
+      <div class="flex items-center justify-between text-body-sm font-body-sm"><span class="text-on-surface-variant">Frontend</span><span class="font-semibold text-on-surface">${techStack.frontend || '—'}</span></div>
+    `;
+  }
+
+  if (agentName === 'architect' && data) {
+    const fileList = data.file_list || [];
+    outputArea.innerHTML = `
+      <div class="rounded-xl bg-surface-container-low p-space-md shadow-sm flex flex-col gap-space-xs font-body-sm text-body-sm">
+        <div class="flex items-center justify-between pb-space-xs">
+          <span class="font-title-md text-[14px] text-on-surface font-semibold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-primary text-[18px]">folder_open</span>
+            Project Root Tree (${fileList.length} Files Planned)
+          </span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Staged for generation</span>
+        </div>
+        ${fileList.map(f => `
+          <div class="flex items-center justify-between py-1 px-space-xs rounded-lg hover:bg-surface-container transition-colors">
+            <div class="flex items-center gap-2 pl-2">
+              <span class="material-symbols-outlined text-[16px] ${f === data.entrypoint ? 'text-primary' : 'text-outline'}">draft</span>
+              <span class="text-on-surface">${f}</span>
+              ${f === data.entrypoint ? '<span class="text-label-sm font-label-sm text-primary font-semibold">(Entrypoint)</span>' : ''}
+            </div>
+          </div>
+        `).join('')}
+        <div class="mt-space-xs pt-space-xs border-t border-outline-variant/20">
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Run: <code class="font-mono text-[12px] text-on-surface bg-surface-container px-1 rounded">${data.run_command || ''}</code></span>
+        </div>
+      </div>
+    `;
+  }
+
+  if (agentName === 'coder' && data) {
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-primary">check_circle</span> ${data.files_generated || 0} files generated successfully</span>
+      </div>
+    `;
+  }
+
+  if (agentName === 'debugger' && data) {
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-primary">bug_report</span> ${data.files_reviewed || 0} files reviewed and patched</span>
+      </div>
+    `;
+  }
+
+  if (agentName === 'terminal' && data) {
+    const icon = data.success ? 'check_circle' : 'warning';
+    const color = data.success ? 'text-success' : 'text-error';
+    const msg = data.success ? 'All checks passed — build successful' : 'Some checks had warnings';
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] ${color}" style="font-variation-settings: 'FILL' 1;">${icon}</span> ${msg}</span>
+      </div>
+    `;
+    if (!data.success) updateStepperFailed('terminal');
+  }
+
+  if (agentName === 'browser' && data) {
+    const icon = data.success ? 'check_circle' : 'warning';
+    const color = data.success ? 'text-success' : 'text-error';
+    const msg = data.success
+      ? `E2E smoke tests passed — Page: "${data.page_title || 'N/A'}"`
+      : 'Browser tests had issues';
+    outputArea.innerHTML = `
+      <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">
+        <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] ${color}" style="font-variation-settings: 'FILL' 1;">${icon}</span> ${msg}</span>
+      </div>
+    `;
+    if (!data.success) updateStepperFailed('browser');
   }
 }
 
-function renderPlanPreview(data) {
-  const card = document.getElementById('plan-preview-card');
-  const content = document.getElementById('plan-preview-content');
-  card.classList.remove('hidden');
-  content.innerHTML = '';
-
-  // Project name
-  if (data.project_name) {
-    content.appendChild(el('div', { className: 'flex items-center gap-space-xs' }, [
-      icon('rocket_launch', 'text-[14px] text-primary'),
-      el('span', { className: 'font-title-md text-[14px] text-on-surface font-semibold', textContent: data.project_name }),
-    ]));
-  }
-
-  // Description
-  if (data.description) {
-    content.appendChild(el('p', { className: 'font-body-sm text-body-sm text-on-surface-variant', textContent: data.description }));
-  }
-
-  // Features
-  if (data.features && data.features.length > 0) {
-    const featureList = el('div', { className: 'flex flex-col gap-0.5' });
-    featureList.appendChild(el('span', { className: 'font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider', textContent: `Features (${data.features.length})` }));
-    data.features.forEach(f => {
-      featureList.appendChild(el('div', { className: 'flex items-start gap-1.5 font-body-sm text-body-sm text-on-surface pl-1' }, [
-        icon('chevron_right', 'text-[12px] text-primary mt-0.5'),
-        el('span', { textContent: String(f) }),
-      ]));
-    });
-    content.appendChild(featureList);
-  }
-
-  // Tech stack
-  const techStack = data.tech_stack || {};
-  if (Object.keys(techStack).length > 0) {
-    const stackDiv = el('div', { className: 'flex flex-wrap gap-space-xs' });
-    Object.entries(techStack).forEach(([k, v]) => {
-      const val = typeof v === 'object' ? JSON.stringify(v) : String(v);
-      stackDiv.appendChild(el('span', {
-        className: 'px-space-xs py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm',
-        textContent: `${k}: ${val}`,
-      }));
-    });
-    content.appendChild(stackDiv);
-  }
+// ── Download ──
+function downloadProject() {
+  if (!sessionId) return;
+  window.open(`/api/forge/${sessionId}/download`, '_blank');
 }
 
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 11. BROWSER AGENT PANEL
-// ══════════════════════════════════════════════════════════════════════════════
-
-function showBrowserPanel(state) {
-  const panel = document.getElementById('browser-panel');
-  panel.classList.remove('hidden');
-  const badge = document.getElementById('browser-status-badge');
-
-  if (state === 'running') {
-    badge.className = 'px-space-xs py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm';
-    badge.textContent = 'Running';
-  }
-}
-
-function updateBrowserPanel(data) {
-  const badge = document.getElementById('browser-status-badge');
-  const urlBar = document.getElementById('browser-url-bar');
-  const preview = document.getElementById('browser-preview-area');
-  const results = document.getElementById('browser-results');
-
-  if (data.success) {
-    badge.className = 'px-space-xs py-0.5 rounded-full bg-surface-container-high text-success font-label-sm text-label-sm';
-    badge.textContent = 'Passed';
-  } else {
-    badge.className = 'px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm';
-    badge.textContent = 'Failed';
-  }
-
-  // Page title
-  if (data.page_title) {
-    urlBar.classList.remove('hidden');
-    document.getElementById('browser-url-text').textContent = data.page_title;
-  }
-
-  // Screenshot
-  if (data.screenshot) {
-    preview.innerHTML = '';
-    const img = document.createElement('img');
-    img.src = data.screenshot;
-    img.alt = 'Browser screenshot';
-    img.className = 'w-full h-auto';
-    img.onerror = () => {
-      preview.innerHTML = '';
-      preview.appendChild(el('div', { className: 'flex flex-col items-center gap-space-xs text-on-surface-variant p-space-md text-center' }, [
-        icon('broken_image', 'text-[28px] text-outline'),
-        el('span', { className: 'font-body-sm text-body-sm', textContent: 'Screenshot failed to load' }),
-      ]));
-    };
-    preview.appendChild(img);
-  }
-
-  // Results
-  results.classList.remove('hidden');
-  results.innerHTML = '';
-  const resultIcon = data.success ? 'check_circle' : 'cancel';
-  const resultColor = data.success ? 'text-success' : 'text-error';
-  const resultMsg = data.success
-    ? `E2E smoke tests passed — Page: "${data.page_title || 'N/A'}"`
-    : 'Browser tests had issues';
-
-  results.appendChild(el('div', { className: 'flex items-center gap-space-xs p-space-xs rounded-lg bg-surface-container' }, [
-    icon(resultIcon, `text-[16px] ${resultColor}`, true),
-    el('span', { className: 'font-body-sm text-body-sm text-on-surface', textContent: resultMsg }),
-  ]));
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 12. FILE EXPLORER & CODE VIEWER
-// ══════════════════════════════════════════════════════════════════════════════
-
-function buildFileTree(files) {
-  const root = { name: 'PROJECT', children: {}, files: [], isDir: true };
-  files.forEach((file, idx) => {
-    const parts = file.path.split('/');
-    let current = root;
-    for (let i = 0; i < parts.length - 1; i++) {
-      if (!current.children[parts[i]]) {
-        current.children[parts[i]] = { name: parts[i], children: {}, files: [], isDir: true };
-      }
-      current = current.children[parts[i]];
-    }
-    current.files.push({ name: parts[parts.length - 1], index: idx, path: file.path, size: file.content.length });
-  });
-  return root;
-}
-
-function renderFileTree(node, container, depth = 0) {
-  // Sort: directories first, then files
-  const dirs = Object.values(node.children).sort((a, b) => a.name.localeCompare(b.name));
-  const files = node.files.sort((a, b) => a.name.localeCompare(b.name));
-
-  dirs.forEach(dir => {
-    const dirId = `dir-${dir.name}-${depth}`;
-    const dirEl = el('div', { className: 'flex flex-col' });
-
-    const toggle = el('button', {
-      className: 'file-tree-item flex items-center gap-1.5 py-1 px-1 rounded text-left w-full',
-      style: { paddingLeft: (depth * 16 + 4) + 'px' },
-      'aria-expanded': 'true',
-      'aria-controls': dirId,
-      tabindex: '0',
-      onclick: function() {
-        const content = document.getElementById(dirId);
-        const expanded = content.classList.toggle('hidden');
-        this.setAttribute('aria-expanded', String(!expanded));
-        const chevron = this.querySelector('.dir-chevron');
-        if (chevron) chevron.textContent = expanded ? 'chevron_right' : 'expand_more';
-      },
-    }, [
-      icon('expand_more', 'text-[14px] text-outline dir-chevron'),
-      icon('folder', 'text-[14px] text-primary'),
-      el('span', { className: 'font-body-sm text-body-sm text-on-surface', textContent: dir.name }),
-    ]);
-
-    const childContainer = el('div', { id: dirId, className: '' });
-    renderFileTree(dir, childContainer, depth + 1);
-
-    dirEl.appendChild(toggle);
-    dirEl.appendChild(childContainer);
-    container.appendChild(dirEl);
-  });
-
-  files.forEach(file => {
-    const fileEl = el('button', {
-      className: 'file-tree-item flex items-center gap-1.5 py-1 px-1 rounded text-left w-full',
-      style: { paddingLeft: (depth * 16 + 4) + 'px' },
-      'data-file-index': String(file.index),
-      'data-file-path': file.path,
-      role: 'treeitem',
-      tabindex: '0',
-      onclick: function() { selectFile(file.index); },
-    }, [
-      el('span', { className: 'w-[14px]', style: { display: 'inline-block' } }), // spacer
-      icon(getFileIcon(file.name), `text-[14px] ${getFileIconColor(file.name)}`),
-      el('span', { className: 'font-body-sm text-body-sm text-on-surface truncate', textContent: file.name }),
-      el('span', { className: 'font-label-sm text-[10px] text-outline ml-auto', textContent: formatFileSize(file.size) }),
-    ]);
-    container.appendChild(fileEl);
-  });
-}
-
-function getFileIcon(name) {
-  const ext = name.split('.').pop().toLowerCase();
-  const icons = {
-    py: 'code', js: 'javascript', ts: 'javascript', jsx: 'javascript', tsx: 'javascript',
-    html: 'html', css: 'css', json: 'data_object', md: 'description', txt: 'description',
-    yml: 'settings', yaml: 'settings', toml: 'settings', cfg: 'settings', ini: 'settings',
-    sql: 'database', db: 'database', sh: 'terminal', bat: 'terminal',
-    jpg: 'image', png: 'image', svg: 'image', gif: 'image',
-    lock: 'lock', env: 'key',
-  };
-  return icons[ext] || 'draft';
-}
-
-function getFileIconColor(name) {
-  const ext = name.split('.').pop().toLowerCase();
-  const colors = {
-    py: 'text-[#3572A5]', js: 'text-[#f1e05a]', ts: 'text-[#3178c6]',
-    html: 'text-[#e34c26]', css: 'text-[#563d7c]', json: 'text-[#a3a3a3]',
-    md: 'text-[#083fa1]',
-  };
-  return colors[ext] || 'text-outline';
-}
-
-function formatFileSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  return (bytes / 1024).toFixed(1) + ' KB';
-}
-
-function selectFile(index) {
-  App.selectedFileIndex = index;
-  const file = App.generatedFiles[index];
-  if (!file) return;
-
-  // Update tree selection
-  document.querySelectorAll('.file-tree-item[data-file-index]').forEach(el => {
-    el.classList.toggle('bg-surface-container', el.dataset.fileIndex === String(index));
-  });
-
-  // Show code viewer
-  document.getElementById('code-viewer-empty').classList.add('hidden');
-  const viewer = document.getElementById('code-viewer');
-  viewer.classList.remove('hidden');
-
-  document.getElementById('code-viewer-filename').textContent = file.path;
-  const ext = file.path.split('.').pop().toLowerCase();
-  document.getElementById('code-viewer-lang').textContent = ext.toUpperCase();
-
-  renderCodeContent(file.content);
-}
-
-function renderCodeContent(content) {
-  const container = document.getElementById('code-viewer-content');
-  container.innerHTML = '';
-  if (App.codeWrap) container.classList.add('code-wrap');
-  else container.classList.remove('code-wrap');
-
-  const pre = document.createElement('pre');
-  pre.className = 'p-0 m-0';
-  const lines = content.split('\n');
-
-  lines.forEach((line, i) => {
-    const lineDiv = document.createElement('div');
-    lineDiv.className = 'flex hover:bg-white/5 code-line-added';
-
-    const numSpan = document.createElement('span');
-    numSpan.className = 'code-line-number select-none px-2 py-0 text-right shrink-0 border-r border-outline-variant/10';
-    numSpan.style.minWidth = '3.5em';
-    numSpan.textContent = String(i + 1);
-
-    const codeSpan = document.createElement('span');
-    codeSpan.className = 'code-line-content px-3 py-0 flex-1 min-w-0';
-    codeSpan.style.fontFamily = "'JetBrains Mono', monospace";
-    codeSpan.style.fontSize = '12px';
-    codeSpan.style.lineHeight = '1.6';
-    codeSpan.style.color = '#d4d4d4';
-
-    // Add "+" prefix for diff view style
-    const prefix = document.createElement('span');
-    prefix.className = 'text-success mr-2 select-none';
-    prefix.textContent = '+';
-
-    codeSpan.appendChild(prefix);
-    codeSpan.appendChild(document.createTextNode(line));
-
-    lineDiv.appendChild(numSpan);
-    lineDiv.appendChild(codeSpan);
-    pre.appendChild(lineDiv);
-  });
-
-  container.appendChild(pre);
-}
-
-function toggleCodeWrap() {
-  App.codeWrap = !App.codeWrap;
-  const container = document.getElementById('code-viewer-content');
-  container.classList.toggle('code-wrap', App.codeWrap);
-}
-
-function copyCodeContent() {
-  if (App.selectedFileIndex < 0) return;
-  const file = App.generatedFiles[App.selectedFileIndex];
-  if (file) navigator.clipboard.writeText(file.content);
-}
-
-function filterFileTree(query) {
-  const items = document.querySelectorAll('.file-tree-item[data-file-path]');
-  const q = query.toLowerCase();
-  items.forEach(item => {
-    const path = (item.dataset.filePath || '').toLowerCase();
-    const match = !q || path.includes(q);
-    item.style.display = match ? '' : 'none';
-  });
-}
-
+// ── Load files ──
 async function loadFiles() {
-  if (!App.sessionId) return;
+  if (!sessionId) return;
   try {
-    const resp = await fetch(`/api/forge/${App.sessionId}/files`);
+    const resp = await fetch(`/api/forge/${sessionId}/files`);
     const data = await resp.json();
     if (!data.files) return;
 
-    App.generatedFiles = data.files;
-
     const explorer = document.getElementById('files-explorer');
-    const treePane = document.getElementById('file-tree');
+    const body = document.getElementById('files-explorer-body');
     const countBadge = document.getElementById('files-count-badge');
-
     explorer.classList.remove('hidden');
     countBadge.textContent = `${data.files.length} files`;
 
-    // Build and render file tree
-    treePane.innerHTML = '';
-    const tree = buildFileTree(data.files);
-    renderFileTree(tree, treePane);
-
-    // Reset code viewer
-    document.getElementById('code-viewer-empty').classList.remove('hidden');
-    document.getElementById('code-viewer').classList.add('hidden');
-    App.selectedFileIndex = -1;
-
+    body.innerHTML = data.files.map((f, i) => `
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between py-1.5 px-space-xs rounded-lg hover:bg-surface-container transition-colors cursor-pointer" onclick="document.getElementById('file-preview-${i}').classList.toggle('hidden')">
+          <div class="flex items-center gap-2 pl-2">
+            <span class="material-symbols-outlined text-[16px] text-primary">draft</span>
+            <span class="text-on-surface font-body-sm text-body-sm">${f.path}</span>
+          </div>
+          <div class="flex items-center gap-space-sm">
+            <span class="font-label-sm text-label-sm text-outline">${(f.content.length / 1024).toFixed(1)} KB</span>
+            <span class="material-symbols-outlined text-[16px] text-outline">expand_more</span>
+          </div>
+        </div>
+        <div id="file-preview-${i}" class="hidden mt-1 mb-2 rounded-lg bg-inverse-surface overflow-hidden">
+          <div class="flex items-center justify-between px-space-sm py-space-xs bg-surface-container-highest/10">
+            <span class="font-mono text-[11px] text-inverse-on-surface/70">${f.path}</span>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('file-code-${i}').textContent)" class="text-inverse-on-surface/50 hover:text-inverse-on-surface transition-colors">
+              <span class="material-symbols-outlined text-[14px]">content_copy</span>
+            </button>
+          </div>
+          <pre class="p-space-sm overflow-x-auto max-h-[300px] overflow-y-auto"><code id="file-code-${i}" class="font-mono text-[12px] leading-relaxed text-inverse-on-surface whitespace-pre">${escapeHtml(f.content)}</code></pre>
+        </div>
+      </div>
+    `).join('');
   } catch (e) {
     console.error('Failed to load files:', e);
-    addTerminalLine('[ERROR] Failed to load generated files', 'error');
   }
 }
 
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 13. RUN HISTORY
-// ══════════════════════════════════════════════════════════════════════════════
-
-function saveRunToHistory(success) {
-  const duration = App.startTime ? Date.now() - App.startTime : 0;
-  const plannerState = App.agentStates.planner;
-  const projectName = plannerState && plannerState.data ? plannerState.data.project_name : 'Unknown';
-  const coderState = App.agentStates.coder;
-  const fileCount = coderState && coderState.data ? coderState.data.files_generated || 0 : 0;
-
-  App.runHistory.unshift({
-    sessionId: App.sessionId || '—',
-    query: App.query,
-    projectName: projectName,
-    status: success ? 'completed' : 'failed',
-    duration: duration,
-    fileCount: fileCount,
-    timestamp: new Date(),
-    agentsCompleted: App.completedAgents,
-    agentsTotal: AGENT_PIPELINE.length,
-  });
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
-function renderRunHistory() {
-  const list = document.getElementById('history-list');
-  const empty = document.getElementById('history-empty');
-
-  list.innerHTML = '';
-
-  if (App.runHistory.length === 0) {
-    empty.classList.remove('hidden');
-    return;
-  }
-
-  empty.classList.add('hidden');
-
-  App.runHistory.forEach(run => {
-    const isSuccess = run.status === 'completed';
-    const durationStr = (run.duration / 1000).toFixed(0) + 's';
-    const timeStr = run.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    const card = el('div', { className: 'rounded-xl bg-surface-container-lowest p-space-md flex items-center justify-between gap-space-md' }, [
-      el('div', { className: 'flex items-center gap-space-md min-w-0' }, [
-        icon(isSuccess ? 'check_circle' : 'cancel', `text-[20px] ${isSuccess ? 'text-success' : 'text-error'}`, true),
-        el('div', { className: 'flex flex-col min-w-0' }, [
-          el('div', { className: 'flex items-center gap-space-sm' }, [
-            el('span', { className: 'font-mono text-[12px] text-primary', textContent: `#${run.sessionId}` }),
-            el('span', { className: 'font-title-md text-[14px] text-on-surface font-semibold truncate', textContent: run.projectName }),
-          ]),
-          el('span', { className: 'font-body-sm text-body-sm text-on-surface-variant truncate', textContent: run.query }),
-        ]),
-      ]),
-      el('div', { className: 'flex items-center gap-space-md shrink-0' }, [
-        el('span', { className: 'font-label-sm text-label-sm text-on-surface-variant', textContent: timeStr }),
-        el('span', { className: 'font-mono text-[12px] text-on-surface', textContent: durationStr }),
-        el('span', { className: 'font-label-sm text-label-sm text-on-surface-variant', textContent: `${run.fileCount} files` }),
-      ]),
-    ]);
-    list.appendChild(card);
-  });
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 14. REFERENCE PAGE
-// ══════════════════════════════════════════════════════════════════════════════
-
-function renderReference() {
-  const grid = document.getElementById('reference-grid');
-  if (grid.children.length > 0) return; // Already rendered
-
-  AGENT_PIPELINE.forEach(agent => {
-    const card = el('div', { className: 'rounded-xl bg-surface-container-lowest p-space-md flex flex-col gap-space-sm' }, [
-      el('div', { className: 'flex items-center gap-space-sm' }, [
-        el('div', { className: 'w-8 h-8 rounded-full bg-surface-container flex items-center justify-center' }, [
-          icon(agent.icon, 'text-[18px] text-primary'),
-        ]),
-        el('span', { className: 'font-title-md text-title-md text-on-surface font-semibold', textContent: agent.label }),
-      ]),
-      el('p', { className: 'font-body-sm text-body-sm text-on-surface-variant', textContent: agent.subtitle }),
-    ]);
-    grid.appendChild(card);
-  });
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 15. DOWNLOAD & STOP
-// ══════════════════════════════════════════════════════════════════════════════
-
-function downloadProject() {
-  if (!App.sessionId) return;
-  window.open(`/api/forge/${App.sessionId}/download`, '_blank');
-}
-
-function stopPipeline() {
-  showConfirmDialog(
-    'Stop Pipeline',
-    'Are you sure you want to stop the current pipeline? This will close the connection. The backend may continue processing.',
-    () => {
-      SSE.close();
-      updateConnectionState(CONNECTION_STATES.DISCONNECTED);
-      addTerminalLine('[USER] Pipeline stopped by user.', 'error');
-      finishPipeline(false);
-    }
-  );
-}
-
-function showConfirmDialog(title, message, onConfirm) {
-  const dialog = document.getElementById('confirm-dialog');
-  document.getElementById('confirm-title').textContent = title;
-  document.getElementById('confirm-message').textContent = message;
-
-  const confirmBtn = document.getElementById('confirm-action');
-  const cancelBtn = document.getElementById('confirm-cancel');
-
-  const cleanup = () => {
-    dialog.close();
-    confirmBtn.onclick = null;
-    cancelBtn.onclick = null;
-  };
-
-  confirmBtn.onclick = () => { cleanup(); onConfirm(); };
-  cancelBtn.onclick = cleanup;
-
-  dialog.showModal();
-}
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 16. MAIN FORGE FUNCTION
-// ══════════════════════════════════════════════════════════════════════════════
-
+// ── Main Forge Function ──
 function startForge() {
   const input = document.getElementById('intent-input');
   const query = input.value.trim();
   if (!query) return;
-  if (App.isRunning) return;
 
   // Reset state
-  App.sessionId = null;
-  App.startTime = Date.now();
-  App.logCount = 0;
-  App.completedAgents = 0;
-  App.currentActiveAgent = null;
-  App.agentStates = {};
-  App.timeline = [];
-  App.generatedFiles = [];
-  App.selectedFileIndex = -1;
-  App.isRunning = true;
-  App.query = query;
-  App.pipelineFinished = false;
+  sessionId = null;
+  startTime = Date.now();
+  logCount = 0;
+  completedAgents = 0;
+  currentActiveAgent = null;
 
   // Update UI to running state
   document.getElementById('forge-btn').disabled = true;
   document.getElementById('forge-btn-text').textContent = 'Forging...';
   document.getElementById('empty-state').classList.add('hidden');
+  document.getElementById('agent-blocks').classList.remove('hidden');
+  document.getElementById('agent-blocks').innerHTML = '';
   document.getElementById('pipeline-complete-card').classList.add('hidden');
   document.getElementById('files-explorer').classList.add('hidden');
-  document.getElementById('plan-preview-card').classList.add('hidden');
-  document.getElementById('browser-panel').classList.add('hidden');
-  document.getElementById('tool-activity-panel').classList.add('hidden');
-  document.getElementById('activity-timeline').classList.remove('hidden');
-  document.getElementById('timeline-entries').innerHTML = '';
-  hideActiveAgent();
-
-  // Terminal
-  const termLines = document.getElementById('terminal-lines');
-  termLines.innerHTML = '';
-  const startLine = document.createElement('span');
-  startLine.style.color = '#D97706';
-  startLine.textContent = '$ Pipeline started...';
-  termLines.appendChild(startLine);
-
-  // Header
+  document.getElementById('terminal-lines').innerHTML = '<span class="text-[#d97757]">$ Pipeline started...</span>';
   document.getElementById('header-status-dot').className = 'w-2 h-2 rounded-full bg-primary animate-pulse';
   document.getElementById('header-run-id').textContent = 'Running';
-  document.getElementById('stop-btn').classList.remove('hidden');
-  document.getElementById('stop-btn').classList.add('flex');
-
-  // Telemetry
   document.getElementById('telemetry-dot').className = 'w-2 h-2 rounded-full bg-primary animate-pulse';
   document.getElementById('telemetry-status').textContent = 'Running';
-  document.getElementById('telemetry-files').textContent = 'N/A';
-  document.getElementById('telemetry-logs').textContent = '0';
-
-  // Banner
   document.getElementById('banner-dot').classList.remove('hidden');
   document.getElementById('banner-dot').className = 'w-2.5 h-2.5 rounded-full bg-primary animate-ping';
   document.getElementById('banner-title').textContent = 'Synthesis Run';
@@ -1724,231 +882,142 @@ function startForge() {
 
   // Show project context card
   document.getElementById('project-context-card').classList.remove('hidden');
-  document.getElementById('project-context-rows').innerHTML = '';
 
   // Reset stepper
-  buildStepper();
+  agentOrder.forEach(a => {
+    const el = document.getElementById(`step-${a}`);
+    const icon = document.getElementById(`step-${a}-icon`);
+    const status = document.getElementById(`step-${a}-status`);
+    if (el) {
+      el.className = 'flex items-start gap-space-sm relative opacity-60 transition-smooth';
+      icon.className = 'w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center shrink-0 mt-0.5';
+      icon.innerHTML = '<span class="material-symbols-outlined text-[14px] text-outline">hourglass_empty</span>';
+      status.className = 'font-label-sm text-label-sm text-outline';
+      status.textContent = 'Queued';
+    }
+  });
+
   updateProgress();
 
   // Start elapsed timer
-  if (App.elapsedInterval) clearInterval(App.elapsedInterval);
-  App.elapsedInterval = setInterval(updateElapsed, 100);
-
-  // Start agent duration timer
-  if (App.agentDurationInterval) clearInterval(App.agentDurationInterval);
-  App.agentDurationInterval = setInterval(updateActiveAgentDuration, 100);
-
-  // Add timeline event
-  addTimelineEvent(null, 'run_started', 'Pipeline started', 'started');
+  if (elapsedInterval) clearInterval(elapsedInterval);
+  elapsedInterval = setInterval(updateElapsed, 100);
 
   // ── SSE Connection ──
-  SSE.connect(query);
+  const evtSource = new EventSource(`/api/forge/stream?query=${encodeURIComponent(query)}`);
+
+  evtSource.onmessage = function (event) {
+    try {
+      const data = JSON.parse(event.data);
+      handleSSEEvent(data);
+    } catch (e) {
+      console.error('SSE parse error:', e);
+    }
+  };
+
+  evtSource.onerror = function () {
+    evtSource.close();
+    addTerminalLine('[ERROR] Connection lost.', 'error');
+    finishPipeline(false);
+  };
 }
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 17. SSE EVENT HANDLER
-// ══════════════════════════════════════════════════════════════════════════════
 
 function handleSSEEvent(event) {
   switch (event.type) {
     case 'session':
-      App.sessionId = event.session_id;
-      document.getElementById('header-run-id').textContent = `#${event.session_id}`;
-      addTerminalLine(`[SESSION] ID: ${event.session_id}`, 'primary');
+      sessionId = event.session_id;
+      document.getElementById('header-run-id').textContent = `#${sessionId}`;
+      addTerminalLine(`[SESSION] ID: ${sessionId}`, 'primary');
       break;
 
-    case 'agent_start': {
-      const agentId = event.agent;
-      App.currentActiveAgent = agentId;
-
-      showActiveAgent(agentId);
-      updateStepperActive(agentId);
-      addTimelineEvent(agentId, 'agent_start', 'Started', 'started');
-
-      // Show browser panel when browser agent starts
-      if (agentId === 'browser') {
-        showBrowserPanel('running');
-      }
-
-      // Show tool activity panel
-      document.getElementById('tool-activity-panel').classList.remove('hidden');
+    case 'agent_start':
+      currentActiveAgent = event.agent;
+      createAgentBlock(event.agent, true);
+      updateStepperActive(event.agent);
       break;
-    }
 
     case 'agent_log':
       addTerminalLine(event.text, event.color || 'on-surface');
-      appendActiveAgentLog(event.text);
+      // Update the active agent's thinking text
+      if (currentActiveAgent) {
+        const thoughtEl = document.getElementById(`agent-block-${currentActiveAgent}-thought`);
+        if (thoughtEl) {
+          const currentText = thoughtEl.textContent;
+          if (currentText === 'Processing...') {
+            thoughtEl.textContent = event.text;
+          } else {
+            thoughtEl.textContent += '\n' + event.text;
+          }
+        }
+      }
       break;
 
-    case 'agent_complete': {
-      const agentId = event.agent;
-      App.completedAgents++;
-
-      finalizeAgent(agentId, event.data);
-      updateStepperDone(agentId);
+    case 'agent_complete':
+      const agent = event.agent;
+      completedAgents++;
+      finalizeAgentBlock(agent, event.data);
+      updateStepperDone(agent);
       updateProgress();
-
-      // Handle failures
-      if (agentId === 'terminal' && event.data && !event.data.success) {
-        updateStepperFailed('terminal');
-      }
-      if (agentId === 'browser' && event.data && !event.data.success) {
-        updateStepperFailed('browser');
-      }
-
-      // Hide active panel (next agent_start will show it again)
-      hideActiveAgent();
-      App.currentActiveAgent = null;
+      currentActiveAgent = null;
       break;
-    }
 
-    case 'pipeline_complete': {
-      App.sessionId = event.session_id || App.sessionId;
+    case 'pipeline_complete':
+      sessionId = event.session_id || sessionId;
       const d = event.data || {};
-
       addTerminalLine(`\n[COMPLETE] Project: ${d.project_name || 'unknown'}`, 'tertiary');
       document.getElementById('banner-title').textContent = `Synthesis Complete: ${d.project_name || 'Project'}`;
 
-      addTimelineEvent(null, 'pipeline_complete', `Pipeline complete — ${d.project_name || 'Project'}`, 'completed');
-
-      // Show complete card (SAFE: using DOM methods, not innerHTML with untrusted data)
+      // Show complete card
       const completeCard = document.getElementById('pipeline-complete-card');
       completeCard.classList.remove('hidden');
-      const summary = document.getElementById('complete-summary');
-      summary.innerHTML = '';
-
-      const grid = el('div', { className: 'grid grid-cols-2 gap-space-sm' });
-      const summaryData = [
-        ['Project', d.project_name || '—', ''],
-        ['Files Generated', String(d.files_count || 0), ''],
-        ['Terminal Check', d.terminal_success ? '✓ Passed' : '⚠ Warnings', d.terminal_success ? 'text-success' : 'text-error'],
-        ['Browser Test', d.browser_success ? '✓ Passed' : '⚠ Warnings', d.browser_success ? 'text-success' : 'text-error'],
-      ];
-      summaryData.forEach(([label, value, colorClass]) => {
-        grid.appendChild(el('div', { className: 'flex flex-col' }, [
-          el('span', { className: 'font-label-sm text-label-sm text-on-surface-variant', textContent: label }),
-          el('span', { className: `font-title-md text-[14px] ${colorClass || 'text-on-surface'}`, textContent: value }),
-        ]));
-      });
-      summary.appendChild(grid);
-
-      // Run command
-      if (d.run_command) {
-        const cmdDiv = el('div', { className: 'mt-space-sm' }, [
-          el('span', { className: 'font-label-sm text-label-sm text-on-surface-variant', textContent: 'Run Command' }),
-          el('div', { className: 'mt-1 px-space-sm py-space-xs rounded-lg bg-inverse-surface' }, [
-            el('code', { className: 'font-mono text-[12px] text-inverse-on-surface', textContent: d.run_command }),
-          ]),
-        ]);
-        summary.appendChild(cmdDiv);
-      }
+      document.getElementById('complete-summary').innerHTML = `
+        <div class="grid grid-cols-2 gap-space-sm">
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Project</span><span class="font-title-md text-[14px] text-on-surface">${d.project_name || '—'}</span></div>
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Files Generated</span><span class="font-title-md text-[14px] text-on-surface">${d.files_count || 0}</span></div>
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Terminal Check</span><span class="font-title-md text-[14px] ${d.terminal_success ? 'text-success' : 'text-error'}">${d.terminal_success ? '✓ Passed' : '⚠ Warnings'}</span></div>
+          <div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Browser Test</span><span class="font-title-md text-[14px] ${d.browser_success ? 'text-success' : 'text-error'}">${d.browser_success ? '✓ Passed' : '⚠ Warnings'}</span></div>
+        </div>
+        <div class="mt-space-sm"><span class="font-label-sm text-label-sm text-on-surface-variant">Run Command</span><div class="mt-1 px-space-sm py-space-xs rounded-lg bg-inverse-surface"><code class="font-mono text-[12px] text-inverse-on-surface">${d.run_command || ''}</code></div></div>
+      `;
 
       // Load files
       loadFiles();
       finishPipeline(true);
       break;
-    }
 
     case 'error':
       addTerminalLine(`[ERROR] ${event.message}`, 'error');
-      addTimelineEvent(App.currentActiveAgent, 'error', event.message || 'Pipeline error', 'failed');
-      if (App.currentActiveAgent) {
-        updateStepperFailed(App.currentActiveAgent);
-      }
       finishPipeline(false);
       break;
 
     case 'done':
-      // Stream sentinel — SSE manager handles close
+      // Stream closed
       break;
   }
 }
 
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 18. FINISH PIPELINE
-// ══════════════════════════════════════════════════════════════════════════════
-
 function finishPipeline(success) {
-  if (App.elapsedInterval) clearInterval(App.elapsedInterval);
-  if (App.agentDurationInterval) clearInterval(App.agentDurationInterval);
+  if (elapsedInterval) clearInterval(elapsedInterval);
   updateElapsed(); // final update
-
-  App.isRunning = false;
 
   document.getElementById('forge-btn').disabled = false;
   document.getElementById('forge-btn-text').textContent = 'Forge It';
-
-  // Stop button
-  document.getElementById('stop-btn').classList.add('hidden');
-  document.getElementById('stop-btn').classList.remove('flex');
-
-  // Header
   document.getElementById('header-status-dot').className = success
     ? 'w-2 h-2 rounded-full bg-success'
     : 'w-2 h-2 rounded-full bg-error';
-  document.getElementById('header-run-id').textContent = success ? 'Complete' : 'Error';
-
-  // Telemetry
   document.getElementById('telemetry-dot').className = success
     ? 'w-2 h-2 rounded-full bg-success'
     : 'w-2 h-2 rounded-full bg-error';
   document.getElementById('telemetry-status').textContent = success ? 'Complete' : 'Error';
-
-  // Banner
   document.getElementById('banner-dot').className = success
     ? 'w-2.5 h-2.5 rounded-full bg-success'
     : 'w-2.5 h-2.5 rounded-full bg-error';
-
-  // Hide active agent panel
-  hideActiveAgent();
-
-  // Save to history
-  saveRunToHistory(success);
+  document.getElementById('header-run-id').textContent = success ? 'Complete' : 'Error';
 }
 
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 19. KEYBOARD SHORTCUTS
-// ══════════════════════════════════════════════════════════════════════════════
-
-document.addEventListener('keydown', (e) => {
-  // Ctrl+Enter to submit
-  if (e.ctrlKey && e.key === 'Enter') {
-    const input = document.getElementById('intent-input');
-    if (document.activeElement === input || !App.isRunning) {
-      e.preventDefault();
-      startForge();
-    }
-  }
-
-  // Escape to close dialog
-  if (e.key === 'Escape') {
-    const dialog = document.getElementById('confirm-dialog');
-    if (dialog.open) dialog.close();
-  }
-});
-
-
-// ══════════════════════════════════════════════════════════════════════════════
-// 20. INITIALIZATION
-// ══════════════════════════════════════════════════════════════════════════════
-
+// ── Set the time on load ──
 document.addEventListener('DOMContentLoaded', () => {
-  // Set initial date
   document.getElementById('intent-time').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-  // Build stepper from AGENT_PIPELINE
-  buildStepper();
-
-  // Set initial telemetry
-  document.getElementById('telemetry-agents').textContent = `0 / ${AGENT_PIPELINE.length}`;
-
-  // Clean up SSE on page unload
-  window.addEventListener('beforeunload', () => {
-    SSE.close();
-  });
 });
 </script>
 
