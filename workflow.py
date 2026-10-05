@@ -29,7 +29,7 @@ from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import StreamingResponse
 from dotenv import load_dotenv
-from reverse_proxy import proxy_router, shutdown_proxy, registry, launch_app
+
 
 load_dotenv()
 
@@ -150,15 +150,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# ── Reverse Proxy Router ─────────────────────────────────────────────────────
-app.include_router(proxy_router)
-
-
-@app.on_event("shutdown")
-async def _on_shutdown():
-    """Clean up all proxied preview apps when the server shuts down."""
-    await shutdown_proxy()
 
 # In-memory session store: session_id -> session data
 sessions: Dict[str, Dict[str, Any]] = {}
