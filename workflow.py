@@ -29,6 +29,7 @@ from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import StreamingResponse
 from dotenv import load_dotenv
+from reverse_proxy import proxy_router, shutdown_proxy, registry, launch_app
 
 load_dotenv()
 
@@ -149,6 +150,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Reverse Proxy Router ─────────────────────────────────────────────────────
+app.include_router(proxy_router)
+
+
+@app.on_event("shutdown")
+async def _on_shutdown():
+    """Clean up all proxied preview apps when the server shuts down."""
+    await shutdown_proxy()
 
 # In-memory session store: session_id -> session data
 sessions: Dict[str, Dict[str, Any]] = {}
@@ -394,6 +404,7 @@ async def forge_stream(query: str = Query(..., description="Project description"
                     "install_command": manifest.install_command if manifest else "",
                     "terminal_success": terminal_result.get("success", False) if terminal_result else False,
                     "browser_success": browser_result.get("success", False) if browser_result else False,
+                    "preview_url": f"/preview/{session_id}/",
                 }
             })
 
@@ -466,6 +477,58 @@ async def download_zip(session_id: str):
         str(zip_path),
         media_type="application/zip",
         filename=f"{project_name}.zip",
+    )
+
+
+@app.post("/api/forge/{session_id}/preview")
+async def launch_preview(session_id: str):
+    """Launch the generated app and return its reverse proxy URL."""
+    session = sessions.get(session_id)
+    if not session:
+        return JSONResponse({"error": "Session not found"}, status_code=404)
+
+    # Check if already running
+    existing = registry.get(session_id)
+    if existing and existing.is_alive:
+        return {
+            "status": "already_running",
+            "preview_url": f"/preview/{session_id}/",
+            "port": existing.port,
+        }
+
+    manifest = session.get("manifest")
+    output_dir = session.get("output_dir")
+    if not manifest or not output_dir:
+        return JSONResponse(
+            {"error": "Session is incomplete — no manifest or output directory"},
+            status_code=400,
+        )
+
+    try:
+        app_instance = await launch_app(
+            session_id=session_id,
+            project_root=output_dir,
+            run_command=manifest.run_command,
+        )
+        return {
+            "status": "started",
+            "preview_url": f"/preview/{session_id}/",
+            "port": app_instance.port,
+            "base_url": app_instance.base_url,
+        }
+    except RuntimeError as exc:
+        return JSONResponse({"error": str(exc)}, status_code=500)
+
+
+@app.post("/api/forge/{session_id}/preview/stop")
+async def stop_preview_endpoint(session_id: str):
+    """Stop a running preview app."""
+    stopped = registry.stop(session_id)
+    if stopped:
+        return {"status": "stopped", "session_id": session_id}
+    return JSONResponse(
+        {"error": "No active preview for this session"},
+        status_code=404,
     )
 
 
