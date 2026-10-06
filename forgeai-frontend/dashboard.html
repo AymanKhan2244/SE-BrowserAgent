@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SE BROWSER AGENT - Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#68000d",
+            "on-error": "#690005",
+            "primary": "#ffffff",
+            "surface-container-lowest": "#0b0e15",
+            "surface-container-highest": "#32353c",
+            "secondary-container": "#00e3fd",
+            "surface-container": "#1d2027",
+            "surface-variant": "#32353c",
+            "primary-container": "#fde400",
+            "tertiary-fixed": "#ffdad7",
+            "outline": "#979177",
+            "inverse-on-surface": "#2d3038",
+            "secondary-fixed": "#9cf0ff",
+            "on-surface-variant": "#cdc7aa",
+            "surface-tint": "#dec800",
+            "on-primary": "#373100",
+            "tertiary": "#ffffff",
+            "on-tertiary-container": "#bd2c32",
+            "error": "#ffb4ab",
+            "tertiary-fixed-dim": "#ffb3af",
+            "on-secondary-container": "#00616d",
+            "on-secondary-fixed-variant": "#004f58",
+            "primary-fixed": "#fde400",
+            "inverse-surface": "#e0e2ec",
+            "surface": "#10131a",
+            "on-tertiary-fixed": "#410005",
+            "tertiary-container": "#ffdad7",
+            "on-primary-fixed": "#201c00",
+            "on-surface": "#e0e2ec",
+            "on-background": "#e0e2ec",
+            "on-error-container": "#ffdad6",
+            "surface-bright": "#363941",
+            "secondary-fixed-dim": "#00daf3",
+            "outline-variant": "#4b4731",
+            "surface-container-high": "#272a31",
+            "background": "#10131a",
+            "surface-dim": "#10131a",
+            "inverse-primary": "#6a5f00",
+            "on-secondary": "#00363d",
+            "primary-fixed-dim": "#dec800",
+            "surface-container-low": "#191c23",
+            "on-tertiary-fixed-variant": "#920418",
+            "on-secondary-fixed": "#001f24",
+            "on-primary-fixed-variant": "#504700",
+            "error-container": "#93000a",
+            "on-primary-container": "#716500",
+            "secondary": "#bdf4ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "gutter": "0.75rem",
+            "space-md": "0.75rem",
+            "space-xl": "1.75rem",
+            "space-sm": "0.375rem",
+            "space-lg": "1.25rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "code-stream": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "label-md": ["JetBrains Mono"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-md": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["JetBrains Mono"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "body-lg": ["JetBrains Mono"],
+            "body-md": ["JetBrains Mono"],
+            "body-sm": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "code-stream": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "headline-md": ["18px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-lg": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-lg": ["14px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "19px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Neo-Brutalist Hard Edge & Shadow Tokens */
+    .brutal-border {
+      border: 1.5px solid #282e3d;
+    }
+    .brutal-border-heavy {
+      border: 2px solid #000000;
+    }
+    .brutal-shadow {
+      box-shadow: 3px 3px 0px #000000;
+    }
+    .brutal-shadow-sm {
+      box-shadow: 2px 2px 0px #000000;
+    }
+    .brutal-shadow-yellow {
+      box-shadow: 3px 3px 0px #fde400;
+    }
+    .brutal-btn-press:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px transparent;
+    }
+    /* Dotted terminal tree guides */
+    .tree-guide {
+      background-image: linear-gradient(to bottom, #282e3d 40%, rgba(255,255,255,0) 0%);
+      background-position: left;
+      background-size: 1px 6px;
+      background-repeat: repeat-y;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen overflow-x-hidden font-body-md">
+<!-- ========================================================================= -->
+<!-- SHARED COMPONENT: SideNavBar (Strict compliance to JSON & Style Guidance) -->
+<!-- ========================================================================= -->
+<aside class="fixed top-0 left-0 h-screen w-60 flex flex-col justify-between p-3 z-40 bg-surface border-r-2 border-outline-variant shadow-[3px_0px_0px_#000000]">
+<div class="flex flex-col gap-4">
+<!-- Logo Header -->
+<div class="flex items-center gap-2.5 pb-3 border-b-2 border-surface-container-high px-1">
+<div class="w-8 h-8 bg-primary-fixed text-on-primary-fixed border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] flex items-center justify-center font-headline-md font-bold">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface leading-tight">SE BROWSER AGENT</span>
+<span class="font-label-sm text-label-sm text-secondary-container tracking-wider font-semibold">AUTONOMOUS SWE ENGINE</span>
+</div>
+</div>
+<!-- Quick Action CTA -->
+<button class="w-full py-2 px-3 bg-secondary-container text-on-secondary font-headline-md text-body-md font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] hover:bg-secondary-fixed transition-all flex items-center justify-center gap-2 brutal-btn-press">
+<span class="material-symbols-outlined text-body-lg" data-icon="add_box">add_box</span>
+<span>NEW TASK</span>
+</button>
+<!-- Primary Navigation Tabs -->
+<nav class="flex flex-col gap-1">
+<!-- Tab 0: HOME (ACTIVE: closest match to Dashboard) -->
+<a class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined text-body-lg" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">HOME</span>
+</a>
+<!-- Tab 1: NEW TASK -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-body-lg" data-icon="add_box">add_box</span>
+<span class="font-label-sm text-label-sm">NEW TASK</span>
+</a>
+<!-- Tab 2: PROJECTS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-body-lg" data-icon="folder">folder</span>
+<span class="font-label-sm text-label-sm">PROJECTS</span>
+</a>
+<!-- Tab 3: TASKS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-body-lg" data-icon="check_circle">check_circle</span>
+<span class="font-label-sm text-label-sm">TASKS</span>
+</a>
+<!-- Tab 4: AGENTS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-body-lg" data-icon="smart_toy">smart_toy</span>
+<span class="font-label-sm text-label-sm">AGENTS</span>
+</a>
+<!-- Tab 5: DEPLOYMENTS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-body-lg" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-label-sm text-label-sm">DEPLOYMENTS</span>
+</a>
+<!-- Tab 6: ACTIVITY -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-body-lg" data-icon="dynamic_form">dynamic_form</span>
+<span class="font-label-sm text-label-sm">ACTIVITY</span>
+</a>
+</nav>
+<!-- Pinned Recent Projects -->
+<div class="mt-2 pt-3 border-t border-surface-container-high">
+<div class="px-2 flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-[9px] uppercase tracking-widest text-outline">PINNED PROJECTS</span>
+<span class="text-[9px] font-code-stream text-outline-variant">5/10</span>
+</div>
+<ul class="flex flex-col gap-0.5 font-code-stream text-body-sm text-on-surface-variant">
+<li>
+<a class="px-2 py-1 flex items-center justify-between hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="truncate flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-primary-fixed inline-block"></span>SE Browser Agent</span>
+<span class="text-[9px] text-secondary-container">LIVE</span>
+</a>
+</li>
+<li>
+<a class="px-2 py-1 flex items-center justify-between hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="truncate flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-outline inline-block"></span>AI Researcher</span>
+<span class="text-[9px] text-outline">IDLE</span>
+</a>
+</li>
+<li>
+<a class="px-2 py-1 flex items-center justify-between hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="truncate flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-primary-fixed inline-block"></span>Vision RAG</span>
+<span class="text-[9px] text-secondary-container">RUN</span>
+</a>
+</li>
+<li>
+<a class="px-2 py-1 flex items-center justify-between hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="truncate flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-outline inline-block"></span>AutoML Engineer</span>
+<span class="text-[9px] text-outline">IDLE</span>
+</a>
+</li>
+<li>
+<a class="px-2 py-1 flex items-center justify-between hover:bg-surface-container-low hover:text-on-surface transition-colors" href="#">
+<span class="truncate flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-outline inline-block"></span>Medical Assistant</span>
+<span class="text-[9px] text-outline">STBY</span>
+</a>
+</li>
+</ul>
+</div>
+</div>
+<!-- Sidebar Footer -->
+<div class="pt-3 border-t border-surface-container-high flex flex-col gap-1">
+<a class="flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+<a class="flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</a>
+<div class="flex items-center justify-between px-2 pt-2 mt-1 border-t border-surface-container-lowest">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 bg-surface-container-highest border border-outline-variant flex items-center justify-center font-code-stream text-body-sm font-bold text-primary-fixed">
+            OP
+          </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface leading-tight">Operator Profile</span>
+<span class="font-code-stream text-[9px] text-outline">SYS_ADMIN</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline cursor-pointer hover:text-primary-fixed" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- SHARED COMPONENT: TopNavBar (Strict compliance to JSON & Style Guidance) -->
+<!-- ========================================================================= -->
+<header class="fixed top-0 left-60 right-0 h-14 flex items-center justify-between px-4 z-30 bg-surface-container-low border-b-2 border-outline-variant shadow-[0px_3px_0px_#000000]">
+<!-- Left Cluster: Search & Breadcrumbs -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 font-code-stream text-body-sm text-on-surface-variant bg-surface-container-lowest px-2 py-1 border border-outline-variant">
+<span class="text-secondary-container font-semibold">$</span>
+<span>workspace-primary</span>
+<span class="text-outline">/</span>
+<span class="text-on-surface">cluster-us-east-1</span>
+</div>
+<!-- Quick Command Search -->
+<div class="relative w-80">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[16px]" data-icon="search">search</span>
+<input class="w-full bg-surface border border-outline-variant text-on-surface font-code-stream text-body-sm pl-8 pr-12 py-1 placeholder:text-outline focus:outline-none focus:border-primary-fixed focus:ring-0 shadow-inner" placeholder="Search projects, tasks, commands [Ctrl+K]" type="text"/>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 font-code-stream text-[10px] bg-surface-container-high px-1 text-on-surface-variant border border-outline-variant">⌘K</span>
+</div>
+</div>
+<!-- Center/Links from JSON -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 font-code-stream text-label-md">
+<span class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></span>
+<span class="text-secondary-container font-label-md tracking-wider border-b-2 border-secondary-container pb-0.5">main: v2.4</span>
+</div>
+<div class="flex items-center gap-1.5 font-code-stream text-label-md text-on-surface-variant hover:text-on-surface">
+<span class="text-primary-fixed">●</span>
+<span>DOM: READY</span>
+</div>
+</div>
+<!-- Trailing Actions & Metrics -->
+<div class="flex items-center gap-3">
+<!-- Status Badge -->
+<span class="bg-primary-fixed text-on-primary-fixed font-code-stream font-bold text-label-sm px-2 py-0.5 border border-surface-container-lowest shadow-[1px_1px_0px_#000000]">
+        RUNNING
+      </span>
+<!-- Token Tracker -->
+<div class="flex items-center gap-1 px-2.5 py-1 bg-surface-container-highest border border-outline-variant text-secondary-container font-code-stream text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]" data-icon="token">token</span>
+<span>84.2K TOKENS</span>
+</div>
+<!-- Icon Buttons -->
+<button class="w-8 h-8 bg-surface border border-outline-variant hover:border-primary-fixed flex items-center justify-center text-on-surface-variant hover:text-primary-fixed transition-colors brutal-shadow-sm brutal-btn-press" title="Notifications">
+<span class="material-symbols-outlined text-[18px]" data-icon="notifications">notifications</span>
+</button>
+<button class="w-8 h-8 bg-surface border border-outline-variant hover:border-primary-fixed flex items-center justify-center text-on-surface-variant hover:text-primary-fixed transition-colors brutal-shadow-sm brutal-btn-press" title="DOM Terminal Intercept">
+<span class="material-symbols-outlined text-[18px]" data-icon="terminal">terminal</span>
+</button>
+<div class="w-8 h-8 bg-surface-container-highest border-2 border-primary-fixed flex items-center justify-center font-bold text-on-surface text-body-sm shadow-[2px_2px_0px_#000000]" title="User Avatar Operator">
+        OP
+      </div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- MAIN WORKSPACE CANVAS (Master Dashboard with high-density Bento structure) -->
+<!-- ========================================================================= -->
+<main class="ml-60 pt-14 pb-8 min-h-screen flex flex-col bg-surface-container-lowest">
+<div class="p-5 flex flex-col gap-6 max-w-7xl mx-auto w-full">
+<!-- ===================================================================== -->
+<!-- SECTION 1: HERO TASK DISPATCHER                                      -->
+<!-- ===================================================================== -->
+<section class="bg-surface-container-low brutal-border brutal-shadow p-5 relative overflow-hidden">
+<!-- Industrial accent corner tag -->
+<div class="absolute top-0 right-0 bg-primary-fixed text-on-primary-fixed font-code-stream text-[10px] font-bold px-3 py-0.5 border-b border-l border-surface-container-lowest">
+          AI_ENGINE_DISPATCH: STANDBY
+        </div>
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed text-[26px]" data-icon="smart_toy">smart_toy</span>
+<h1 class="font-headline-xl text-headline-xl text-primary uppercase tracking-tight">
+              WHAT DO YOU WANT TO BUILD TODAY?
+            </h1>
+</div>
+<!-- Model tag & Autonomy Toggle -->
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-1 bg-surface-container-highest border border-outline-variant font-code-stream text-body-sm text-secondary-container">
+              [Claude 3.5 Sonnet + Headless CDP]
+            </span>
+<div class="flex items-center gap-2 bg-surface-container-lowest px-2.5 py-1 border border-outline-variant">
+<span class="font-code-stream text-label-sm text-on-surface-variant">Deterministic Autonomy</span>
+<span class="font-code-stream text-label-sm font-bold text-primary-fixed">[ON]</span>
+</div>
+</div>
+</div>
+<!-- Big AI Engineering Prompt Box -->
+<div class="relative bg-surface-container-lowest border-2 border-outline-variant brutal-shadow-sm focus-within:border-primary-fixed focus-within:shadow-[3px_3px_0px_#fde400] transition-all">
+<div class="px-3 py-1.5 bg-surface border-b border-outline-variant flex items-center justify-between font-code-stream text-label-sm text-outline">
+<div class="flex items-center gap-2">
+<span class="text-secondary-container font-bold">&gt;&gt;&gt;</span>
+<span>AGENT DOM DIRECTIVE</span>
+</div>
+<span>CTX_WINDOW: 200K / STRICT_SWE_POLICY</span>
+</div>
+<textarea class="w-full bg-transparent border-0 text-on-surface font-code-stream text-body-lg p-3.5 placeholder:text-outline-variant focus:ring-0 focus:outline-none resize-none leading-relaxed" placeholder="Describe what you want your autonomous AI engineer to build... e.g. Build a SaaS dashboard with Next.js 14, Supabase auth, Stripe billing and automated Playwright browser tests." rows="3"></textarea>
+<!-- Prompt Controls Strip -->
+<div class="p-2.5 bg-surface border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 bg-surface-container-high hover:bg-surface-variant text-on-surface font-code-stream text-body-sm border border-outline-variant flex items-center gap-1.5 hover:border-secondary-container transition-all brutal-btn-press">
+<span class="material-symbols-outlined text-[16px] text-secondary-container" data-icon="attach_file">attach_file</span>
+<span>[+ Attach Specs / PRD]</span>
+</button>
+<button class="px-3 py-1.5 bg-surface-container-high hover:bg-surface-variant text-on-surface font-code-stream text-body-sm border border-outline-variant flex items-center gap-1.5 hover:border-secondary-container transition-all brutal-btn-press">
+<span class="material-symbols-outlined text-[16px] text-secondary-container" data-icon="dashboard_customize">dashboard_customize</span>
+<span>[Use Template]</span>
+</button>
+<button class="px-3 py-1.5 bg-surface-container-high hover:bg-surface-variant text-on-surface font-code-stream text-body-sm border border-outline-variant flex items-center gap-1.5 hover:border-secondary-container transition-all brutal-btn-press">
+<span class="material-symbols-outlined text-[16px] text-secondary-container" data-icon="tune">tune</span>
+<span>[Advanced Sandbox Config]</span>
+</button>
+</div>
+<!-- Prominent Primary Execute Action -->
+<button class="px-6 py-2 bg-primary-fixed text-on-primary-fixed font-headline-md text-headline-md font-bold border-2 border-surface-container-lowest shadow-[3px_3px_0px_#000000] hover:bg-primary-fixed-dim transition-all flex items-center gap-2 brutal-btn-press">
+<span>START AGENT ⚡</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 2: QUICK WORKFLOWS ACTION CARDS                              -->
+<!-- ===================================================================== -->
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+<!-- Card 1 -->
+<button class="p-3 bg-surface-container-low brutal-border brutal-shadow hover:border-primary-fixed hover:-translate-y-0.5 transition-all text-left group flex flex-col justify-between h-24">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary-container group-hover:text-primary-fixed transition-colors" data-icon="web">web</span>
+<span class="font-code-stream text-[10px] text-outline">[01]</span>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-bold block text-on-surface group-hover:text-primary-fixed">FULL-STACK APP</span>
+<span class="font-code-stream text-[10px] text-outline">Next.js + Postgres</span>
+</div>
+</button>
+<!-- Card 2 -->
+<button class="p-3 bg-surface-container-low brutal-border brutal-shadow hover:border-primary-fixed hover:-translate-y-0.5 transition-all text-left group flex flex-col justify-between h-24">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary-container group-hover:text-primary-fixed transition-colors" data-icon="smart_toy">smart_toy</span>
+<span class="font-code-stream text-[10px] text-outline">[02]</span>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-bold block text-on-surface group-hover:text-primary-fixed">AI AGENT</span>
+<span class="font-code-stream text-[10px] text-outline">LangChain + Tool Use</span>
+</div>
+</button>
+<!-- Card 3 -->
+<button class="p-3 bg-surface-container-low brutal-border brutal-shadow hover:border-primary-fixed hover:-translate-y-0.5 transition-all text-left group flex flex-col justify-between h-24">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary-container group-hover:text-primary-fixed transition-colors" data-icon="description">description</span>
+<span class="font-code-stream text-[10px] text-outline">[03]</span>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-bold block text-on-surface group-hover:text-primary-fixed">RESEARCH &amp; SPEC</span>
+<span class="font-code-stream text-[10px] text-outline">Deep DOM scraping</span>
+</div>
+</button>
+<!-- Card 4 -->
+<button class="p-3 bg-surface-container-low brutal-border brutal-shadow hover:border-primary-fixed hover:-translate-y-0.5 transition-all text-left group flex flex-col justify-between h-24">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary-container group-hover:text-primary-fixed transition-colors" data-icon="bug_report">bug_report</span>
+<span class="font-code-stream text-[10px] text-outline">[04]</span>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-bold block text-on-surface group-hover:text-primary-fixed">DEBUG &amp; FIX</span>
+<span class="font-code-stream text-[10px] text-outline">Automated Hotpatch</span>
+</div>
+</button>
+<!-- Card 5 -->
+<button class="p-3 bg-surface-container-low brutal-border brutal-shadow hover:border-primary-fixed hover:-translate-y-0.5 transition-all text-left group flex flex-col justify-between h-24">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary-container group-hover:text-primary-fixed transition-colors" data-icon="task_alt">task_alt</span>
+<span class="font-code-stream text-[10px] text-outline">[05]</span>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-bold block text-on-surface group-hover:text-primary-fixed">BROWSER TEST</span>
+<span class="font-code-stream text-[10px] text-outline">Playwright E2E Suite</span>
+</div>
+</button>
+<!-- Card 6 -->
+<button class="p-3 bg-surface-container-low brutal-border brutal-shadow hover:border-primary-fixed hover:-translate-y-0.5 transition-all text-left group flex flex-col justify-between h-24">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary-container group-hover:text-primary-fixed transition-colors" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-code-stream text-[10px] text-outline">[06]</span>
+</div>
+<div>
+<span class="font-label-lg text-label-lg font-bold block text-on-surface group-hover:text-primary-fixed">DEPLOY</span>
+<span class="font-code-stream text-[10px] text-outline">Vercel &amp; Fly.io Edge</span>
+</div>
+</button>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 3: MIDDLE SPLIT (ACTIVE TASKS & LIVE SYSTEM STREAM)            -->
+<!-- ===================================================================== -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+<!-- LEFT: ACTIVE TASKS TABLE (7 cols) -->
+<div class="lg:col-span-7 bg-surface-container-low brutal-border brutal-shadow flex flex-col">
+<!-- Header -->
+<div class="h-9 px-3 bg-surface-container border-b-2 border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-primary-fixed inline-block"></span>
+<span class="font-headline-md text-body-md font-bold tracking-wider text-on-surface">ACTIVE TASKS EXECUTION QUEUE</span>
+</div>
+<div class="flex items-center gap-2 font-code-stream text-label-sm text-outline">
+<span>THREADS: 2 RUNNING</span>
+<span>|</span>
+<a class="text-secondary-container hover:underline" href="#">VIEW ALL &gt;</a>
+</div>
+</div>
+<!-- Tasks List -->
+<div class="p-3 flex flex-col gap-3 flex-1">
+<!-- Active Task 1 -->
+<div class="p-3 bg-surface-container border-2 border-outline-variant relative">
+<div class="flex items-start justify-between gap-2 mb-2">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-stream text-body-sm font-bold text-on-surface">Task #8821: OAuth NextAuth Implementation</span>
+<span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed font-code-stream font-bold text-[10px] border border-surface-container-lowest">
+                      CODING [Stage 4/8]
+                    </span>
+</div>
+<p class="font-code-stream text-[11px] text-on-surface-variant">Writing callback handlers &amp; Supabase session bridge tokens</p>
+</div>
+<!-- Action Button -->
+<button class="px-3 py-1 bg-surface-container-highest border border-outline-variant font-code-stream text-label-sm text-primary-fixed hover:bg-primary-fixed hover:text-on-primary-fixed hover:border-surface-container-lowest transition-all brutal-btn-press whitespace-nowrap">
+                  OPEN WORKSPACE &gt;
+                </button>
+</div>
+<!-- Metrics bar -->
+<div class="grid grid-cols-3 gap-2 font-code-stream text-label-sm py-1.5 my-1.5 border-y border-surface-container-high text-outline">
+<div>ELAPSED: <span class="text-on-surface font-semibold">08:42</span></div>
+<div>DIFF: <span class="text-secondary-container font-semibold">18 files changed</span></div>
+<div>TEST COVERAGE: <span class="text-on-surface font-semibold">89.4%</span></div>
+</div>
+<!-- Progress Indicator -->
+<div class="mt-2">
+<div class="flex justify-between font-code-stream text-[10px] text-outline mb-1">
+<span>STEP: SYNTHESIZING_JWT_STRATEGY</span>
+<span class="text-primary-fixed font-bold">54%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-lowest border border-outline-variant p-[1px]">
+<div class="h-full bg-primary-fixed w-[54%]"></div>
+</div>
+</div>
+</div>
+<!-- Active Task 2 -->
+<div class="p-3 bg-surface-container border border-outline-variant">
+<div class="flex items-start justify-between gap-2 mb-2">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="font-code-stream text-body-sm font-bold text-on-surface">Task #8819: Stripe Webhook Idempotency</span>
+<span class="px-2 py-0.5 bg-surface-container-highest text-secondary-container font-code-stream font-bold text-[10px] border border-secondary-container">
+                      RESEARCHING
+                    </span>
+</div>
+<p class="font-code-stream text-[11px] text-on-surface-variant">Analyzing stripe-event-signature replay attacks and redis locks</p>
+</div>
+<button class="px-3 py-1 bg-surface-container-highest border border-outline-variant font-code-stream text-label-sm text-on-surface hover:border-secondary-container transition-all brutal-btn-press whitespace-nowrap">
+                  INSPECT &gt;
+                </button>
+</div>
+<!-- Metrics bar -->
+<div class="grid grid-cols-3 gap-2 font-code-stream text-label-sm py-1.5 my-1.5 border-y border-surface-container-high text-outline">
+<div>ELAPSED: <span class="text-on-surface font-semibold">02:15</span></div>
+<div>DIFF: <span class="text-secondary-container font-semibold">3 files spec'd</span></div>
+<div>BROWSER CDP: <span class="text-primary-fixed font-semibold">ACTIVE</span></div>
+</div>
+<!-- Progress Indicator -->
+<div class="mt-2">
+<div class="flex justify-between font-code-stream text-[10px] text-outline mb-1">
+<span>STEP: FETCHING_STRIPE_API_DOCS</span>
+<span class="text-secondary-container font-bold">25%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-lowest border border-outline-variant p-[1px]">
+<div class="h-full bg-secondary-container w-[25%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT: LIVE SYSTEM STREAM (5 cols) -->
+<div class="lg:col-span-5 bg-surface-container-low brutal-border brutal-shadow flex flex-col">
+<!-- Header -->
+<div class="h-9 px-3 bg-surface-container border-b-2 border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-ping"></span>
+<span class="font-headline-md text-body-md font-bold tracking-wider text-on-surface">LIVE SYSTEM STREAM</span>
+</div>
+<span class="font-code-stream text-[10px] text-outline">STREAM_PORT: 8089/WS</span>
+</div>
+<!-- Feed Stream Terminal Output -->
+<div class="p-3 bg-surface-container-lowest font-code-stream text-body-sm flex-1 flex flex-col justify-between gap-1.5 overflow-hidden">
+<div class="flex flex-col gap-2">
+<!-- Item 1 -->
+<div class="flex items-center justify-between py-1 border-b border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="text-outline text-label-sm">10:42</span>
+<span class="text-primary-fixed font-bold">✓</span>
+<span class="text-on-surface">Research completed</span>
+</div>
+<span class="text-[10px] text-outline">DOM.dump(142kb)</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between py-1 border-b border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="text-outline text-label-sm">10:44</span>
+<span class="text-primary-fixed font-bold">✓</span>
+<span class="text-on-surface">14 files generated</span>
+</div>
+<span class="text-[10px] text-outline">+2,410 LOC</span>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between py-1 border-b border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="text-outline text-label-sm">10:47</span>
+<span class="text-secondary-container font-bold">→</span>
+<span class="text-secondary-container">Browser testing</span>
+</div>
+<span class="text-[10px] text-secondary-container bg-surface-container px-1">HEADLESS CHROME</span>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center justify-between py-1 border-b border-surface-container-high bg-error-container/20 px-1 border-l-2 border-l-error">
+<div class="flex items-center gap-2">
+<span class="text-outline text-label-sm">10:49</span>
+<span class="text-error font-bold">⚠</span>
+<span class="text-error font-medium">Authentication failed</span>
+</div>
+<span class="text-[10px] text-error font-bold">ERR_401</span>
+</div>
+<!-- Item 5 -->
+<div class="flex items-center justify-between py-1 border-b border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="text-outline text-label-sm">10:50</span>
+<span class="text-primary-fixed font-bold">✓</span>
+<span class="text-on-surface">Auto-patch applied</span>
+</div>
+<span class="text-[10px] text-primary-fixed">HOTFIX #381</span>
+</div>
+<!-- Item 6 -->
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center gap-2">
+<span class="text-outline text-label-sm">10:53</span>
+<span class="text-primary-fixed font-bold">✓</span>
+<span class="text-on-surface">Deployment completed</span>
+</div>
+<span class="text-[10px] text-secondary-container font-semibold">SUCCESS [200]</span>
+</div>
+</div>
+<!-- Terminal prompt tail -->
+<div class="mt-2 pt-2 border-t border-surface-container flex items-center justify-between text-[11px] text-outline">
+<span class="flex items-center gap-1.5">
+<span class="text-primary-fixed">&gt;</span> listening for next DOM mutation hook...
+              </span>
+<span class="animate-pulse">_</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 4: RECENT PROJECTS (Master Cards Bento Grid)                  -->
+<!-- ===================================================================== -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-[20px]" data-icon="folder">folder</span>
+<h2 class="font-headline-lg text-headline-md uppercase text-on-surface font-bold tracking-tight">
+              RECENT PROJECTS &amp; ACTIVE WORKSPACES
+            </h2>
+</div>
+<button class="font-code-stream text-body-sm text-secondary-container hover:underline">
+            [+] CREATE NEW PROJECT
+          </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Project Card 1 -->
+<div class="bg-surface-container-low brutal-border brutal-shadow p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 bg-surface-container-highest text-secondary-container font-code-stream text-[10px] font-bold border border-secondary-container flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+                  ● PRODUCTION LIVE
+                </span>
+<span class="font-code-stream text-[11px] text-outline">UPDATED 12m ago</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold mb-1">
+                SE Browser Agent
+              </h3>
+<p class="font-code-stream text-body-sm text-on-surface-variant mb-4">
+                Core autonomous software engineering runtime with Playwright DOM driver and sandbox execution.
+              </p>
+<!-- Tech badges -->
+<div class="flex flex-wrap gap-1.5 mb-4">
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">React 18</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">FastAPI</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">Supabase</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">CDP</span>
+</div>
+</div>
+<div class="pt-3 border-t border-surface-container-high flex items-center justify-between">
+<span class="font-code-stream text-label-sm text-outline">TASKS: 142 COMPLETED</span>
+<a class="font-code-stream text-label-sm font-bold text-primary-fixed hover:underline flex items-center gap-1" href="#">
+<span>VIEW REPO</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_outward">arrow_outward</span>
+</a>
+</div>
+</div>
+<!-- Project Card 2 -->
+<div class="bg-surface-container-low brutal-border brutal-shadow p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 bg-surface-container-highest text-primary-fixed font-code-stream text-[10px] font-bold border border-primary-fixed flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                  ● RUNNING SYNTHESIS
+                </span>
+<span class="font-code-stream text-[11px] text-outline">UPDATED 1h ago</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold mb-1">
+                AI Researcher Agent
+              </h3>
+<p class="font-code-stream text-body-sm text-on-surface-variant mb-4">
+                Autonomous academic crawler and patent parser with recursive citation verification and PDF extraction.
+              </p>
+<!-- Tech badges -->
+<div class="flex flex-wrap gap-1.5 mb-4">
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">Python 3.12</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">Qdrant</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">LangChain</span>
+</div>
+</div>
+<div class="pt-3 border-t border-surface-container-high flex items-center justify-between">
+<span class="font-code-stream text-label-sm text-outline">TASKS: 68 COMPLETED</span>
+<a class="font-code-stream text-label-sm font-bold text-primary-fixed hover:underline flex items-center gap-1" href="#">
+<span>VIEW REPO</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_outward">arrow_outward</span>
+</a>
+</div>
+</div>
+<!-- Project Card 3 -->
+<div class="bg-surface-container-low brutal-border brutal-shadow p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 bg-surface-container-highest text-secondary-container font-code-stream text-[10px] font-bold border border-secondary-container flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+                  ● PRODUCTION LIVE
+                </span>
+<span class="font-code-stream text-[11px] text-outline">UPDATED 3h ago</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold mb-1">
+                Vision RAG Engine
+              </h3>
+<p class="font-code-stream text-body-sm text-on-surface-variant mb-4">
+                Multimodal vector retrieval system analyzing high-resolution architectural schematics and UI wireframes.
+              </p>
+<!-- Tech badges -->
+<div class="flex flex-wrap gap-1.5 mb-4">
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">Next.js 14</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">PostgreSQL</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-code-stream text-[10px] border border-outline-variant">Milvus</span>
+</div>
+</div>
+<div class="pt-3 border-t border-surface-container-high flex items-center justify-between">
+<span class="font-code-stream text-label-sm text-outline">TASKS: 94 COMPLETED</span>
+<a class="font-code-stream text-label-sm font-bold text-primary-fixed hover:underline flex items-center gap-1" href="#">
+<span>VIEW REPO</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_outward">arrow_outward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- ===================================================================== -->
+<!-- PERSISTENT SYSTEM TELEMETRY FOOTER STATUS BAR                         -->
+<!-- ===================================================================== -->
+<footer class="mt-auto bg-surface-container-lowest border-t-2 border-outline-variant h-8 px-4 flex items-center justify-between font-code-stream text-[11px] text-on-surface-variant z-20">
+<!-- Left status indicators -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-bold text-on-surface">SYS_HEALTH: OPTIMAL</span>
+</div>
+<span class="text-outline">|</span>
+<div>MEMORY: <span class="text-primary-fixed font-bold">4.2GB / 16GB</span></div>
+<span class="text-outline">|</span>
+<div>CDP SESSIONS: <span class="text-secondary-container font-bold">3 ACTIVE</span></div>
+<span class="text-outline">|</span>
+<div>SANDBOX: <span class="text-on-surface">DOCKER_ISOLATED</span></div>
+</div>
+<!-- Right cluster -->
+<div class="flex items-center gap-4">
+<div>REGION: <span class="text-on-surface">us-east-1a (AWS)</span></div>
+<span class="text-outline">|</span>
+<div>LATENCY: <span class="text-primary-fixed font-bold">18ms</span></div>
+<span class="text-outline">|</span>
+<div class="text-outline">v2.4.0-rc1 [PROD]</div>
+</div>
+</footer>
+</main>
+</body></html>

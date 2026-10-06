@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SE BROWSER AGENT - START NEW ENGINEERING TASK</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Space Grotesk & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#68000d",
+            "on-error": "#690005",
+            "primary": "#ffffff",
+            "surface-container-lowest": "#0b0e15",
+            "surface-container-highest": "#32353c",
+            "secondary-container": "#00e3fd",
+            "surface-container": "#1d2027",
+            "surface-variant": "#32353c",
+            "primary-container": "#fde400",
+            "tertiary-fixed": "#ffdad7",
+            "outline": "#979177",
+            "inverse-on-surface": "#2d3038",
+            "secondary-fixed": "#9cf0ff",
+            "on-surface-variant": "#cdc7aa",
+            "surface-tint": "#dec800",
+            "on-primary": "#373100",
+            "tertiary": "#ffffff",
+            "on-tertiary-container": "#bd2c32",
+            "error": "#ffb4ab",
+            "tertiary-fixed-dim": "#ffb3af",
+            "on-secondary-container": "#00616d",
+            "on-secondary-fixed-variant": "#004f58",
+            "primary-fixed": "#fde400",
+            "inverse-surface": "#e0e2ec",
+            "surface": "#10131a",
+            "on-tertiary-fixed": "#410005",
+            "tertiary-container": "#ffdad7",
+            "on-primary-fixed": "#201c00",
+            "on-surface": "#e0e2ec",
+            "on-background": "#e0e2ec",
+            "on-error-container": "#ffdad6",
+            "surface-bright": "#363941",
+            "secondary-fixed-dim": "#00daf3",
+            "outline-variant": "#4b4731",
+            "surface-container-high": "#272a31",
+            "background": "#10131a",
+            "surface-dim": "#10131a",
+            "inverse-primary": "#6a5f00",
+            "on-secondary": "#00363d",
+            "primary-fixed-dim": "#dec800",
+            "surface-container-low": "#191c23",
+            "on-tertiary-fixed-variant": "#920418",
+            "on-secondary-fixed": "#001f24",
+            "on-primary-fixed-variant": "#504700",
+            "error-container": "#93000a",
+            "on-primary-container": "#716500",
+            "secondary": "#bdf4ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "gutter": "0.75rem",
+            "space-md": "0.75rem",
+            "space-xl": "1.75rem",
+            "space-sm": "0.375rem",
+            "space-lg": "1.25rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "code-stream": [
+              "JetBrains Mono"
+            ],
+            "headline-xl": [
+              "Space Grotesk"
+            ],
+            "label-md": [
+              "JetBrains Mono"
+            ],
+            "label-sm": [
+              "JetBrains Mono"
+            ],
+            "headline-md": [
+              "Space Grotesk"
+            ],
+            "headline-lg": [
+              "Space Grotesk"
+            ],
+            "label-lg": [
+              "JetBrains Mono"
+            ],
+            "headline-xl-mobile": [
+              "Space Grotesk"
+            ],
+            "body-lg": [
+              "JetBrains Mono"
+            ],
+            "body-md": [
+              "JetBrains Mono"
+            ],
+            "body-sm": [
+              "JetBrains Mono"
+            ]
+          },
+          "fontSize": {
+            "code-stream": [
+              "12px",
+              {
+                "lineHeight": "18px",
+                "letterSpacing": "0em",
+                "fontWeight": "400"
+              }
+            ],
+            "headline-xl": [
+              "32px",
+              {
+                "lineHeight": "38px",
+                "letterSpacing": "-0.02em",
+                "fontWeight": "700"
+              }
+            ],
+            "label-md": [
+              "11px",
+              {
+                "lineHeight": "14px",
+                "letterSpacing": "0.06em",
+                "fontWeight": "600"
+              }
+            ],
+            "label-sm": [
+              "10px",
+              {
+                "lineHeight": "12px",
+                "letterSpacing": "0.08em",
+                "fontWeight": "600"
+              }
+            ],
+            "headline-md": [
+              "18px",
+              {
+                "lineHeight": "24px",
+                "letterSpacing": "0em",
+                "fontWeight": "600"
+              }
+            ],
+            "headline-lg": [
+              "24px",
+              {
+                "lineHeight": "30px",
+                "letterSpacing": "-0.01em",
+                "fontWeight": "600"
+              }
+            ],
+            "label-lg": [
+              "12px",
+              {
+                "lineHeight": "16px",
+                "letterSpacing": "0.04em",
+                "fontWeight": "700"
+              }
+            ],
+            "headline-xl-mobile": [
+              "26px",
+              {
+                "lineHeight": "32px",
+                "letterSpacing": "-0.02em",
+                "fontWeight": "700"
+              }
+            ],
+            "body-lg": [
+              "14px",
+              {
+                "lineHeight": "22px",
+                "letterSpacing": "-0.01em",
+                "fontWeight": "400"
+              }
+            ],
+            "body-md": [
+              "13px",
+              {
+                "lineHeight": "19px",
+                "letterSpacing": "0em",
+                "fontWeight": "400"
+              }
+            ],
+            "body-sm": [
+              "11px",
+              {
+                "lineHeight": "16px",
+                "letterSpacing": "0.01em",
+                "fontWeight": "400"
+              }
+            ]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /* Scrollbar styling for IDE aesthetic */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0e15;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #272a31;
+      border: 1px solid #4b4731;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4b4731;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- ========================================================================= -->
+<!-- SHARED COMPONENT: SideNavBar (Persistent Desktop Shell - 240px)           -->
+<!-- ========================================================================= -->
+<aside class="fixed top-0 left-0 h-screen w-60 flex flex-col justify-between p-3 z-40 bg-surface dark:bg-surface border-r-2 border-outline-variant dark:border-outline-variant shadow-[3px_0px_0px_#000000]">
+<!-- Brand / Engine Header -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2.5 pb-3 border-b-2 border-outline-variant">
+<div class="w-8 h-8 bg-primary-fixed flex items-center justify-center border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000]">
+<span class="material-symbols-outlined text-on-primary-fixed font-bold text-lg" data-icon="terminal">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface leading-tight">SE BROWSER AGENT</span>
+<span class="font-label-sm text-label-sm text-secondary-container tracking-wider uppercase">AUTONOMOUS SWE ENGINE</span>
+</div>
+</div>
+<!-- Quick Action / CTA -->
+<button class="w-full py-1.5 px-3 bg-primary-fixed text-on-primary-fixed font-headline-md text-body-md font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none flex items-center justify-center gap-2 uppercase tracking-wide">
+<span class="material-symbols-outlined text-base font-bold" data-icon="add_box">add_box</span>
+<span>NEW TASK</span>
+</button>
+<!-- Primary Tabs -->
+<nav class="flex flex-col gap-1 mt-1">
+<!-- 0: HOME -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span>HOME</span>
+</a>
+<!-- 1: NEW TASK (CURRENT ACTIVE DESTINATION) -->
+<a class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined font-bold" data-icon="add_box">add_box</span>
+<span>NEW TASK</span>
+</a>
+<!-- 2: PROJECTS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="folder">folder</span>
+<span>PROJECTS</span>
+</a>
+<!-- 3: TASKS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+<span>TASKS</span>
+</a>
+<!-- 4: AGENTS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span>AGENTS</span>
+</a>
+<!-- 5: DEPLOYMENTS -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+<span>DEPLOYMENTS</span>
+</a>
+<!-- 6: ACTIVITY -->
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dynamic_form">dynamic_form</span>
+<span>ACTIVITY</span>
+</a>
+</nav>
+</div>
+<!-- Footer Controls -->
+<div class="flex flex-col gap-1 pt-3 border-t-2 border-outline-variant">
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+<span>Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="account_circle">account_circle</span>
+<span>Profile</span>
+</a>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- SHARED COMPONENT: TopNavBar (Persistent Docked - left-60)                 -->
+<!-- ========================================================================= -->
+<header class="fixed top-0 left-60 right-0 h-14 flex items-center justify-between px-4 z-30 bg-surface-container-low dark:bg-surface-container-low border-b-2 border-outline-variant dark:border-outline-variant shadow-[0px_3px_0px_#000000]">
+<!-- Left: Search & Workspace context -->
+<div class="flex items-center gap-4">
+<div class="relative flex items-center">
+<span class="absolute left-2.5 text-on-surface-variant material-symbols-outlined text-sm" data-icon="search">search</span>
+<input class="bg-surface-container-lowest text-on-surface font-code-stream text-code-stream pl-8 pr-16 py-1.5 w-80 border-1.5 border-outline-variant focus:border-primary-fixed focus:ring-0 focus:outline-none placeholder:text-on-surface-variant/50 shadow-[2px_2px_0px_#000000]" placeholder="Ctrl + K to find commands, sessions, artifacts..." type="text"/>
+<span class="absolute right-2 px-1.5 py-0.5 border border-outline-variant bg-surface-container text-on-surface-variant font-label-sm text-label-sm">⌘K</span>
+</div>
+<div class="h-5 w-0.5 bg-outline-variant"></div>
+<!-- Navigation telemetry links -->
+<div class="flex items-center gap-3 font-code-stream text-code-stream">
+<span class="text-secondary-container font-label-md tracking-wider border-b-2 border-secondary-container pb-0.5 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-secondary-container rounded-none"></span>
+          main: v2.4.0-rc1
+        </span>
+<span class="text-on-surface-variant font-label-md tracking-wider hover:text-on-surface flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-primary-fixed"></span>
+          DOM: READY
+        </span>
+</div>
+</div>
+<!-- Right: Telemetry pill badges, quick tools, operator avatar -->
+<div class="flex items-center gap-3">
+<!-- Trailing actions from JSON -->
+<div class="flex items-center gap-2">
+<div class="bg-primary-fixed text-on-primary-fixed px-2.5 py-1 font-label-sm text-label-sm font-bold border border-surface-container-lowest flex items-center gap-1.5 shadow-[2px_2px_0px_#000000]">
+<span class="w-2 h-2 bg-on-primary-fixed animate-pulse"></span>
+          RUNNING
+        </div>
+<div class="bg-surface-container px-2.5 py-1 text-secondary-container font-code-stream text-code-stream border border-outline-variant shadow-[2px_2px_0px_#000000]">
+          12.4k TOKENS
+        </div>
+</div>
+<!-- Icon actions from JSON -->
+<div class="flex items-center gap-1 border-l-2 border-outline-variant pl-3">
+<button class="p-1.5 text-on-surface-variant hover:text-primary-fixed hover:border-primary-fixed border border-transparent transition-colors active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary-fixed hover:border-primary-fixed border border-transparent transition-colors active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-lg" data-icon="terminal">terminal</span>
+</button>
+</div>
+<!-- User avatar -->
+<div class="flex items-center gap-2 pl-2 border-l-2 border-outline-variant">
+<div class="w-7 h-7 bg-surface-container-high border-2 border-outline-variant flex items-center justify-center font-label-sm text-label-sm font-bold text-primary-fixed shadow-[1px_1px_0px_#000000]">
+          OP
+        </div>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- MAIN WORKSPACE CANVAS                                                     -->
+<!-- ========================================================================= -->
+<main class="ml-60 pt-14 pb-28 px-6 bg-surface min-h-screen">
+<div class="max-w-7xl mx-auto py-5 space-y-5">
+<!-- ===================================================================== -->
+<!-- SECTION 1: HEADER BANNER                                              -->
+<!-- ===================================================================== -->
+<div class="p-4 bg-surface-container-low border-2 border-outline-variant shadow-[3px_3px_0px_#000000] flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-bold border border-surface-container-lowest">
+              TASK:INIT
+            </span>
+<span class="font-code-stream text-code-stream text-secondary-container">NODE_INSTANCE #8491-PROD</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-bold tracking-tight text-on-surface uppercase">
+            START NEW ENGINEERING TASK
+          </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Configure agent autonomy parameters, target repositories, runtime sandbox, and execution permissions.
+          </p>
+</div>
+<!-- Quick session stats / presets pill box -->
+<div class="flex items-center gap-2 self-start md:self-auto bg-surface-container-lowest p-2 border border-outline-variant font-code-stream text-code-stream">
+<div class="flex flex-col text-right pr-3 border-r border-outline-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant">SANDBOX ENGINE</span>
+<span class="text-secondary-fixed font-bold">V8 CHROMIUM 124</span>
+</div>
+<div class="flex flex-col pl-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">AUTONOMY LIMIT</span>
+<span class="text-primary-fixed font-bold">UNRESTRICTED</span>
+</div>
+</div>
+</div>
+<!-- ===================================================================== -->
+<!-- SECTION 2: COMMAND CONSOLE / PROMPT EDITOR                            -->
+<!-- ===================================================================== -->
+<section class="bg-surface-container-low border-2 border-outline-variant shadow-[3px_3px_0px_#000000]">
+<!-- Terminal Panel Bar -->
+<div class="h-8 bg-surface-container-lowest border-b-2 border-outline-variant px-3 flex items-center justify-between">
+<div class="flex items-center gap-2 font-label-sm text-label-sm uppercase">
+<span class="w-2.5 h-2.5 bg-primary-fixed inline-block"></span>
+<span class="text-primary font-bold">TASK_INTENT_SPECIFICATION.PROMPT</span>
+<span class="text-on-surface-variant">| UTF-8</span>
+</div>
+<div class="flex items-center gap-4 font-code-stream text-code-stream text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="text-secondary-container font-bold">&gt;_</span> AGENT STREAM ACTIVE
+            </span>
+<span class="text-outline">LN 1, COL 142</span>
+</div>
+</div>
+<!-- Code/Prompt Editor Container with Line Numbers -->
+<div class="flex bg-surface-container-lowest min-h-[148px]">
+<!-- Gutter / Line Numbers -->
+<div class="w-12 select-none py-3 bg-surface-container border-r border-outline-variant flex flex-col items-end pr-2.5 font-code-stream text-code-stream text-on-surface-variant/40 space-y-1">
+<span>01</span>
+<span>02</span>
+<span>03</span>
+<span>04</span>
+<span>05</span>
+</div>
+<!-- Prompt Area -->
+<div class="flex-1 p-3 font-code-stream text-body-md text-on-surface relative">
+<textarea class="w-full bg-transparent border-0 p-0 text-on-surface font-code-stream text-body-md focus:ring-0 resize-none leading-relaxed focus:outline-none placeholder:text-on-surface-variant/40" rows="4" spellcheck="false">Build a multi-tenant billing portal with Stripe webhooks, Next.js server actions, and automated Playwright browser verification for end-to-end checkout flow.</textarea>
+<div class="flex items-center gap-1.5 mt-2 text-secondary-container font-code-stream text-body-sm">
+<span class="animate-pulse">▌</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Awaiting execution blueprint generation...</span>
+</div>
+</div>
+</div>
+<!-- Prompt Accessories & Meta Toolbar -->
+<div class="p-2.5 bg-surface-container border-t-2 border-outline-variant flex flex-wrap items-center justify-between gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<button class="px-2.5 py-1 bg-surface-container-high border border-outline-variant hover:border-secondary-container hover:text-secondary-container font-label-md text-label-md text-on-surface transition-all flex items-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 shadow-[1px_1px_0px_#000000]">
+<span class="material-symbols-outlined text-sm" data-icon="attach_file">attach_file</span>
+<span>[Attach PRD / Spec]</span>
+</button>
+<button class="px-2.5 py-1 bg-surface-container-high border border-outline-variant hover:border-secondary-container hover:text-secondary-container font-label-md text-label-md text-on-surface transition-all flex items-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 shadow-[1px_1px_0px_#000000]">
+<span class="material-symbols-outlined text-sm" data-icon="image">image</span>
+<span>[Upload Mockup]</span>
+</button>
+<button class="px-2.5 py-1 bg-surface-container-high border border-outline-variant hover:border-secondary-container hover:text-secondary-container font-label-md text-label-md text-on-surface transition-all flex items-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 shadow-[1px_1px_0px_#000000]">
+<span class="material-symbols-outlined text-sm" data-icon="mic">mic</span>
+<span>[Voice Input]</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="px-2.5 py-1 bg-surface-container-lowest border border-outline-variant font-code-stream text-code-stream text-on-surface-variant flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-primary-fixed"></span>
+<span>[Context: <strong class="text-primary-fixed">12.4k</strong> / 200k tokens]</span>
+</div>
+<button class="px-2 py-1 bg-surface-container-high border border-outline-variant hover:border-primary-fixed text-on-surface font-label-sm text-label-sm uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="refresh">refresh</span>
+              Clear
+            </button>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 3: AGENT MODE SELECTOR (6 Neo-Brutalist Mode Cards)           -->
+<!-- ===================================================================== -->
+<section class="space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-4 bg-primary-fixed"></span>
+<h2 class="font-headline-md text-headline-md font-bold uppercase tracking-tight text-on-surface">AGENT MODE SELECTOR</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">PIPELINE EXECUTION ARCHITECTURE</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+<!-- Card 1: FULL BUILD (SELECTED) -->
+<div class="p-3.5 bg-surface-container border-2 border-primary-fixed shadow-[4px_4px_0px_#000000] relative cursor-pointer group transition-transform">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-xs border border-surface-container-lowest">01</span>
+<span class="font-headline-md text-headline-md font-bold text-primary-fixed tracking-wide">FULL BUILD</span>
+</div>
+<!-- Checkmark / Selected Tag -->
+<span class="px-1.5 py-0.5 bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-bold flex items-center gap-1 border border-surface-container-lowest">
+<span class="material-symbols-outlined text-xs font-bold" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+                ACTIVE
+              </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-2.5 leading-relaxed">
+              Autonomous end-to-end pipeline: spec breakdown, full-stack code synthesis, browser DOM testing, and automated PR submission.
+            </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between font-code-stream text-code-stream">
+<span class="text-secondary-container">DOM Intercept: YES</span>
+<span class="text-primary-fixed">100% Autonomy</span>
+</div>
+</div>
+<!-- Card 2: RESEARCH & SPEC -->
+<div class="p-3.5 bg-surface-container-low border-2 border-outline-variant hover:border-secondary-container shadow-[3px_3px_0px_#000000] cursor-pointer group transition-all active:translate-x-0.5 active:translate-y-0.5">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 bg-surface-container-highest text-on-surface flex items-center justify-center font-bold text-xs border border-outline-variant">02</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface group-hover:text-secondary-container tracking-wide">RESEARCH &amp; SPEC</span>
+</div>
+<span class="font-code-stream text-code-stream text-on-surface-variant">[MODE]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+              Deep web reconnaissance, external API discovery, competitor architecture mapping, and machine-actionable technical PRDs.
+            </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/40 flex items-center justify-between font-code-stream text-code-stream">
+<span class="text-on-surface-variant">Web Crawler: ACTIVE</span>
+<span class="text-on-surface-variant">No Write Perms</span>
+</div>
+</div>
+<!-- Card 3: CODING ONLY -->
+<div class="p-3.5 bg-surface-container-low border-2 border-outline-variant hover:border-secondary-container shadow-[3px_3px_0px_#000000] cursor-pointer group transition-all active:translate-x-0.5 active:translate-y-0.5">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 bg-surface-container-highest text-on-surface flex items-center justify-center font-bold text-xs border border-outline-variant">03</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface group-hover:text-secondary-container tracking-wide">CODING ONLY</span>
+</div>
+<span class="font-code-stream text-code-stream text-on-surface-variant">[MODE]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+              Surgical codebase refactoring, component generation, unit tests, and typing enforcement without spinning up headless browser sessions.
+            </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/40 flex items-center justify-between font-code-stream text-code-stream">
+<span class="text-on-surface-variant">Headless: OFF</span>
+<span class="text-on-surface-variant">Fast Latency</span>
+</div>
+</div>
+<!-- Card 4: DEBUGGING & FIX -->
+<div class="p-3.5 bg-surface-container-low border-2 border-outline-variant hover:border-secondary-container shadow-[3px_3px_0px_#000000] cursor-pointer group transition-all active:translate-x-0.5 active:translate-y-0.5">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 bg-surface-container-highest text-on-surface flex items-center justify-center font-bold text-xs border border-outline-variant">04</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface group-hover:text-secondary-container tracking-wide">DEBUGGING &amp; FIX</span>
+</div>
+<span class="font-code-stream text-code-stream text-on-surface-variant">[MODE]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+              Log parsing, stack trace isolation, memory leak diagnosis, and targeted mutation testing with runtime breakpoint inspection.
+            </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/40 flex items-center justify-between font-code-stream text-code-stream">
+<span class="text-on-surface-variant">Source Maps: ON</span>
+<span class="text-on-surface-variant">Iterative Patch</span>
+</div>
+</div>
+<!-- Card 5: BROWSER AUTOMATION -->
+<div class="p-3.5 bg-surface-container-low border-2 border-outline-variant hover:border-secondary-container shadow-[3px_3px_0px_#000000] cursor-pointer group transition-all active:translate-x-0.5 active:translate-y-0.5">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 bg-surface-container-highest text-on-surface flex items-center justify-center font-bold text-xs border border-outline-variant">05</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface group-hover:text-secondary-container tracking-wide">BROWSER AUTOMATION</span>
+</div>
+<span class="font-code-stream text-code-stream text-on-surface-variant">[MODE]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+              Pure client-side DOM interactions: web scraping, synthetic user flows, checkout testing, visual regressions, and multi-step forms.
+            </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/40 flex items-center justify-between font-code-stream text-code-stream">
+<span class="text-secondary-container">CDP Protocol: TRUE</span>
+<span class="text-on-surface-variant">Playwright / Puppeteer</span>
+</div>
+</div>
+<!-- Card 6: DEPLOYMENT ONLY -->
+<div class="p-3.5 bg-surface-container-low border-2 border-outline-variant hover:border-secondary-container shadow-[3px_3px_0px_#000000] cursor-pointer group transition-all active:translate-x-0.5 active:translate-y-0.5">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 bg-surface-container-highest text-on-surface flex items-center justify-center font-bold text-xs border border-outline-variant">06</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface group-hover:text-secondary-container tracking-wide">DEPLOYMENT ONLY</span>
+</div>
+<span class="font-code-stream text-code-stream text-on-surface-variant">[MODE]</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
+              Infrastructure orchestration, Docker image optimization, CI/CD pipeline triggering, canary deployments, and DNS validation.
+            </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/40 flex items-center justify-between font-code-stream text-code-stream">
+<span class="text-on-surface-variant">Cloud Intercept</span>
+<span class="text-on-surface-variant">Zero Dev State</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 4: CONFIGURATION MATRIX (2-Column Brutalist Card Grid)       -->
+<!-- ===================================================================== -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+<!-- COLUMN 1: PROJECT & CODEBASE TARGET -->
+<div class="bg-surface-container-low border-2 border-outline-variant shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
+<div>
+<!-- Header bar -->
+<div class="h-8 bg-surface-container-lowest border-b-2 border-outline-variant px-3 flex items-center justify-between">
+<div class="flex items-center gap-2 font-label-sm text-label-sm uppercase font-bold text-on-surface">
+<span class="text-primary-fixed">01 //</span>
+<span>PROJECT &amp; CODEBASE TARGET</span>
+</div>
+<span class="font-code-stream text-code-stream text-secondary-container">GIT_VCS</span>
+</div>
+<!-- Content Area -->
+<div class="p-4 space-y-3.5">
+<!-- Project Dropdown -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">
+                  Target Project Workspace
+                </label>
+<div class="flex gap-2">
+<div class="relative flex-1">
+<select class="w-full bg-surface-container-lowest text-on-surface font-code-stream text-body-md border-1.5 border-outline-variant focus:border-primary-fixed focus:ring-0 py-1.5 px-3 appearance-none shadow-[2px_2px_0px_#000000]">
+<option>SE Browser Agent (Production)</option>
+<option>Omni-Crawler Microservice</option>
+<option>Internal DevOps Hub</option>
+</select>
+<span class="pointer-events-none absolute right-2.5 top-2.5 text-on-surface-variant material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</div>
+<button class="px-3 py-1.5 bg-surface-container-high border-1.5 border-outline-variant hover:border-primary-fixed hover:text-primary-fixed font-label-sm text-label-sm font-bold text-on-surface transition-colors shadow-[2px_2px_0px_#000000] whitespace-nowrap active:translate-x-0.5 active:translate-y-0.5">
+                    [+ Create New Project]
+                  </button>
+</div>
+</div>
+<!-- Repository & Branch -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">
+                  Repository &amp; Target Branch
+                </label>
+<div class="grid grid-cols-3 gap-2">
+<div class="col-span-2 relative">
+<input class="w-full bg-surface-container-lowest text-on-surface font-code-stream text-code-stream border-1.5 border-outline-variant focus:border-primary-fixed focus:ring-0 py-1.5 px-3 shadow-[2px_2px_0px_#000000]" readonly="" type="text" value="github.com/ayman/modern-saas-platform"/>
+<span class="absolute right-2.5 top-2 text-secondary-container material-symbols-outlined text-sm" data-icon="lock">lock</span>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest text-primary-fixed font-code-stream text-code-stream border-1.5 border-outline-variant focus:border-primary-fixed focus:ring-0 py-1.5 px-3 shadow-[2px_2px_0px_#000000]" type="text" value="feat/billing-v2"/>
+</div>
+</div>
+</div>
+<!-- Framework & Engine Spec Rows -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase">Framework</span>
+<div class="flex items-center gap-1.5 mt-1 font-code-stream text-code-stream text-on-surface">
+<span class="material-symbols-outlined text-sm text-secondary-container" data-icon="deployed_code">deployed_code</span>
+<span class="font-bold">Next.js 14 App Router (TypeScript)</span>
+</div>
+</div>
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase">Runtime / Engine</span>
+<div class="flex items-center gap-1.5 mt-1 font-code-stream text-code-stream text-on-surface">
+<span class="material-symbols-outlined text-sm text-primary-fixed" data-icon="memory">memory</span>
+<span class="font-bold">Node.js 20.x + Python 3.11</span>
+</div>
+</div>
+</div>
+<!-- Database -->
+<div class="p-2.5 bg-surface-container-lowest border border-outline-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase">Database Target</span>
+<div class="flex items-center justify-between mt-1 font-code-stream text-code-stream text-on-surface">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-secondary-container" data-icon="database">database</span>
+<span class="font-bold">PostgreSQL (Supabase / Prisma ORM)</span>
+</div>
+<span class="text-label-sm font-label-sm px-1.5 bg-surface-container border border-outline-variant text-on-surface-variant">SSL: STRICT</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom micro status -->
+<div class="h-7 bg-surface-container px-3 border-t border-outline-variant flex items-center justify-between font-code-stream text-label-sm text-on-surface-variant">
+<span>COMMIT HEAD: 8fa7b49</span>
+<span class="text-secondary-container">DIRTY WORKING TREE: FALSE</span>
+</div>
+</div>
+<!-- COLUMN 2: AUTONOMY & SECURITY PERMISSIONS -->
+<div class="bg-surface-container-low border-2 border-outline-variant shadow-[3px_3px_0px_#000000] flex flex-col justify-between">
+<div>
+<!-- Header bar -->
+<div class="h-8 bg-surface-container-lowest border-b-2 border-outline-variant px-3 flex items-center justify-between">
+<div class="flex items-center gap-2 font-label-sm text-label-sm uppercase font-bold text-on-surface">
+<span class="text-primary-fixed">02 //</span>
+<span>AUTONOMY &amp; SECURITY PERMISSIONS</span>
+</div>
+<span class="font-code-stream text-code-stream text-error">SANDBOX: ISOLATED</span>
+</div>
+<!-- Content Area: Checkboxes & Routing -->
+<div class="p-4 space-y-3">
+<!-- Checklist -->
+<div class="space-y-2">
+<!-- Checkbox 1: Headless CDP (Checked) -->
+<label class="flex items-start gap-3 p-2 bg-surface-container-lowest border border-outline-variant hover:border-primary-fixed cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 w-4 h-4 rounded-none bg-surface-container border-2 border-outline-variant text-primary-fixed focus:ring-0 focus:ring-offset-0 checked:bg-primary-fixed checked:border-primary-fixed" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-code-stream text-code-stream font-bold text-on-surface">Allow Headless Browser Automation (Chromium CDP)</span>
+<span class="font-label-sm text-label-sm text-primary-fixed font-bold">[ACTIVE]</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Permits agent to render DOM, intercept network traffic, and capture canvas screenshots.</span>
+</div>
+</label>
+<!-- Checkbox 2: Sandbox FS (Checked) -->
+<label class="flex items-start gap-3 p-2 bg-surface-container-lowest border border-outline-variant hover:border-primary-fixed cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 w-4 h-4 rounded-none bg-surface-container border-2 border-outline-variant text-primary-fixed focus:ring-0 focus:ring-offset-0 checked:bg-primary-fixed checked:border-primary-fixed" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-code-stream text-code-stream font-bold text-on-surface">Allow File System modifications in Sandbox</span>
+<span class="font-label-sm text-label-sm text-primary-fixed font-bold">[ACTIVE]</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Write access to /app, /src, package.json inside isolated container volume.</span>
+</div>
+</label>
+<!-- Checkbox 3: Terminal Exec (Checked) -->
+<label class="flex items-start gap-3 p-2 bg-surface-container-lowest border border-outline-variant hover:border-primary-fixed cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 w-4 h-4 rounded-none bg-surface-container border-2 border-outline-variant text-primary-fixed focus:ring-0 focus:ring-offset-0 checked:bg-primary-fixed checked:border-primary-fixed" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-code-stream text-code-stream font-bold text-on-surface">Allow Terminal execution (npm, pytest, git)</span>
+<span class="font-label-sm text-label-sm text-primary-fixed font-bold">[ACTIVE]</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Agent can run compilers, test runners, linters, and standard build scripts.</span>
+</div>
+</label>
+<!-- Checkbox 4: Auto-push GitHub (Unchecked - Warning) -->
+<label class="flex items-start gap-3 p-2 bg-surface-container-lowest border border-outline-variant/60 hover:border-error cursor-pointer transition-colors">
+<input class="mt-0.5 w-4 h-4 rounded-none bg-surface-container border-2 border-outline-variant text-primary-fixed focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-code-stream text-code-stream font-bold text-on-surface">Auto-push to GitHub without approval</span>
+<span class="font-label-sm text-label-sm bg-error-container text-error px-1.5 py-0.2 border border-error">Requires Human Approval</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Commits will be staged locally and wait for developer sign-off.</span>
+</div>
+</label>
+<!-- Checkbox 5: Auto-deploy Prod (Unchecked - Gatekeeper) -->
+<label class="flex items-start gap-3 p-2 bg-surface-container-lowest border border-outline-variant/60 hover:border-error cursor-pointer transition-colors">
+<input class="mt-0.5 w-4 h-4 rounded-none bg-surface-container border-2 border-outline-variant text-primary-fixed focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-code-stream text-code-stream font-bold text-on-surface">Auto-deploy to Production</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-1.5 py-0.2 border border-outline-variant">Requires Gatekeeper</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5">Requires multi-signature approval from platform admin.</span>
+</div>
+</label>
+</div>
+<!-- Model Routing Selector -->
+<div class="pt-2 border-t border-outline-variant">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">
+                  Model Routing &amp; Fallback Chain
+                </label>
+<div class="p-2 bg-surface-container-lowest border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-base" data-icon="neurology">neurology</span>
+<span class="font-code-stream text-code-stream font-bold text-on-surface">Claude 3.5 Sonnet (Default SWE Engine)</span>
+</div>
+<span class="font-code-stream text-code-stream text-secondary-container">fallback: GPT-4o</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom micro status -->
+<div class="h-7 bg-surface-container px-3 border-t border-outline-variant flex items-center justify-between font-code-stream text-label-sm text-on-surface-variant">
+<span>SELINUX: ENFORCING</span>
+<span class="text-primary-fixed">SANDBOX ID: SBX_884920</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- ========================================================================= -->
+<!-- BOTTOM FIXED ACTION DOCK (Neo-Brutalist Sticky Footer Console)            -->
+<!-- ========================================================================= -->
+<footer class="fixed bottom-0 left-60 right-0 h-16 bg-surface-container-lowest border-t-2 border-outline-variant flex items-center justify-between px-6 z-30 shadow-[0px_-4px_0px_#000000]">
+<!-- Left: Real-time Telemetry & Cost Estimates -->
+<div class="flex items-center gap-5 font-code-stream text-code-stream">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-fixed" data-icon="data_usage">data_usage</span>
+<span class="text-on-surface-variant">Estimated tokens:</span>
+<strong class="text-primary-fixed font-bold">~45k</strong>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-secondary-container" data-icon="laptop_chromebook">laptop_chromebook</span>
+<span class="text-on-surface-variant">Sandbox:</span>
+<strong class="text-on-surface">Chrome 124 Headless ready</strong>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="payments">payments</span>
+<span class="text-on-surface-variant">Max budget:</span>
+<strong class="text-primary font-bold">$2.50</strong>
+</div>
+</div>
+<!-- Right: Command Action Buttons -->
+<div class="flex items-center gap-3">
+<!-- Cancel / Save Draft -->
+<button class="px-4 py-2 bg-surface-container-high border-2 border-outline-variant hover:border-on-surface text-on-surface font-label-md text-label-md tracking-wider transition-all active:translate-x-0.5 active:translate-y-0.5 shadow-[2px_2px_0px_#000000]">
+        [Cancel / Save Draft]
+      </button>
+<!-- Primary Action: START AGENT -->
+<button class="px-6 py-2 bg-primary-fixed text-on-primary-fixed font-headline-md text-headline-md font-extrabold uppercase border-2 border-surface-container-lowest shadow-[4px_4px_0px_#000000] hover:bg-primary-fixed-dim active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center gap-2 tracking-wide">
+<span>START AGENT</span>
+<span class="text-lg">⚡</span>
+</button>
+</div>
+</footer>
+</body></html>

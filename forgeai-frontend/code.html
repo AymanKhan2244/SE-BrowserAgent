@@ -1,416 +1,1186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>ForgeAI — Autonomous Software Engineer</title>
-<meta name="description" content="ForgeAI: AI-Powered Multi-Agent Software Engineering Pipeline."/>
+<title>SE BROWSER AGENT — Autonomous SWE Engine</title>
+<meta name="description" content="SE Browser Agent: Autonomous Multi-Agent Software Engineering Pipeline. Describe your project. We build it."/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script>
 tailwind.config = {
   darkMode: "class",
   theme: {
     extend: {
       colors: {
-        "surface-container-lowest": "#0a0a0a",
-        "on-secondary-container": "#FBBF24",
-        "surface-dim": "#050505",
-        "inverse-on-surface": "#0a0a0a",
-        "inverse-surface": "#f5f5f5",
-        "tertiary-container": "#D97706",
-        "surface": "#000000",
-        "surface-container": "#111111",
-        "outline": "#3a3a3a",
-        "surface-tint": "#F59E0B",
-        "secondary-fixed-dim": "#D97706",
-        "surface-bright": "#1a1a1a",
-        "on-surface-variant": "#8a8a8a",
-        "surface-container-low": "#0d0d0d",
-        "on-secondary": "#000000",
-        "on-tertiary-fixed-variant": "#B45309",
-        "primary": "#F59E0B",
-        "on-secondary-fixed-variant": "#D97706",
-        "on-background": "#e5e5e5",
-        "on-primary-fixed-variant": "#D97706",
-        "tertiary-fixed": "#292524",
-        "primary-fixed": "#FDE68A",
-        "secondary": "#D97706",
-        "on-tertiary": "#000000",
-        "inverse-primary": "#92400E",
-        "on-secondary-fixed": "#000000",
-        "on-primary": "#000000",
-        "surface-variant": "#1a1a1a",
-        "on-error": "#ffffff",
-        "on-surface": "#e5e5e5",
-        "error": "#ef4444",
-        "on-tertiary-container": "#FDE68A",
-        "secondary-fixed": "#FDE68A",
-        "secondary-container": "#B45309",
-        "primary-container": "#D97706",
-        "on-primary-fixed": "#000000",
-        "outline-variant": "#2a2a2a",
-        "on-tertiary-fixed": "#000000",
-        "surface-container-highest": "#1f1f1f",
-        "tertiary-fixed-dim": "#92400E",
-        "background": "#000000",
-        "error-container": "#450a0a",
-        "on-error-container": "#fca5a5",
-        "on-primary-container": "#000000",
-        "surface-container-high": "#161616",
-        "primary-fixed-dim": "#D97706",
-        "tertiary": "#D97706",
-        "success": "#22c55e",
+        "on-tertiary": "#68000d",
+        "on-error": "#690005",
+        "primary": "#ffffff",
+        "surface-container-lowest": "#0b0e15",
+        "surface-container-highest": "#32353c",
+        "secondary-container": "#00e3fd",
+        "surface-container": "#1d2027",
+        "surface-variant": "#32353c",
+        "primary-container": "#fde400",
+        "tertiary-fixed": "#ffdad7",
+        "outline": "#979177",
+        "inverse-on-surface": "#2d3038",
+        "secondary-fixed": "#9cf0ff",
+        "on-surface-variant": "#cdc7aa",
+        "surface-tint": "#dec800",
+        "on-primary": "#373100",
+        "tertiary": "#ffffff",
+        "on-tertiary-container": "#bd2c32",
+        "error": "#ffb4ab",
+        "tertiary-fixed-dim": "#ffb3af",
+        "on-secondary-container": "#00616d",
+        "on-secondary-fixed-variant": "#004f58",
+        "primary-fixed": "#fde400",
+        "inverse-surface": "#e0e2ec",
+        "surface": "#10131a",
+        "on-tertiary-fixed": "#410005",
+        "tertiary-container": "#ffdad7",
+        "on-primary-fixed": "#201c00",
+        "on-surface": "#e0e2ec",
+        "on-background": "#e0e2ec",
+        "on-error-container": "#ffdad6",
+        "surface-bright": "#363941",
+        "secondary-fixed-dim": "#00daf3",
+        "outline-variant": "#4b4731",
+        "surface-container-high": "#272a31",
+        "background": "#10131a",
+        "surface-dim": "#10131a",
+        "inverse-primary": "#6a5f00",
+        "on-secondary": "#00363d",
+        "primary-fixed-dim": "#dec800",
+        "surface-container-low": "#191c23",
+        "on-tertiary-fixed-variant": "#920418",
+        "on-secondary-fixed": "#001f24",
+        "on-primary-fixed-variant": "#504700",
+        "error-container": "#93000a",
+        "on-primary-container": "#716500",
+        "secondary": "#bdf4ff",
+        "success": "#00f5a0",
+        "canary": "#ffe600",
+        "cyan": "#00e5ff",
+        "coral": "#ff5c5c",
+        "mint": "#00f5a0",
+        "chalk": "#f4f6fa",
+        "steel": "#8c96a8",
+        "void": "#0c0e12",
+        "carbon": "#12151c",
+        "raised": "#181c26",
+        "divider": "#282e3d",
+      },
+      borderRadius: {
+        DEFAULT: "0.125rem",
+        lg: "0.25rem",
+        xl: "0.5rem",
+        full: "0.75rem",
       },
       spacing: {
-        gutter: "1.5rem", "space-md": "1rem", "space-xl": "2.5rem",
-        "gutter-mobile": "1rem", margin: "2.5rem", "space-sm": "0.5rem",
-        "margin-mobile": "1.25rem", "space-xs": "0.25rem", "space-lg": "1.5rem"
+        margin: "1rem",
+        gutter: "0.75rem",
+        "space-md": "0.75rem",
+        "space-xl": "1.75rem",
+        "space-sm": "0.375rem",
+        "space-lg": "1.25rem",
+        "space-xs": "0.25rem",
       },
       fontFamily: {
-        "body-sm": ["Manrope"], "body-md": ["Manrope"], "headline-sm": ["Newsreader"],
-        display: ["Newsreader"], "headline-md": ["Newsreader"],
-        "headline-lg-mobile": ["Newsreader"], "label-md": ["Manrope"],
-        "display-mobile": ["Newsreader"], "title-md": ["Manrope"],
-        "body-lg": ["Manrope"], "label-sm": ["Manrope"], "headline-lg": ["Newsreader"],
+        "code-stream": ["JetBrains Mono"],
+        "headline-xl": ["Space Grotesk"],
+        "label-md": ["JetBrains Mono"],
+        "label-sm": ["JetBrains Mono"],
+        "headline-md": ["Space Grotesk"],
+        "headline-lg": ["Space Grotesk"],
+        "label-lg": ["JetBrains Mono"],
+        "headline-xl-mobile": ["Space Grotesk"],
+        "body-lg": ["JetBrains Mono"],
+        "body-md": ["JetBrains Mono"],
+        "body-sm": ["JetBrains Mono"],
         mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
-        "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400" }],
-        "body-md": ["15px", { lineHeight: "24px", fontWeight: "400" }],
-        "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "500" }],
-        display: ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "400" }],
-        "headline-md": ["26px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "400" }],
-        "headline-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "400" }],
-        "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.01em", fontWeight: "600" }],
-        "display-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "400" }],
-        "title-md": ["18px", { lineHeight: "26px", fontWeight: "600" }],
-        "body-lg": ["17px", { lineHeight: "28px", fontWeight: "400" }],
-        "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }],
-        "headline-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.015em", fontWeight: "400" }]
-      }
-    }
-  }
+        "code-stream": ["12px", { lineHeight: "18px", letterSpacing: "0em", fontWeight: "400" }],
+        "headline-xl": ["32px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "label-md": ["11px", { lineHeight: "14px", letterSpacing: "0.06em", fontWeight: "600" }],
+        "label-sm": ["10px", { lineHeight: "12px", letterSpacing: "0.08em", fontWeight: "600" }],
+        "headline-md": ["18px", { lineHeight: "24px", letterSpacing: "0em", fontWeight: "600" }],
+        "headline-lg": ["24px", { lineHeight: "30px", letterSpacing: "-0.01em", fontWeight: "600" }],
+        "label-lg": ["12px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "700" }],
+        "headline-xl-mobile": ["26px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "body-lg": ["14px", { lineHeight: "22px", letterSpacing: "-0.01em", fontWeight: "400" }],
+        "body-md": ["13px", { lineHeight: "19px", letterSpacing: "0em", fontWeight: "400" }],
+        "body-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.01em", fontWeight: "400" }],
+      },
+    },
+  },
 };
 </script>
 <style>
+/* ── Neo-Brutalist Core Tokens ── */
 @layer base {
   html, body { margin: 0; padding: 0; }
-  body { overscroll-behavior: none; background: #000000; }
+  body { overscroll-behavior: none; background: #0c0e12; }
+  ::selection { background: #fde400; color: #000000; }
 }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
 
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0b0e15; }
+::-webkit-scrollbar-thumb { background: #282e3d; border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: #4b4731; }
+
+/* Hard-edge brutalist shadows */
+.brutal-border { border: 1.5px solid #282e3d; }
+.brutal-border-active { border: 1.5px solid #ffe600; }
+.brutal-border-cyan { border: 1.5px solid #00e5ff; }
+.brutal-border-heavy { border: 2px solid #000000; }
+.brutal-shadow { box-shadow: 3px 3px 0px #000000; }
+.brutal-shadow-sm { box-shadow: 2px 2px 0px #000000; }
+.brutal-shadow-lg { box-shadow: 5px 5px 0px #000000; }
+.brutal-shadow-yellow { box-shadow: 3px 3px 0px #fde400; }
+.brutal-shadow-cyan { box-shadow: 2px 2px 0px #00e5ff; }
+
+.brutal-btn-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px transparent;
+}
+
+/* Dotted tree guide rails */
+.tree-guide {
+  background-image: linear-gradient(to bottom, #282e3d 40%, rgba(255,255,255,0) 0%);
+  background-position: left;
+  background-size: 1px 6px;
+  background-repeat: repeat-y;
+}
+
+/* Animations */
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+@keyframes pulseCanary {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(253, 228, 0, 0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(253, 228, 0, 0); }
 }
-.animate-fadeSlideIn { animation: fadeSlideIn 0.4s ease-out forwards; }
-.animate-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-fadeSlideIn { animation: fadeSlideIn 0.35s ease-out forwards; }
+.animate-pulseCanary { animation: pulseCanary 2s ease-in-out infinite; }
+.animate-blink { animation: blink 0.8s step-end infinite; }
+
+/* Status badge variants */
+.badge-running {
+  background: #ffe600; color: #000000; border: 1px solid #000000;
+  font-family: "JetBrains Mono"; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px;
+}
+.badge-success {
+  color: #00f5a0; border: 1px solid #00f5a0; background: rgba(0, 245, 160, 0.08);
+  font-family: "JetBrains Mono"; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px;
+}
+.badge-error {
+  color: #ff5c5c; border: 1px solid #ff5c5c; background: rgba(255, 92, 92, 0.08);
+  font-family: "JetBrains Mono"; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px;
+}
+.badge-queued {
+  color: #8c96a8; border: 1px solid #282e3d; background: transparent;
+  font-family: "JetBrains Mono"; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px;
+}
+
+/* Panel header */
+.panel-header {
+  height: 32px; border-bottom: 1.5px solid #282e3d;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px; font-family: "JetBrains Mono"; font-size: 10px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: #8c96a8;
+}
+
+/* Code line styles */
+.code-line { font-family: "JetBrains Mono", monospace; font-size: 12px; line-height: 18px; }
+.kw { color: #fde400; font-weight: 600; }
+.str { color: #00e5ff; }
+.fn { color: #00f5a0; font-weight: 600; }
+.cmt { color: #4b4731; font-style: italic; }
 </style>
 </head>
 
-<body class="bg-surface font-body-md text-on-surface antialiased">
-<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(245,158,11,0.05)] border-b border-outline-variant/30">
-  <div class="h-16 w-full px-gutter flex items-center justify-between gap-space-md">
-    <div class="flex items-center gap-space-md">
-      <a class="flex items-center gap-space-xs text-on-surface group" href="#">
-        <span class="font-title-md text-title-md tracking-tight font-bold text-on-surface group-hover:text-primary transition-colors">ForgeAI</span>
+<body class="bg-void text-chalk antialiased selection:bg-primary-container selection:text-black min-h-screen overflow-x-hidden font-body-md">
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- SIDEBAR NAVIGATION -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<aside class="fixed top-0 left-0 h-screen w-[220px] flex flex-col justify-between p-3 z-40 bg-surface border-r-2 border-divider shadow-[3px_0px_0px_#000000]">
+  <div class="flex flex-col gap-4">
+    <!-- Logo -->
+    <div class="flex items-center gap-2 px-1 py-2">
+      <div class="w-8 h-8 bg-primary-container brutal-border-heavy brutal-shadow-sm flex items-center justify-center brutal-btn-press">
+        <span class="material-symbols-outlined text-[18px] text-black" style="font-variation-settings: 'FILL' 1;">terminal</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-headline-md text-[14px] font-bold text-chalk tracking-tight leading-none">SE BROWSER AGENT</span>
+        <span class="font-label-sm text-label-sm text-cyan uppercase tracking-widest">AUTONOMOUS SWE ENGINE</span>
+      </div>
+    </div>
+
+    <!-- New Task Button -->
+    <button id="new-task-btn" onclick="resetPipeline()" class="w-full bg-primary-container text-black font-headline-md text-[13px] font-bold uppercase tracking-wider py-2.5 px-3 brutal-border-heavy brutal-shadow brutal-btn-press flex items-center justify-center gap-2 hover:bg-canary transition-colors">
+      <span class="material-symbols-outlined text-[16px]">add_box</span>
+      NEW TASK
+    </button>
+
+    <!-- Navigation -->
+    <nav class="flex flex-col gap-0.5">
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 bg-surface-container-low brutal-border text-chalk font-label-lg text-label-lg uppercase tracking-wider">
+        <span class="material-symbols-outlined text-[18px] text-primary-container" style="font-variation-settings: 'FILL' 1;">home</span>
+        HOME
       </a>
-      <div class="h-4 w-px bg-outline-variant/40 hidden sm:block"></div>
-      <div class="hidden md:flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant">
-        <span id="header-status-dot" class="w-2 h-2 rounded-full bg-outline"></span>
-        <span class="font-label-sm text-label-sm font-medium" id="header-status-text">Disconnected</span>
-      </div>
-    </div>
-    <nav class="hidden lg:flex items-center gap-space-xs">
-      <a class="px-space-sm py-space-xs bg-surface-container-high text-on-surface font-semibold rounded-lg" href="#">Workspace</a>
-      <a class="px-space-sm py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" href="#">Run History</a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+        <span class="material-symbols-outlined text-[18px]">task</span>
+        TASKS
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+        <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+        AGENTS
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+        <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+        DEPLOYMENTS
+      </a>
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+        <span class="material-symbols-outlined text-[18px]">monitoring</span>
+        ACTIVITY
+      </a>
     </nav>
-    <div class="flex items-center gap-space-sm">
-      <div id="header-run-badge" class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
-        <span class="material-symbols-outlined text-[14px] text-primary">bolt</span>
-        <span id="header-run-id">Idle</span>
-        <span class="text-outline-variant">•</span>
-        <span id="header-elapsed" class="font-mono text-[12px]">00:00:00</span>
+  </div>
+
+  <!-- Bottom Actions -->
+  <div class="flex flex-col gap-1 border-t border-divider pt-3">
+    <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:text-chalk transition-colors">
+      <span class="material-symbols-outlined text-[18px]">settings</span>
+      Settings
+    </a>
+    <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:text-chalk transition-colors">
+      <span class="material-symbols-outlined text-[18px]">help</span>
+      Help
+    </a>
+    <div class="flex items-center gap-2 px-3 py-2 mt-1">
+      <div class="w-7 h-7 bg-primary-container brutal-border-heavy flex items-center justify-center text-[10px] font-bold text-black">OP</div>
+      <div class="flex flex-col">
+        <span class="font-label-md text-label-md text-chalk">Operator Profile</span>
+        <span class="font-label-sm text-label-sm text-steel">SYS_ADMIN</span>
       </div>
     </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- TOP BAR -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<header class="fixed top-0 left-[220px] right-0 z-30 h-[52px] bg-surface border-b-2 border-divider flex items-center justify-between px-4">
+  <!-- Left: Search + Version -->
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low brutal-border text-steel font-body-sm text-body-sm">
+      <span class="material-symbols-outlined text-[14px]">search</span>
+      <span>Search commands, logs...</span>
+      <kbd class="ml-3 px-1.5 py-0.5 text-[9px] bg-surface-container-high brutal-border font-bold">⌘K</kbd>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-cyan font-label-md text-label-md">main: v2.4.0-rc1</span>
+      <span class="text-steel font-label-sm text-label-sm">|</span>
+      <span class="text-steel font-label-sm text-label-sm">DOM: READY</span>
+    </div>
+  </div>
+
+  <!-- Right: Status + Actions -->
+  <div class="flex items-center gap-3">
+    <div id="header-run-badge" class="flex items-center gap-2">
+      <span id="header-status-dot" class="w-2 h-2 bg-steel"></span>
+      <span id="header-run-status" class="badge-queued">IDLE</span>
+    </div>
+    <div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-low brutal-border">
+      <span class="material-symbols-outlined text-[14px] text-primary-container">bolt</span>
+      <span id="header-token-count" class="font-label-lg text-label-lg text-primary-container">0</span>
+      <span class="font-label-sm text-label-sm text-steel">TOKENS</span>
+    </div>
+    <span id="header-elapsed" class="font-mono text-[11px] text-steel hidden">00:00:00</span>
+    <span class="material-symbols-outlined text-[20px] text-steel hover:text-chalk cursor-pointer">notifications</span>
+    <span class="material-symbols-outlined text-[20px] text-steel hover:text-chalk cursor-pointer">screenshot_monitor</span>
+    <div class="w-7 h-7 bg-primary-container brutal-border-heavy flex items-center justify-center text-[10px] font-bold text-black cursor-pointer">OP</div>
   </div>
 </header>
 
-<main class="w-full pt-16 bg-surface min-h-[calc(100vh-4rem)]">
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<main class="ml-[220px] mt-[52px] min-h-[calc(100vh-52px)] bg-void">
 <div class="flex flex-col w-full">
-<div class="w-full px-space-md lg:px-gutter py-space-md">
+<div class="w-full p-4">
 
-  <div id="top-banner" class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md pb-space-sm">
-    <div class="flex items-center gap-space-sm">
-      <div id="banner-dot" class="w-2.5 h-2.5 rounded-full bg-outline hidden"></div>
-      <h1 id="banner-title" class="font-headline-sm text-headline-sm text-on-surface">New Synthesis</h1>
+  <!-- ═══════════ HERO / PROMPT AREA ═══════════ -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+
+    <!-- ═══════════ LEFT: PROMPT + PIPELINE ═══════════ -->
+    <div class="lg:col-span-8 flex flex-col gap-4">
+
+      <!-- Command Prompt Card -->
+      <div class="bg-carbon brutal-border brutal-shadow">
+        <div class="panel-header">
+          <div class="flex items-center gap-2">
+            <span class="text-primary-container">▶</span>
+            <span>AGENT_DOM_DIRECTIVE</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-steel">CTX_WINDOW: 200K</span>
+            <span class="text-steel">/</span>
+            <span class="text-steel">STRICT_SWE_POLICY</span>
+          </div>
+        </div>
+        <div class="p-4">
+          <label class="sr-only" for="intent-input">Describe the project you want to build</label>
+          <textarea
+            class="w-full bg-void brutal-border text-chalk font-body-lg text-body-lg placeholder:text-steel/50 focus:outline-none focus:border-canary focus:shadow-[2px_2px_0px_#ffe600] resize-none p-3 transition-all"
+            id="intent-input"
+            placeholder="Describe what you want your autonomous SWE engine to build... e.g. Build a SaaS dashboard with Next.js 14, Supabase auth, Stripe billing and automated Playwright browser tests."
+            rows="3"
+          ></textarea>
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-2">
+              <button class="px-2 py-1.5 bg-raised brutal-border text-steel font-label-md text-label-md uppercase hover:border-cyan hover:text-cyan transition-colors flex items-center gap-1.5" title="Attach file">
+                <span class="material-symbols-outlined text-[14px]">attachment</span>
+                [+ Attach PRD / Spec]
+              </button>
+              <button class="px-2 py-1.5 bg-raised brutal-border text-steel font-label-md text-label-md uppercase hover:border-cyan hover:text-cyan transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[14px]">upload_file</span>
+                [Upload Mockup]
+              </button>
+            </div>
+            <button
+              id="forge-btn"
+              onclick="startForge()"
+              class="px-5 py-2.5 bg-primary-container text-black font-headline-md text-[14px] font-bold uppercase tracking-wider brutal-border-heavy brutal-shadow brutal-btn-press hover:bg-canary transition-colors flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+              type="button"
+            >
+              <span id="forge-btn-text">START AGENT</span>
+              <span class="material-symbols-outlined text-[18px]">bolt</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Example Templates -->
+      <div id="empty-state" class="bg-carbon brutal-border brutal-shadow">
+        <div class="panel-header">
+          <span>EXECUTION_TEMPLATE_PIPELINE</span>
+          <span class="text-steel">SCRATCH ENGINE V2.4.0 // DEPLOY PLAN</span>
+        </div>
+        <div class="p-4">
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+            <button onclick="setExample('Build a todo list app with Flask backend and vanilla HTML/CSS/JS frontend. Features: add, complete, delete tasks.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-primary-container hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
+              <span class="material-symbols-outlined text-[24px] text-steel group-hover:text-primary-container transition-colors">description</span>
+              <div>
+                <span class="font-label-lg text-label-lg text-chalk block uppercase">PROMPT</span>
+                <span class="font-label-sm text-label-sm text-steel block">PRD Spec</span>
+              </div>
+            </button>
+            <button onclick="setExample('Build a project planning app with task dependencies and Gantt charts using Flask.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-primary-container hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
+              <span class="material-symbols-outlined text-[24px] text-steel group-hover:text-primary-container transition-colors">account_tree</span>
+              <div>
+                <span class="font-label-lg text-label-lg text-chalk block uppercase">PLAN</span>
+                <span class="font-label-sm text-label-sm text-steel block">Arch & DAG</span>
+              </div>
+            </button>
+            <button onclick="setExample('Build a real-time chat application with WebSocket support, user authentication, and message history using FastAPI and React.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-primary-container hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
+              <span class="material-symbols-outlined text-[24px] text-steel group-hover:text-primary-container transition-colors">science</span>
+              <div>
+                <span class="font-label-lg text-label-lg text-chalk block uppercase">RESEARCH</span>
+                <span class="font-label-sm text-label-sm text-steel block">Deep & RAG</span>
+              </div>
+            </button>
+            <button onclick="setExample('Build a REST API for an e-commerce platform with product catalog, cart, and checkout using FastAPI.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-primary-container hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
+              <span class="material-symbols-outlined text-[24px] text-steel group-hover:text-primary-container transition-colors">code</span>
+              <div>
+                <span class="font-label-lg text-label-lg text-chalk block uppercase">CODE</span>
+                <span class="font-label-sm text-label-sm text-steel block">Git Ops</span>
+              </div>
+            </button>
+            <button onclick="setExample('Build a student grade tracker with CRUD operations, GPA calculator, and grade statistics dashboard using Flask.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-cyan hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
+              <span class="material-symbols-outlined text-[24px] text-steel group-hover:text-cyan transition-colors">open_in_browser</span>
+              <div>
+                <span class="font-label-lg text-label-lg text-chalk block uppercase">BROWSER TEST</span>
+                <span class="font-label-sm text-label-sm text-steel block">E2E Tests</span>
+              </div>
+            </button>
+            <button onclick="setExample('Build a blog platform with markdown support, user auth, and deployment pipeline using Flask + Docker.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-mint hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
+              <span class="material-symbols-outlined text-[24px] text-steel group-hover:text-mint transition-colors">deployed_code</span>
+              <div>
+                <span class="font-label-lg text-label-lg text-chalk block uppercase">DEPLOY</span>
+                <span class="font-label-sm text-label-sm text-steel block">Multi-Cloud</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Intent Bubble (shown after submitting) -->
+      <div id="user-intent-bubble" class="hidden bg-carbon brutal-border brutal-shadow animate-fadeSlideIn">
+        <div class="panel-header">
+          <div class="flex items-center gap-2">
+            <span class="text-cyan">◆</span>
+            <span>USER_SPECIFICATION.PROMPT</span>
+          </div>
+          <span id="intent-time" class="text-steel"></span>
+        </div>
+        <div class="p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-5 h-5 bg-primary-container brutal-border-heavy flex items-center justify-center text-[9px] font-bold text-black">U</div>
+            <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider">User Specification</span>
+          </div>
+          <p id="user-intent-text" class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed"></p>
+          <div id="intent-tags" class="hidden flex flex-wrap gap-1.5 mt-3"></div>
+        </div>
+      </div>
+
+      <!-- Agent Blocks Container (hidden until pipeline starts) -->
+      <div id="agent-blocks" class="flex flex-col gap-4 hidden"></div>
+
+      <!-- Pipeline Complete Card (hidden until done) -->
+      <div id="pipeline-complete-card" class="hidden bg-carbon brutal-shadow animate-fadeSlideIn" style="border: 2px solid #00f5a0;">
+        <div class="panel-header" style="border-color: #00f5a0;">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-mint" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <span class="text-mint">PIPELINE COMPLETE</span>
+          </div>
+          <button id="download-btn" onclick="downloadProject()" class="px-3 py-1 bg-mint text-black font-label-lg text-label-lg uppercase brutal-border-heavy brutal-btn-press hover:bg-primary-container transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[14px]">download</span>
+            Download ZIP
+          </button>
+        </div>
+        <div id="pipeline-complete-body" class="p-4">
+          <div id="complete-summary" class="flex flex-col gap-3"></div>
+        </div>
+      </div>
+
+      <!-- Generated Files Explorer (hidden until pipeline complete) -->
+      <div id="files-explorer" class="hidden bg-carbon brutal-border brutal-shadow animate-fadeSlideIn">
+        <div class="panel-header cursor-pointer hover:bg-raised transition-colors" onclick="document.getElementById('files-explorer-body').classList.toggle('hidden')">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[14px] text-primary-container">folder_open</span>
+            <span>GENERATED FILES</span>
+            <span id="files-count-badge" class="badge-success ml-2"></span>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-steel">expand_more</span>
+        </div>
+        <div id="files-explorer-body" class="p-3 flex flex-col gap-1"></div>
+      </div>
+
     </div>
-    <div id="banner-actions" class="flex items-center gap-space-sm hidden">
-      <button onclick="stopForge()" class="px-space-sm py-1 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors font-label-sm text-label-sm flex items-center gap-1">
-        <span class="material-symbols-outlined text-[14px]">stop</span> Stop
-      </button>
-    </div>
-  </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
-    <!-- LEFT: Prompt & Context -->
-    <aside class="lg:col-span-3 flex flex-col gap-space-md">
-      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-space-xs">
-            <span class="material-symbols-outlined text-primary text-[18px]">forum</span>
-            <span class="font-title-md text-title-md text-on-surface">Intent Stream</span>
+    <!-- ═══════════ RIGHT: WORKFLOW + TELEMETRY ═══════════ -->
+    <aside class="lg:col-span-4 flex flex-col gap-4">
+
+      <!-- Agent Workflow Stepper -->
+      <div class="bg-carbon brutal-border brutal-shadow">
+        <div class="panel-header">
+          <div class="flex items-center gap-2">
+            <span class="text-primary-container">⚡</span>
+            <span>AGENT WORKFLOW</span>
           </div>
+          <span id="step-counter" class="badge-queued">IDLE</span>
         </div>
-        <div id="user-intent-bubble" class="hidden mt-space-xs rounded-xl bg-surface-container p-space-md shadow-sm">
-          <p id="user-intent-text" class="font-headline-sm text-[16px] leading-relaxed text-on-surface italic"></p>
-        </div>
-      </div>
-      
-      <div class="rounded-xl bg-surface-container-lowest p-space-sm shadow-[0_4px_20px_rgba(245,158,11,0.05)]">
-        <label class="sr-only" for="intent-input">Describe the project</label>
-        <textarea class="w-full bg-transparent border-none text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none resize-none p-space-xs" id="intent-input" placeholder="e.g. 'Build me a real-time chat app...'" rows="4"></textarea>
-        <div class="flex items-center justify-end pt-space-xs px-space-xs">
-          <button id="forge-btn" onclick="startForge()" class="px-space-md py-1.5 rounded-full bg-primary-container text-surface-container-lowest hover:bg-primary transition-colors flex items-center gap-1.5 font-label-md text-label-md shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-            <span id="forge-btn-text">Forge It</span>
-            <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
-          </button>
-        </div>
-      </div>
-
-      <div id="project-context-card" class="hidden rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
-        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Project Context</span>
-        <div id="project-context-rows" class="flex flex-col gap-1 text-body-sm"></div>
-      </div>
-    </aside>
-
-    <!-- CENTER: Active Agent & Output -->
-    <section class="lg:col-span-6 flex flex-col gap-space-md">
-      <div id="empty-state" class="rounded-xl bg-surface-container-lowest p-space-xl shadow-[0_2px_16px_rgba(245,158,11,0.05)] flex flex-col items-center justify-center text-center min-h-[400px]">
-        <span class="material-symbols-outlined text-[48px] text-outline-variant mb-space-md">auto_awesome</span>
-        <h2 class="font-headline-md text-headline-md text-on-surface mb-space-sm">Describe it. We build it.</h2>
-        <div class="flex flex-wrap justify-center gap-space-sm mt-space-lg">
-          <button onclick="setExample('Build a todo list app with Flask')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
-            📝 Todo App (Flask)
-          </button>
-          <button onclick="setExample('Build a chat application using FastAPI and React')" class="px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors text-body-sm font-body-sm text-left">
-            💬 Chat App
-          </button>
-        </div>
-      </div>
-
-      <!-- ACTIVE AGENT PANEL -->
-      <div id="active-agent-panel" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_4px_24px_rgba(217,119,87,0.12)] overflow-hidden animate-fadeSlideIn">
-        <div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container-high border-b border-outline-variant/30">
-          <div class="flex items-center gap-space-sm">
-            <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span></span>
-            <div class="flex items-center gap-space-xs">
-              <span class="font-title-md text-[15px] text-on-surface font-semibold uppercase tracking-wider" id="active-agent-name">AGENT</span>
-              <span class="font-body-sm text-body-sm text-primary font-medium" id="active-agent-subtitle">— Active</span>
+        <div class="p-3 flex flex-col gap-1" id="stepper-list">
+          <!-- Step 1: Planner -->
+          <div id="step-planner" class="flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all">
+            <div id="step-planner-icon" class="w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0">
+              <span class="font-label-sm text-label-sm text-steel">01</span>
             </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider">Planner</span>
+              <span class="font-label-sm text-label-sm text-steel truncate">Requirements Analysis & Stack</span>
+            </div>
+            <span id="step-planner-status" class="badge-queued">QUEUED</span>
+          </div>
+          <!-- Step 2: Architect -->
+          <div id="step-architect" class="flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all">
+            <div id="step-architect-icon" class="w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0">
+              <span class="font-label-sm text-label-sm text-steel">02</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider">Architect</span>
+              <span class="font-label-sm text-label-sm text-steel truncate">File Manifest & Schemas</span>
+            </div>
+            <span id="step-architect-status" class="badge-queued">QUEUED</span>
+          </div>
+          <!-- Step 3: Coder -->
+          <div id="step-coder" class="flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all">
+            <div id="step-coder-icon" class="w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0">
+              <span class="font-label-sm text-label-sm text-steel">03</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider">Coding Agent</span>
+              <span class="font-label-sm text-label-sm text-steel truncate">Synthesis & Assembly</span>
+            </div>
+            <span id="step-coder-status" class="badge-queued">QUEUED</span>
+          </div>
+          <!-- Step 4: Debugger -->
+          <div id="step-debugger" class="flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all">
+            <div id="step-debugger-icon" class="w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0">
+              <span class="font-label-sm text-label-sm text-steel">04</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider">Debugger</span>
+              <span class="font-label-sm text-label-sm text-steel truncate">AST Review & Self-Healing</span>
+            </div>
+            <span id="step-debugger-status" class="badge-queued">QUEUED</span>
+          </div>
+          <!-- Step 5: Terminal -->
+          <div id="step-terminal" class="flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all">
+            <div id="step-terminal-icon" class="w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0">
+              <span class="font-label-sm text-label-sm text-steel">05</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider">Terminal</span>
+              <span class="font-label-sm text-label-sm text-steel truncate">Build & Dependency Resolution</span>
+            </div>
+            <span id="step-terminal-status" class="badge-queued">QUEUED</span>
+          </div>
+          <!-- Step 6: Browser -->
+          <div id="step-browser" class="flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all">
+            <div id="step-browser-icon" class="w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0">
+              <span class="font-label-sm text-label-sm text-steel">06</span>
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider">Browser Agent</span>
+              <span class="font-label-sm text-label-sm text-steel truncate">Playwright E2E Verification</span>
+            </div>
+            <span id="step-browser-status" class="badge-queued">QUEUED</span>
           </div>
         </div>
-        <div class="p-space-md flex flex-col gap-space-md">
-          <div class="rounded-xl bg-surface-container p-space-md shadow-sm">
-            <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-space-xs">
-              <span class="material-symbols-outlined text-[14px]">bolt</span>
-              <span>Processing Logs</span>
-            </div>
-            <div id="active-agent-logs" class="font-mono text-[12px] text-inverse-on-surface/80 flex flex-col gap-0.5 max-h-[250px] overflow-y-auto">
-              <!-- Logs stream here -->
-            </div>
+        <!-- Pipeline Progress -->
+        <div class="px-3 pb-3">
+          <div class="flex justify-between font-label-sm text-label-sm mb-1 text-steel uppercase tracking-wider">
+            <span>Pipeline Progress</span>
+            <span id="pipeline-progress-pct">0%</span>
           </div>
-          <!-- Specialized Active Displays -->
-          <div id="active-agent-browser" class="hidden rounded-xl bg-surface-container p-space-md shadow-sm border border-outline-variant/30">
-            <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-space-xs">
-              <span class="material-symbols-outlined text-[14px]">web</span>
-              <span>Browser Action</span>
-            </div>
-            <div id="browser-current-action" class="font-body-sm text-primary mb-2">Connecting to browser...</div>
+          <div class="w-full h-1.5 bg-raised brutal-border overflow-hidden">
+            <div id="pipeline-progress-bar" class="h-full bg-primary-container transition-all duration-500" style="width: 0%;"></div>
           </div>
         </div>
       </div>
 
-      <!-- POST-COMPLETION ACTIONS -->
-      <div id="completion-actions" class="hidden mb-space-md flex flex-col sm:flex-row gap-space-sm">
-        <button onclick="launchPreview()" class="flex-1 px-space-md py-space-sm rounded-xl bg-primary-container text-surface-container-lowest hover:bg-primary transition-colors flex items-center justify-center gap-space-xs font-title-md text-[15px] font-semibold shadow-sm">
-          <span class="material-symbols-outlined text-[18px]">play_arrow</span>
-          <span id="preview-btn-text">Launch Preview</span>
-        </button>
-        <button onclick="downloadZip()" class="flex-1 px-space-md py-space-sm rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center gap-space-xs font-title-md text-[15px] font-semibold shadow-sm border border-outline-variant/30">
-          <span class="material-symbols-outlined text-[18px]">download</span>
-          <span>Download ZIP</span>
-        </button>
-      </div>
-
-      <!-- FILE EXPLORER (shown on completion) -->
-      <div id="files-explorer" class="hidden rounded-xl bg-surface-container-lowest shadow-[0_2px_16px_rgba(245,158,11,0.05)] overflow-hidden animate-fadeSlideIn">
-        <button class="w-full flex items-center justify-between px-space-md py-space-sm bg-surface-container-low hover:bg-surface-container transition-colors" aria-expanded="false" aria-controls="files-explorer-body" onclick="toggleFilesExplorer()">
-          <div class="flex items-center gap-space-sm">
-            <span class="material-symbols-outlined text-primary text-[18px]">folder_open</span>
-            <span class="font-title-md text-[15px] text-on-surface font-semibold">Generated Project Files</span>
-            <span id="files-count-badge" class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm"></span>
-          </div>
-          <span class="material-symbols-outlined text-outline text-[20px]" id="files-explorer-icon">expand_more</span>
-        </button>
-        <div id="files-explorer-body" class="hidden p-space-md flex flex-col gap-space-xs">
-           <div id="file-tree-container"></div>
+      <!-- Project Context (shown after planner completes) -->
+      <div id="project-context-card" class="hidden bg-carbon brutal-border brutal-shadow animate-fadeSlideIn">
+        <div class="panel-header">
+          <span>PROJECT_CONTEXT</span>
         </div>
-      </div>
-
-    </section>
-
-    <!-- RIGHT: Timeline & Observability -->
-    <aside class="lg:col-span-3 flex flex-col gap-space-md">
-      
-      <!-- Activity Timeline -->
-      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-md">
-        <div class="flex items-center justify-between">
-          <span class="font-title-md text-title-md text-on-surface font-semibold">Activity Timeline</span>
-        </div>
-        <div class="flex flex-col gap-space-sm relative" id="activity-timeline">
-           <!-- Dynamic agent timeline cards go here -->
-           <div class="text-on-surface-variant text-body-sm italic" id="timeline-empty">No activity yet.</div>
+        <div class="p-3">
+          <div id="project-context-rows" class="flex flex-col gap-1.5"></div>
         </div>
       </div>
 
       <!-- Telemetry -->
-      <div class="rounded-xl bg-surface-container-lowest p-space-md shadow-[0_2px_16px_rgba(245,158,11,0.04)] flex flex-col gap-space-sm">
-        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Telemetry</span>
-        <div class="flex items-center justify-between py-1">
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Runtime</span>
-          <span id="telemetry-elapsed" class="font-title-md text-[14px] text-on-surface font-mono">0.0s</span>
+      <div class="bg-carbon brutal-border brutal-shadow">
+        <div class="panel-header">
+          <div class="flex items-center gap-2">
+            <span class="text-cyan">◈</span>
+            <span>TELEMETRY & STATUS</span>
+          </div>
         </div>
-        <div class="flex items-center justify-between py-1">
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Agent Invocations</span>
-          <span id="telemetry-agents" class="font-title-md text-[14px] text-on-surface font-mono">0</span>
+        <div class="p-3 flex flex-col gap-1">
+          <div class="flex items-center justify-between py-1.5 px-2 hover:bg-raised transition-colors">
+            <span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Total Elapsed</span>
+            <span id="telemetry-elapsed" class="font-label-lg text-label-lg text-chalk font-mono">0.0s</span>
+          </div>
+          <div class="flex items-center justify-between py-1.5 px-2 hover:bg-raised transition-colors">
+            <span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Agents Completed</span>
+            <span id="telemetry-agents" class="font-label-lg text-label-lg text-chalk font-mono">0 / 6</span>
+          </div>
+          <div class="flex items-center justify-between py-1.5 px-2 hover:bg-raised transition-colors">
+            <span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Pipeline Status</span>
+            <div class="flex items-center gap-2">
+              <span id="telemetry-dot" class="w-2 h-2 bg-steel"></span>
+              <span id="telemetry-status" class="font-label-lg text-label-lg text-steel uppercase">IDLE</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-1.5 px-2 hover:bg-raised transition-colors">
+            <span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Log Lines</span>
+            <span id="telemetry-logs" class="font-label-lg text-label-lg text-chalk font-mono">0</span>
+          </div>
         </div>
-        <div class="flex items-center justify-between py-1">
-          <span class="font-body-sm text-body-sm text-on-surface-variant">Log Lines</span>
-          <span id="telemetry-logs" class="font-title-md text-[14px] text-on-surface font-mono">0</span>
+      </div>
+
+      <!-- Terminal Log -->
+      <div class="bg-carbon brutal-border brutal-shadow">
+        <div class="panel-header cursor-pointer hover:bg-raised transition-colors" onclick="document.getElementById('terminal-log-body').classList.toggle('hidden')">
+          <div class="flex items-center gap-2">
+            <span class="text-mint">$</span>
+            <span>LIVE TERMINAL</span>
+          </div>
+          <span class="material-symbols-outlined text-[14px] text-steel">expand_more</span>
+        </div>
+        <div id="terminal-log-body" class="max-h-[280px] overflow-y-auto p-2 bg-void">
+          <div id="terminal-lines" class="font-mono text-[11px] leading-relaxed text-steel flex flex-col gap-0.5">
+            <span class="text-steel"><span class="text-cyan">$</span> Waiting for pipeline to start...</span>
+          </div>
         </div>
       </div>
 
     </aside>
   </div>
+
 </div>
 </div>
 </main>
 
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- STATUS BAR (Bottom) -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<footer class="fixed bottom-0 left-[220px] right-0 z-30 h-[28px] bg-surface border-t-2 border-divider flex items-center justify-between px-4 font-label-sm text-label-sm">
+  <div class="flex items-center gap-4">
+    <div class="flex items-center gap-1.5">
+      <span id="footer-status-dot" class="w-1.5 h-1.5 bg-steel"></span>
+      <span class="text-steel">AGENT ENGINE: <span id="footer-engine-status" class="text-chalk">IDLE_SYNC</span></span>
+    </div>
+    <span class="text-divider">|</span>
+    <span class="text-steel">MEM_ALLOC: <span class="text-chalk">4.2GB / 16GB</span></span>
+  </div>
+  <div class="flex items-center gap-4">
+    <span class="text-steel">SANDBOX: <span class="text-chalk">DOCKER_ISOLATED</span></span>
+    <span class="text-divider">|</span>
+    <span class="text-steel">REGION: <span class="text-chalk">us-east-1 (AWS)</span></span>
+    <span class="text-divider">|</span>
+    <span class="text-steel">LATENCY: <span class="text-mint">18ms</span></span>
+    <span class="text-divider">|</span>
+    <span class="text-steel">v2.4.0-rc1 <span class="text-primary-container">[PROD]</span></span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT — Full SSE Integration -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
 <script>
-// --- State ---
+// ── State ──
 let sessionId = null;
 let startTime = null;
 let elapsedInterval = null;
 let logCount = 0;
-let agentCount = 0;
+let completedAgents = 0;
 let currentActiveAgent = null;
-let evtSource = null;
-let currentFiles = [];
-
+const agentOrder = ['planner', 'architect', 'coder', 'debugger', 'terminal', 'browser'];
 const agentLabels = {
-  planner: 'Planner', architect: 'Architect', coder: 'Coder',
-  debugger: 'Debugger', terminal: 'Terminal', browser: 'Browser'
+  planner: 'Planner Agent',
+  architect: 'Architect Agent',
+  coder: 'Coding Agent',
+  debugger: 'Debugger Agent',
+  terminal: 'Terminal Agent',
+  browser: 'Browser Agent',
+};
+const agentSubtitles = {
+  planner: 'Reasoning',
+  architect: 'File Manifest Design',
+  coder: 'Generating Code',
+  debugger: 'AST Review & Self-Healing',
+  terminal: 'Build & Compile Check',
+  browser: 'Playwright E2E Verification',
 };
 
-// --- Escaping / Sanitization ---
-function esc(str) {
-  if (str == null) return '';
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
+// ── Helpers ──
 function setExample(text) {
-  const input = document.getElementById('intent-input');
-  input.value = text;
-  input.focus();
+  document.getElementById('intent-input').value = text;
+  document.getElementById('intent-input').focus();
 }
 
-function updateElapsed() {
-  if (!startTime) return;
-  const ms = Date.now() - startTime;
+function formatElapsed(ms) {
   const secs = Math.floor(ms / 1000);
   const h = String(Math.floor(secs / 3600)).padStart(2, '0');
   const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
   const s = String(secs % 60).padStart(2, '0');
-  document.getElementById('header-elapsed').textContent = `${h}:${m}:${s}`;
-  document.getElementById('telemetry-elapsed').textContent = (ms / 1000).toFixed(1) + 's';
+  return `${h}:${m}:${s}`;
 }
 
-function stopForge() {
-  if (evtSource) {
-    evtSource.close();
-    evtSource = null;
-    finishPipeline(false, "Run Cancelled");
+function updateElapsed() {
+  if (!startTime) return;
+  const elapsed = Date.now() - startTime;
+  document.getElementById('header-elapsed').textContent = formatElapsed(elapsed);
+  document.getElementById('telemetry-elapsed').textContent = (elapsed / 1000).toFixed(1) + 's';
+}
+
+function addTerminalLine(text, color = 'steel') {
+  const container = document.getElementById('terminal-lines');
+  const line = document.createElement('span');
+  const colorMap = {
+    'primary': '#fde400',
+    'secondary': '#00e5ff',
+    'tertiary': '#00f5a0',
+    'tertiary-fixed': '#ffdad7',
+    'error': '#ff5c5c',
+    'on-surface': '#f4f6fa',
+    'steel': '#8c96a8',
+    'primary-fixed': '#fde400',
+    'secondary-fixed': '#00e5ff',
+    'inverse-on-surface': '#8c96a8',
+  };
+  line.style.color = colorMap[color] || colorMap['steel'];
+  line.textContent = text;
+  container.appendChild(line);
+  container.parentElement.scrollTop = container.parentElement.scrollHeight;
+  logCount++;
+  document.getElementById('telemetry-logs').textContent = logCount;
+}
+
+function updateStepperActive(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-50');
+  el.style.background = '#181c26';
+  el.style.borderLeft = '2px solid #ffe600';
+  icon.className = 'w-5 h-5 bg-primary-container flex items-center justify-center shrink-0';
+  icon.style.border = '2px solid #000000';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[12px] text-black animate-spin">sync</span>';
+  status.className = '';
+  status.innerHTML = '<span class="badge-running">RUNNING</span>';
+}
+
+function updateStepperDone(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-50');
+  el.style.background = '';
+  el.style.borderLeft = '';
+  icon.className = 'w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[14px] text-mint" style="font-variation-settings: \'FILL\' 1;">check</span>';
+  status.className = '';
+  status.innerHTML = '<span class="badge-success">DONE</span>';
+}
+
+function updateStepperFailed(agentName) {
+  const el = document.getElementById(`step-${agentName}`);
+  const icon = document.getElementById(`step-${agentName}-icon`);
+  const status = document.getElementById(`step-${agentName}-status`);
+  if (!el) return;
+  el.classList.remove('opacity-50');
+  el.style.background = '';
+  el.style.borderLeft = '2px solid #ff5c5c';
+  icon.className = 'w-5 h-5 flex items-center justify-center shrink-0';
+  icon.style.background = 'rgba(255,92,92,0.15)';
+  icon.style.border = '1.5px solid #ff5c5c';
+  icon.innerHTML = '<span class="material-symbols-outlined text-[14px] text-coral" style="font-variation-settings: \'FILL\' 1;">error</span>';
+  status.className = '';
+  status.innerHTML = '<span class="badge-error">FAILED</span>';
+}
+
+function updateProgress() {
+  const pct = Math.round((completedAgents / 6) * 100);
+  document.getElementById('pipeline-progress-pct').textContent = pct + '%';
+  document.getElementById('pipeline-progress-bar').style.width = pct + '%';
+  document.getElementById('telemetry-agents').textContent = `${completedAgents} / 6`;
+  document.getElementById('step-counter').className = '';
+  if (completedAgents < 6) {
+    document.getElementById('step-counter').innerHTML = `<span class="badge-running">STEP ${completedAgents + 1}/6</span>`;
+  } else {
+    document.getElementById('step-counter').innerHTML = '<span class="badge-success">COMPLETE</span>';
   }
 }
 
+// ── Agent Block Builder ──
+function createAgentBlock(agentName, isActive = true) {
+  const container = document.getElementById('agent-blocks');
+  const blockId = `agent-block-${agentName}`;
+
+  if (document.getElementById(blockId)) return;
+
+  const article = document.createElement('article');
+  article.id = blockId;
+  article.className = 'bg-carbon brutal-shadow animate-fadeSlideIn';
+  article.style.border = isActive ? '1.5px solid #ffe600' : '1.5px solid #282e3d';
+
+  const badge = isActive
+    ? '<span class="badge-running">STREAMING</span>'
+    : '';
+
+  article.innerHTML = `
+    <div class="panel-header cursor-pointer hover:bg-raised transition-colors" onclick="document.getElementById('${blockId}-body').classList.toggle('hidden')">
+      <div class="flex items-center gap-2">
+        ${isActive ? '<span class="w-2 h-2 bg-primary-container animate-pulse"></span>' : '<span class="w-2 h-2 bg-steel"></span>'}
+        <span class="text-chalk">${agentLabels[agentName]}</span>
+        <span class="text-steel">— ${agentSubtitles[agentName]}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        ${badge}
+        <span id="${blockId}-time" class="text-steel hidden"></span>
+        <span class="material-symbols-outlined text-[14px] text-steel">expand_more</span>
+      </div>
+    </div>
+    <div class="p-3 flex flex-col gap-3" id="${blockId}-body">
+      <div class="bg-raised brutal-border p-3" id="${blockId}-thinking">
+        <div class="flex items-center gap-2 text-steel font-label-sm text-label-sm uppercase tracking-wider mb-2">
+          <span class="material-symbols-outlined text-[12px] ${isActive ? 'text-primary-container' : 'text-steel'}">bolt</span>
+          <span>${isActive ? 'ACTIVE PROCESSING' : 'LATENT SYNTHESIS'}</span>
+        </div>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed" id="${blockId}-thought">
+          Processing...
+        </p>
+      </div>
+      <div id="${blockId}-output" class="flex flex-col gap-2"></div>
+    </div>
+  `;
+  container.appendChild(article);
+}
+
+function finalizeAgentBlock(agentName, data) {
+  const blockId = `agent-block-${agentName}`;
+  const block = document.getElementById(blockId);
+  if (!block) return;
+
+  // Update border to standard
+  block.style.border = '1.5px solid #282e3d';
+
+  // Update header: replace ping dot with check
+  const header = block.querySelector(':scope > div:first-child');
+  if (header) {
+    const dotEl = header.querySelector('.animate-pulse');
+    if (dotEl) {
+      dotEl.className = 'w-2 h-2 bg-mint';
+      dotEl.style.animation = 'none';
+    }
+    // Remove streaming badge, show completed time
+    const runBadge = header.querySelector('.badge-running');
+    if (runBadge) runBadge.remove();
+    const timeEl = document.getElementById(`${blockId}-time`);
+    if (timeEl) {
+      timeEl.innerHTML = '<span class="badge-success">COMPLETED</span>';
+      timeEl.classList.remove('hidden');
+    }
+  }
+
+  // Update thinking label
+  const thinkingLabel = block.querySelector(`#${blockId}-thinking .uppercase`);
+  if (thinkingLabel) {
+    thinkingLabel.innerHTML = '<span class="material-symbols-outlined text-[12px] text-steel">psychology</span><span>LATENT SYNTHESIS</span>';
+  }
+
+  // Add output data
+  const outputArea = document.getElementById(`${blockId}-output`);
+  if (!outputArea) return;
+
+  if (agentName === 'planner' && data) {
+    const techStack = data.tech_stack || {};
+    const features = data.features || [];
+    const tags = Object.entries(techStack).map(([k, v]) =>
+      `<span class="px-2 py-1 bg-raised brutal-border text-chalk font-label-sm text-label-sm uppercase">${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}</span>`
+    ).join('');
+
+    outputArea.innerHTML = `
+      <div class="bg-raised brutal-border p-3 flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px] text-primary-container">account_tree</span>
+          <span class="font-headline-md text-headline-md text-chalk">Architecture Blueprint: ${data.project_name || 'Project'}</span>
+        </div>
+        <p class="font-body-sm text-body-sm text-steel">${data.description || ''}</p>
+        <div class="flex flex-wrap gap-1.5 pt-1">${tags}</div>
+        ${features.length > 0 ? `<div class="mt-1"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Features (${features.length})</span><ul class="mt-1 flex flex-col gap-0.5">${features.map(f => `<li class="font-body-sm text-body-sm text-chalk flex items-start gap-1.5"><span class="text-primary-container">▸</span>${f}</li>`).join('')}</ul></div>` : ''}
+      </div>
+    `;
+
+    // Show intent tags
+    const tagsContainer = document.getElementById('intent-tags');
+    tagsContainer.innerHTML = Object.entries(techStack).map(([k, v]) =>
+      `<span class="px-2 py-1 bg-raised brutal-border text-chalk font-label-sm text-label-sm flex items-center gap-1"><span class="text-cyan">◆</span>${typeof v === 'object' ? JSON.stringify(v) : v}</span>`
+    ).join('');
+    tagsContainer.classList.remove('hidden');
+
+    // Show project context
+    const ctx = document.getElementById('project-context-card');
+    ctx.classList.remove('hidden');
+    const rows = document.getElementById('project-context-rows');
+    rows.innerHTML = `
+      <div class="flex items-center justify-between py-1 px-2 hover:bg-raised transition-colors"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Project</span><span class="font-label-lg text-label-lg text-chalk">${data.project_name || '—'}</span></div>
+      <div class="flex items-center justify-between py-1 px-2 hover:bg-raised transition-colors"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Backend</span><span class="font-label-lg text-label-lg text-chalk">${techStack.backend || '—'}</span></div>
+      <div class="flex items-center justify-between py-1 px-2 hover:bg-raised transition-colors"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Frontend</span><span class="font-label-lg text-label-lg text-chalk">${techStack.frontend || '—'}</span></div>
+    `;
+  }
+
+  if (agentName === 'architect' && data) {
+    const fileList = data.file_list || [];
+    outputArea.innerHTML = `
+      <div class="bg-raised brutal-border p-3 flex flex-col gap-1 font-body-sm text-body-sm">
+        <div class="flex items-center justify-between pb-2">
+          <span class="font-label-lg text-label-lg text-chalk uppercase tracking-wider flex items-center gap-2">
+            <span class="material-symbols-outlined text-[14px] text-primary-container">folder_open</span>
+            Project Root Tree (${fileList.length} Files Planned)
+          </span>
+          <span class="font-label-sm text-label-sm text-steel">Staged for generation</span>
+        </div>
+        ${fileList.map(f => `
+          <div class="flex items-center justify-between py-1 px-2 hover:bg-surface-container transition-colors">
+            <div class="flex items-center gap-2">
+              <span class="text-[12px] ${f === data.entrypoint ? 'text-primary-container' : 'text-steel'}">▸</span>
+              <span class="text-chalk font-mono text-[11px]">${f}</span>
+              ${f === data.entrypoint ? '<span class="badge-running text-[8px]">ENTRY</span>' : ''}
+            </div>
+          </div>
+        `).join('')}
+        <div class="mt-2 pt-2 border-t border-divider">
+          <span class="font-label-sm text-label-sm text-steel">Run: <code class="font-mono text-[11px] text-cyan bg-void px-1.5 py-0.5">${data.run_command || ''}</code></span>
+        </div>
+      </div>
+    `;
+  }
+
+  if (agentName === 'coder' && data) {
+    outputArea.innerHTML = `
+      <div class="flex items-center gap-2 p-2 bg-raised brutal-border font-label-sm text-label-sm">
+        <span class="material-symbols-outlined text-[14px] text-mint" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        <span class="text-chalk">${data.files_generated || 0} files generated successfully</span>
+      </div>
+    `;
+  }
+
+  if (agentName === 'debugger' && data) {
+    outputArea.innerHTML = `
+      <div class="flex items-center gap-2 p-2 bg-raised brutal-border font-label-sm text-label-sm">
+        <span class="material-symbols-outlined text-[14px] text-cyan">bug_report</span>
+        <span class="text-chalk">${data.files_reviewed || 0} files reviewed and patched</span>
+      </div>
+    `;
+  }
+
+  if (agentName === 'terminal' && data) {
+    const icon = data.success ? 'check_circle' : 'warning';
+    const color = data.success ? 'text-mint' : 'text-coral';
+    const msg = data.success ? 'All checks passed — build successful' : 'Some checks had warnings';
+    outputArea.innerHTML = `
+      <div class="flex items-center gap-2 p-2 bg-raised font-label-sm text-label-sm" style="border: 1.5px solid ${data.success ? '#00f5a0' : '#ff5c5c'};">
+        <span class="material-symbols-outlined text-[14px] ${color}" style="font-variation-settings: 'FILL' 1;">${icon}</span>
+        <span class="text-chalk">${msg}</span>
+      </div>
+    `;
+    if (!data.success) updateStepperFailed('terminal');
+  }
+
+  if (agentName === 'browser' && data) {
+    const icon = data.success ? 'check_circle' : 'warning';
+    const color = data.success ? 'text-mint' : 'text-coral';
+    const msg = data.success
+      ? `E2E smoke tests passed — Page: "${data.page_title || 'N/A'}"`
+      : 'Browser tests had issues';
+    outputArea.innerHTML = `
+      <div class="flex items-center gap-2 p-2 bg-raised font-label-sm text-label-sm" style="border: 1.5px solid ${data.success ? '#00f5a0' : '#ff5c5c'};">
+        <span class="material-symbols-outlined text-[14px] ${color}" style="font-variation-settings: 'FILL' 1;">${icon}</span>
+        <span class="text-chalk">${msg}</span>
+      </div>
+    `;
+    if (!data.success) updateStepperFailed('browser');
+  }
+}
+
+// ── Download ──
+function downloadProject() {
+  if (!sessionId) return;
+  window.open(`/api/forge/${sessionId}/download`, '_blank');
+}
+
+// ── Load files ──
+async function loadFiles() {
+  if (!sessionId) return;
+  try {
+    const resp = await fetch(`/api/forge/${sessionId}/files`);
+    const data = await resp.json();
+    if (!data.files) return;
+
+    const explorer = document.getElementById('files-explorer');
+    const body = document.getElementById('files-explorer-body');
+    const countBadge = document.getElementById('files-count-badge');
+    explorer.classList.remove('hidden');
+    countBadge.textContent = `${data.files.length} FILES`;
+
+    body.innerHTML = data.files.map((f, i) => `
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between py-1.5 px-2 hover:bg-raised transition-colors cursor-pointer" onclick="document.getElementById('file-preview-${i}').classList.toggle('hidden')">
+          <div class="flex items-center gap-2">
+            <span class="text-primary-container text-[12px]">▸</span>
+            <span class="text-chalk font-mono text-[11px]">${f.path}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-label-sm text-label-sm text-steel">${(f.content.length / 1024).toFixed(1)} KB</span>
+            <span class="material-symbols-outlined text-[14px] text-steel">expand_more</span>
+          </div>
+        </div>
+        <div id="file-preview-${i}" class="hidden mt-1 mb-2 bg-void brutal-border overflow-hidden">
+          <div class="flex items-center justify-between px-2 py-1 bg-raised border-b border-divider">
+            <span class="font-mono text-[10px] text-steel">${f.path}</span>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('file-code-${i}').textContent)" class="text-steel hover:text-chalk transition-colors">
+              <span class="material-symbols-outlined text-[12px]">content_copy</span>
+            </button>
+          </div>
+          <pre class="p-2 overflow-x-auto max-h-[280px] overflow-y-auto"><code id="file-code-${i}" class="font-mono text-[11px] leading-relaxed text-chalk whitespace-pre">${escapeHtml(f.content)}</code></pre>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    console.error('Failed to load files:', e);
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ── Reset Pipeline ──
+function resetPipeline() {
+  sessionId = null;
+  startTime = null;
+  logCount = 0;
+  completedAgents = 0;
+  currentActiveAgent = null;
+  if (elapsedInterval) clearInterval(elapsedInterval);
+
+  document.getElementById('intent-input').value = '';
+  document.getElementById('forge-btn').disabled = false;
+  document.getElementById('forge-btn-text').textContent = 'START AGENT';
+  document.getElementById('empty-state').classList.remove('hidden');
+  document.getElementById('agent-blocks').classList.add('hidden');
+  document.getElementById('agent-blocks').innerHTML = '';
+  document.getElementById('pipeline-complete-card').classList.add('hidden');
+  document.getElementById('files-explorer').classList.add('hidden');
+  document.getElementById('user-intent-bubble').classList.add('hidden');
+  document.getElementById('project-context-card').classList.add('hidden');
+  document.getElementById('terminal-lines').innerHTML = '<span class="text-steel"><span class="text-cyan">$</span> Waiting for pipeline to start...</span>';
+  document.getElementById('header-status-dot').className = 'w-2 h-2 bg-steel';
+  document.getElementById('header-run-status').className = 'badge-queued';
+  document.getElementById('header-run-status').textContent = 'IDLE';
+  document.getElementById('header-elapsed').classList.add('hidden');
+  document.getElementById('telemetry-dot').className = 'w-2 h-2 bg-steel';
+  document.getElementById('telemetry-status').textContent = 'IDLE';
+  document.getElementById('telemetry-status').className = 'font-label-lg text-label-lg text-steel uppercase';
+  document.getElementById('telemetry-elapsed').textContent = '0.0s';
+  document.getElementById('telemetry-agents').textContent = '0 / 6';
+  document.getElementById('telemetry-logs').textContent = '0';
+  document.getElementById('footer-status-dot').className = 'w-1.5 h-1.5 bg-steel';
+  document.getElementById('footer-engine-status').textContent = 'IDLE_SYNC';
+  document.getElementById('footer-engine-status').className = '';
+
+  // Reset stepper
+  agentOrder.forEach(a => {
+    const el = document.getElementById(`step-${a}`);
+    const icon = document.getElementById(`step-${a}-icon`);
+    const status = document.getElementById(`step-${a}-status`);
+    if (el) {
+      el.className = 'flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all';
+      el.style.background = '';
+      el.style.borderLeft = '';
+      icon.className = 'w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0';
+      icon.style = '';
+      const stepNum = agentOrder.indexOf(a) + 1;
+      icon.innerHTML = `<span class="font-label-sm text-label-sm text-steel">${String(stepNum).padStart(2, '0')}</span>`;
+      status.className = '';
+      status.innerHTML = '<span class="badge-queued">QUEUED</span>';
+    }
+  });
+
+  document.getElementById('pipeline-progress-pct').textContent = '0%';
+  document.getElementById('pipeline-progress-bar').style.width = '0%';
+  document.getElementById('step-counter').innerHTML = '<span class="badge-queued">IDLE</span>';
+
+  document.getElementById('intent-input').focus();
+}
+
+// ── Main Forge Function ──
 function startForge() {
   const input = document.getElementById('intent-input');
   const query = input.value.trim();
   if (!query) return;
 
-  if (evtSource) {
-    evtSource.close();
-  }
-
-  // Reset UI
+  // Reset state
   sessionId = null;
   startTime = Date.now();
   logCount = 0;
-  agentCount = 0;
+  completedAgents = 0;
   currentActiveAgent = null;
-  currentFiles = [];
-  document.getElementById('activity-timeline').innerHTML = '';
-  document.getElementById('files-explorer').classList.add('hidden');
-  document.getElementById('project-context-card').classList.add('hidden');
-  document.getElementById('completion-actions').classList.add('hidden');
 
+  // Update UI to running state
   document.getElementById('forge-btn').disabled = true;
-  document.getElementById('forge-btn-text').textContent = 'Forging...';
+  document.getElementById('forge-btn-text').textContent = 'FORGING...';
   document.getElementById('empty-state').classList.add('hidden');
-  
-  document.getElementById('header-status-dot').className = 'w-2 h-2 rounded-full bg-primary animate-pulse';
-  document.getElementById('header-status-text').textContent = 'Connecting...';
-  document.getElementById('header-run-id').textContent = 'Starting';
-  
-  document.getElementById('banner-dot').classList.remove('hidden');
-  document.getElementById('banner-dot').className = 'w-2.5 h-2.5 rounded-full bg-primary animate-ping';
-  document.getElementById('banner-title').textContent = 'Synthesis Running';
-  document.getElementById('banner-actions').classList.remove('hidden');
+  document.getElementById('agent-blocks').classList.remove('hidden');
+  document.getElementById('agent-blocks').innerHTML = '';
+  document.getElementById('pipeline-complete-card').classList.add('hidden');
+  document.getElementById('files-explorer').classList.add('hidden');
+  document.getElementById('terminal-lines').innerHTML = '<span class="text-primary-container">$ Pipeline started...</span>';
 
+  // Header status
+  document.getElementById('header-status-dot').className = 'w-2 h-2 bg-primary-container animate-pulse';
+  document.getElementById('header-run-status').className = 'badge-running';
+  document.getElementById('header-run-status').textContent = 'RUNNING';
+  document.getElementById('header-elapsed').classList.remove('hidden');
+
+  // Telemetry
+  document.getElementById('telemetry-dot').className = 'w-2 h-2 bg-primary-container animate-pulse';
+  document.getElementById('telemetry-status').textContent = 'RUNNING';
+  document.getElementById('telemetry-status').className = 'font-label-lg text-label-lg text-primary-container uppercase';
+
+  // Footer
+  document.getElementById('footer-status-dot').className = 'w-1.5 h-1.5 bg-primary-container animate-pulse';
+  document.getElementById('footer-engine-status').textContent = 'ACTIVE_RUN';
+  document.getElementById('footer-engine-status').className = 'text-primary-container';
+
+  // Show user intent bubble
   document.getElementById('user-intent-bubble').classList.remove('hidden');
-  document.getElementById('user-intent-text').textContent = `"${esc(query)}"`;
+  document.getElementById('user-intent-text').textContent = `"${query}"`;
+  document.getElementById('intent-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+  // Show project context card
+  document.getElementById('project-context-card').classList.remove('hidden');
+
+  // Reset stepper
+  agentOrder.forEach(a => {
+    const el = document.getElementById(`step-${a}`);
+    const icon = document.getElementById(`step-${a}-icon`);
+    const status = document.getElementById(`step-${a}-status`);
+    if (el) {
+      el.className = 'flex items-center gap-2.5 px-2.5 py-2 opacity-50 transition-all';
+      el.style.background = '';
+      el.style.borderLeft = '';
+      icon.className = 'w-5 h-5 bg-raised brutal-border flex items-center justify-center shrink-0';
+      icon.style = '';
+      const stepNum = agentOrder.indexOf(a) + 1;
+      icon.innerHTML = `<span class="font-label-sm text-label-sm text-steel">${String(stepNum).padStart(2, '0')}</span>`;
+      status.className = '';
+      status.innerHTML = '<span class="badge-queued">QUEUED</span>';
+    }
+  });
+
+  updateProgress();
+
+  // Start elapsed timer
   if (elapsedInterval) clearInterval(elapsedInterval);
   elapsedInterval = setInterval(updateElapsed, 100);
-  
-  updateTelemetry();
 
-  // SSE
-  evtSource = new EventSource(`/api/forge/stream?query=${encodeURIComponent(query)}`);
+  // ── SSE Connection ──
+  const evtSource = new EventSource(`/api/forge/stream?query=${encodeURIComponent(query)}`);
 
-  evtSource.onopen = () => {
-    document.getElementById('header-status-text').textContent = 'Connected (Pipeline Active)';
-  };
-
-  evtSource.onmessage = (event) => {
+  evtSource.onmessage = function (event) {
     try {
       const data = JSON.parse(event.data);
       handleSSEEvent(data);
@@ -419,252 +1189,117 @@ function startForge() {
     }
   };
 
-  evtSource.onerror = () => {
-    if (evtSource.readyState === EventSource.CLOSED || evtSource.readyState === EventSource.CONNECTING) {
-       document.getElementById('header-status-text').textContent = 'Connection Error / Reconnecting...';
-       document.getElementById('header-status-dot').className = 'w-2 h-2 rounded-full bg-error';
-    }
-    // If it permanently fails, close it. Let's rely on backend 'error' event to close cleanly for now.
+  evtSource.onerror = function () {
+    evtSource.close();
+    addTerminalLine('[ERROR] Connection lost.', 'error');
+    finishPipeline(false);
   };
 }
 
 function handleSSEEvent(event) {
-  if (event.type === 'session') {
-    sessionId = event.session_id;
-    document.getElementById('header-run-id').textContent = `#${esc(sessionId)}`;
-  } else if (event.type === 'agent_start') {
-    agentCount++;
-    currentActiveAgent = event.agent;
-    updateTelemetry();
-    
-    const panel = document.getElementById('active-agent-panel');
-    panel.classList.remove('hidden');
-    document.getElementById('active-agent-name').textContent = agentLabels[event.agent] || event.agent;
-    document.getElementById('active-agent-logs').innerHTML = '';
-    
-    if (event.agent === 'browser') {
-      document.getElementById('active-agent-browser').classList.remove('hidden');
-    } else {
-      document.getElementById('active-agent-browser').classList.add('hidden');
-    }
-    
-  } else if (event.type === 'browser_action') {
-    if (document.getElementById('active-agent-browser').classList.contains('hidden')) {
-      document.getElementById('active-agent-browser').classList.remove('hidden');
-    }
-    const actionEl = document.getElementById('browser-current-action');
-    const actionStr = event.action ? `${event.action} ${event.target || event.url || ''}` : JSON.stringify(event);
-    actionEl.innerHTML = `<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">arrow_right_alt</span> ${esc(actionStr)}</span>`;
-    
-    // Log it as well
-    const logsContainer = document.getElementById('active-agent-logs');
-    const span = document.createElement('span');
-    span.className = 'text-primary';
-    span.textContent = `[Browser] ${actionStr}`;
-    logsContainer.appendChild(span);
-    logsContainer.scrollTop = logsContainer.scrollHeight;
-    
-  } else if (event.type === 'agent_log') {
-    logCount++;
-    updateTelemetry();
-    const logsContainer = document.getElementById('active-agent-logs');
-    const span = document.createElement('span');
-    // Map custom colors to tailwind classes if needed, or fallback
-    span.style.color = event.color === 'error' ? '#ef4444' : 
-                       event.color === 'primary' ? '#F59E0B' : 
-                       event.color === 'tertiary' ? '#D97706' : '#a3a3a3';
-    span.textContent = event.text;
-    logsContainer.appendChild(span);
-    logsContainer.scrollTop = logsContainer.scrollHeight;
-    
-  } else if (event.type === 'agent_complete') {
-    addTimelineEntry(event.agent, event.data);
-    currentActiveAgent = null;
-    document.getElementById('active-agent-panel').classList.add('hidden');
-    
-    // Process context data if planner
-    if (event.agent === 'planner' && event.data) {
-      document.getElementById('project-context-card').classList.remove('hidden');
-      const stack = event.data.tech_stack || {};
-      document.getElementById('project-context-rows').innerHTML = `
-        <div class="flex justify-between"><span>Name</span><span class="font-bold">${esc(event.data.project_name)}</span></div>
-        <div class="flex justify-between"><span>Frontend</span><span class="font-bold">${esc(stack.frontend)}</span></div>
-        <div class="flex justify-between"><span>Backend</span><span class="font-bold">${esc(stack.backend)}</span></div>
+  switch (event.type) {
+    case 'session':
+      sessionId = event.session_id;
+      addTerminalLine(`[SESSION] ID: ${sessionId}`, 'primary');
+      break;
+
+    case 'agent_start':
+      currentActiveAgent = event.agent;
+      createAgentBlock(event.agent, true);
+      updateStepperActive(event.agent);
+      break;
+
+    case 'agent_log':
+      addTerminalLine(event.text, event.color || 'on-surface');
+      if (currentActiveAgent) {
+        const thoughtEl = document.getElementById(`agent-block-${currentActiveAgent}-thought`);
+        if (thoughtEl) {
+          const currentText = thoughtEl.textContent;
+          if (currentText === 'Processing...') {
+            thoughtEl.textContent = event.text;
+          } else {
+            thoughtEl.textContent += '\n' + event.text;
+          }
+        }
+      }
+      break;
+
+    case 'agent_complete':
+      const agent = event.agent;
+      completedAgents++;
+      finalizeAgentBlock(agent, event.data);
+      updateStepperDone(agent);
+      updateProgress();
+      currentActiveAgent = null;
+      break;
+
+    case 'pipeline_complete':
+      sessionId = event.session_id || sessionId;
+      const d = event.data || {};
+      addTerminalLine(`\n[COMPLETE] Project: ${d.project_name || 'unknown'}`, 'tertiary');
+
+      // Show complete card
+      const completeCard = document.getElementById('pipeline-complete-card');
+      completeCard.classList.remove('hidden');
+      document.getElementById('complete-summary').innerHTML = `
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col p-2 bg-raised brutal-border"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Project</span><span class="font-label-lg text-label-lg text-chalk mt-1">${d.project_name || '—'}</span></div>
+          <div class="flex flex-col p-2 bg-raised brutal-border"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Files Generated</span><span class="font-label-lg text-label-lg text-chalk mt-1">${d.files_count || 0}</span></div>
+          <div class="flex flex-col p-2 bg-raised brutal-border"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Terminal Check</span><span class="font-label-lg text-label-lg mt-1 ${d.terminal_success ? 'text-mint' : 'text-coral'}">${d.terminal_success ? '✓ PASSED' : '⚠ WARNINGS'}</span></div>
+          <div class="flex flex-col p-2 bg-raised brutal-border"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Browser Test</span><span class="font-label-lg text-label-lg mt-1 ${d.browser_success ? 'text-mint' : 'text-coral'}">${d.browser_success ? '✓ PASSED' : '⚠ WARNINGS'}</span></div>
+        </div>
+        <div class="mt-3"><span class="font-label-sm text-label-sm text-steel uppercase tracking-wider">Run Command</span><div class="mt-1 px-3 py-2 bg-void brutal-border"><code class="font-mono text-[11px] text-cyan">${d.run_command || ''}</code></div></div>
       `;
-    }
-  } else if (event.type === 'pipeline_complete') {
-    finishPipeline(true, "Completed");
-    document.getElementById('completion-actions').classList.remove('hidden');
-    loadFiles();
-  } else if (event.type === 'error') {
-    finishPipeline(false, event.message || "Pipeline Error");
-  } else if (event.type === 'done') {
-    evtSource.close();
+
+      loadFiles();
+      finishPipeline(true);
+      break;
+
+    case 'error':
+      addTerminalLine(`[ERROR] ${event.message}`, 'error');
+      finishPipeline(false);
+      break;
+
+    case 'done':
+      break;
   }
 }
 
-function updateTelemetry() {
-  document.getElementById('telemetry-agents').textContent = agentCount;
-  document.getElementById('telemetry-logs').textContent = logCount;
-}
-
-function addTimelineEntry(agent, data) {
-  const container = document.getElementById('activity-timeline');
-  const empty = document.getElementById('timeline-empty');
-  if (empty) empty.remove();
-
-  const success = (data && data.success !== false); // default to success unless explicitly false
-  const icon = success ? 'check_circle' : 'error';
-  const colorClass = success ? 'text-success' : 'text-error';
-  
-  let summaryText = 'Completed successfully.';
-  if (agent === 'planner' && data) summaryText = `Planned ${esc(data.features?.length || 0)} features.`;
-  if (agent === 'architect' && data) summaryText = `Architected ${esc(data.files_count || 0)} files.`;
-  if (agent === 'coder' && data) summaryText = `Generated ${esc(data.files_generated || 0)} files.`;
-  if (agent === 'terminal' && data) summaryText = success ? 'Build checks passed.' : 'Build checks failed.';
-  if (agent === 'browser' && data) summaryText = success ? 'E2E tests passed.' : 'E2E tests failed.';
-
-  const el = document.createElement('div');
-  el.className = "flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container-low border border-outline-variant/10";
-  el.innerHTML = `
-    <span class="material-symbols-outlined text-[18px] ${colorClass} mt-0.5" style="font-variation-settings: 'FILL' 1;">${icon}</span>
-    <div class="flex flex-col">
-      <span class="font-title-md text-[14px] font-bold text-on-surface">${esc(agentLabels[agent] || agent)}</span>
-      <span class="font-body-sm text-body-sm text-on-surface-variant">${esc(summaryText)}</span>
-    </div>
-  `;
-  container.appendChild(el);
-  container.scrollTop = container.scrollHeight;
-}
-
-function finishPipeline(success, statusText) {
+function finishPipeline(success) {
   if (elapsedInterval) clearInterval(elapsedInterval);
   updateElapsed();
-  if (evtSource) {
-    evtSource.close();
-    evtSource = null;
-  }
-  
-  document.getElementById('active-agent-panel').classList.add('hidden');
+
   document.getElementById('forge-btn').disabled = false;
-  document.getElementById('forge-btn-text').textContent = 'Forge It';
-  
-  document.getElementById('header-status-dot').className = success ? 'w-2 h-2 rounded-full bg-success' : 'w-2 h-2 rounded-full bg-error';
-  document.getElementById('header-status-text').textContent = statusText;
-  
-  document.getElementById('banner-dot').className = success ? 'w-2.5 h-2.5 rounded-full bg-success' : 'w-2.5 h-2.5 rounded-full bg-error';
-  document.getElementById('banner-title').textContent = `Synthesis ${success ? 'Complete' : 'Stopped'}`;
-  document.getElementById('banner-actions').classList.add('hidden');
-}
+  document.getElementById('forge-btn-text').textContent = 'START AGENT';
 
-// --- Files Explorer ---
-async function loadFiles() {
-  if (!sessionId) return;
-  try {
-    const resp = await fetch(`/api/forge/${sessionId}/files`);
-    const data = await resp.json();
-    if (!data.files || data.files.length === 0) return;
-    
-    currentFiles = data.files;
-    document.getElementById('files-explorer').classList.remove('hidden');
-    document.getElementById('files-count-badge').textContent = `${data.files.length} files`;
-    
-    renderFileTree();
-  } catch (e) {
-    console.error("Failed to load files", e);
-  }
-}
-
-function toggleFilesExplorer() {
-  const btn = document.querySelector('#files-explorer button');
-  const body = document.getElementById('files-explorer-body');
-  const icon = document.getElementById('files-explorer-icon');
-  
-  const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-  btn.setAttribute('aria-expanded', !isExpanded);
-  
-  if (isExpanded) {
-    body.classList.add('hidden');
-    icon.textContent = 'expand_more';
+  if (success) {
+    document.getElementById('header-status-dot').className = 'w-2 h-2 bg-mint';
+    document.getElementById('header-run-status').className = 'badge-success';
+    document.getElementById('header-run-status').textContent = 'COMPLETE';
+    document.getElementById('telemetry-dot').className = 'w-2 h-2 bg-mint';
+    document.getElementById('telemetry-status').textContent = 'COMPLETE';
+    document.getElementById('telemetry-status').className = 'font-label-lg text-label-lg text-mint uppercase';
+    document.getElementById('footer-status-dot').className = 'w-1.5 h-1.5 bg-mint';
+    document.getElementById('footer-engine-status').textContent = 'COMPLETE';
+    document.getElementById('footer-engine-status').className = 'text-mint';
   } else {
-    body.classList.remove('hidden');
-    icon.textContent = 'expand_less';
+    document.getElementById('header-status-dot').className = 'w-2 h-2 bg-coral';
+    document.getElementById('header-run-status').className = 'badge-error';
+    document.getElementById('header-run-status').textContent = 'ERROR';
+    document.getElementById('telemetry-dot').className = 'w-2 h-2 bg-coral';
+    document.getElementById('telemetry-status').textContent = 'ERROR';
+    document.getElementById('telemetry-status').className = 'font-label-lg text-label-lg text-coral uppercase';
+    document.getElementById('footer-status-dot').className = 'w-1.5 h-1.5 bg-coral';
+    document.getElementById('footer-engine-status').textContent = 'ERROR_HALT';
+    document.getElementById('footer-engine-status').className = 'text-coral';
   }
 }
 
-// --- Preview & Download Actions ---
-async function launchPreview() {
-  if (!sessionId) return;
-  const btn = document.getElementById('preview-btn-text');
-  const originalText = btn.textContent;
-  btn.textContent = 'Starting...';
-  
-  try {
-    const resp = await fetch(`/api/forge/${sessionId}/preview`, { method: 'POST' });
-    const data = await resp.json();
-    if (data.error) {
-      alert(`Preview failed: ${data.error}`);
-    } else if (data.preview_url) {
-      // Open in a new tab
-      window.open(data.preview_url, '_blank');
-    }
-  } catch (e) {
-    console.error(e);
-    alert('Failed to launch preview');
-  } finally {
-    btn.textContent = originalText;
-  }
-}
-
-function downloadZip() {
-  if (!sessionId) return;
-  window.location.href = `/api/forge/${sessionId}/download`;
-}
-
-function renderFileTree() {
-  const container = document.getElementById('file-tree-container');
-  container.innerHTML = '';
-  
-  // Basic flat render with code viewer support
-  currentFiles.forEach((f, i) => {
-    const fileRow = document.createElement('div');
-    fileRow.className = "flex flex-col";
-    
-    const sizeKB = (f.content.length / 1024).toFixed(1);
-    
-    fileRow.innerHTML = `
-      <button class="flex items-center justify-between py-1.5 px-space-xs rounded-lg hover:bg-surface-container transition-colors text-left" onclick="toggleCodeView(${i})">
-        <div class="flex items-center gap-2 pl-2">
-          <span class="material-symbols-outlined text-[16px] text-primary">draft</span>
-          <span class="text-on-surface font-body-sm text-body-sm">${esc(f.path)}</span>
-        </div>
-        <div class="flex items-center gap-space-sm">
-          <span class="font-label-sm text-label-sm text-outline">${sizeKB} KB</span>
-          <span class="material-symbols-outlined text-[16px] text-outline" id="code-icon-${i}">expand_more</span>
-        </div>
-      </button>
-      <div id="file-preview-${i}" class="hidden mt-1 mb-2 rounded-lg bg-inverse-surface overflow-hidden">
-        <div class="flex items-center justify-between px-space-sm py-space-xs bg-surface-container-highest/10">
-          <span class="font-mono text-[11px] text-inverse-on-surface/70">${esc(f.path)}</span>
-        </div>
-        <pre class="p-space-sm overflow-x-auto max-h-[300px] overflow-y-auto"><code class="font-mono text-[12px] leading-relaxed text-inverse-on-surface whitespace-pre">${esc(f.content)}</code></pre>
-      </div>
-    `;
-    container.appendChild(fileRow);
-  });
-}
-
-function toggleCodeView(index) {
-  const preview = document.getElementById(`file-preview-${index}`);
-  const icon = document.getElementById(`code-icon-${index}`);
-  if (preview.classList.contains('hidden')) {
-    preview.classList.remove('hidden');
-    icon.textContent = 'expand_less';
-  } else {
-    preview.classList.add('hidden');
-    icon.textContent = 'expand_more';
-  }
-}
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('intent-time').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+});
 </script>
+
 </body>
 </html>
