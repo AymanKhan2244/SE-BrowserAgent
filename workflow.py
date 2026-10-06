@@ -192,14 +192,6 @@ NODE_START_MESSAGES = {
 # ══════════════════════════════════════════════════════════════════════════════
 
 @app.get("/", response_class=HTMLResponse)
-async def serve_index():
-    """Serve the landing page HTML."""
-    html_path = Path(__file__).parent / "forgeai-frontend" / "index.html"
-    if not html_path.exists():
-        html_path = Path(__file__).parent / "forgeai-frontend" / "code.html"
-    return HTMLResponse(html_path.read_text(encoding="utf-8"))
-
-@app.get("/workspace", response_class=HTMLResponse)
 async def serve_workspace():
     """Serve the agent workspace dashboard HTML."""
     html_path = Path(__file__).parent / "forgeai-frontend" / "code.html"
