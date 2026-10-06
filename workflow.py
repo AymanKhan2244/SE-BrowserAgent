@@ -24,6 +24,8 @@ import uuid
 import asyncio
 import threading
 import traceback
+import socket
+from dataclasses import dataclass
 from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -190,9 +192,41 @@ NODE_START_MESSAGES = {
 # ══════════════════════════════════════════════════════════════════════════════
 
 @app.get("/", response_class=HTMLResponse)
-async def serve_frontend():
-    """Serve the ForgeAI dashboard HTML."""
+async def serve_index():
+    """Serve the landing page HTML."""
+    html_path = Path(__file__).parent / "forgeai-frontend" / "index.html"
+    if not html_path.exists():
+        html_path = Path(__file__).parent / "forgeai-frontend" / "code.html"
+    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+
+@app.get("/workspace", response_class=HTMLResponse)
+async def serve_workspace():
+    """Serve the agent workspace dashboard HTML."""
     html_path = Path(__file__).parent / "forgeai-frontend" / "code.html"
+    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def serve_dashboard():
+    """Serve the dashboard HTML."""
+    html_path = Path(__file__).parent / "forgeai-frontend" / "dashboard.html"
+    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+
+@app.get("/tasks", response_class=HTMLResponse)
+async def serve_tasks():
+    """Serve the tasks HTML."""
+    html_path = Path(__file__).parent / "forgeai-frontend" / "tasks.html"
+    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+
+@app.get("/new-task", response_class=HTMLResponse)
+async def serve_new_task():
+    """Serve the new task HTML."""
+    html_path = Path(__file__).parent / "forgeai-frontend" / "new_task.html"
+    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+
+@app.get("/agent-workspace", response_class=HTMLResponse)
+async def serve_agent_workspace():
+    """Serve the agent workspace mockup HTML."""
+    html_path = Path(__file__).parent / "forgeai-frontend" / "agent_workspace.html"
     return HTMLResponse(html_path.read_text(encoding="utf-8"))
 
 
@@ -469,6 +503,46 @@ async def download_zip(session_id: str):
         media_type="application/zip",
         filename=f"{project_name}.zip",
     )
+
+@dataclass
+class AppInstance:
+    session_id: str
+    port: int
+    process: asyncio.subprocess.Process
+    base_url: str
+
+    @property
+    def is_alive(self):
+        return self.process.returncode is None
+
+registry: Dict[str, AppInstance] = {}
+
+async def get_free_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("", 0))
+        return s.getsockname()[1]
+
+async def launch_app(session_id: str, project_root: str, run_command: str) -> AppInstance:
+    port = await get_free_port()
+    env = os.environ.copy()
+    env["PORT"] = str(port)
+    
+    process = await asyncio.create_subprocess_shell(
+        run_command,
+        cwd=project_root,
+        env=env,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    
+    instance = AppInstance(
+        session_id=session_id,
+        port=port,
+        process=process,
+        base_url=f"http://localhost:{port}"
+    )
+    registry[session_id] = instance
+    return instance
 
 
 @app.post("/api/forge/{session_id}/preview")

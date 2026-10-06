@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SE BROWSER AGENT — Autonomous SWE Engine</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Space+Grotesk:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#68000d",
+            "on-error": "#690005",
+            "primary": "#ffffff",
+            "surface-container-lowest": "#0b0e15",
+            "surface-container-highest": "#32353c",
+            "secondary-container": "#00e3fd",
+            "surface-container": "#1d2027",
+            "surface-variant": "#32353c",
+            "primary-container": "#fde400",
+            "tertiary-fixed": "#ffdad7",
+            "outline": "#979177",
+            "inverse-on-surface": "#2d3038",
+            "secondary-fixed": "#9cf0ff",
+            "on-surface-variant": "#cdc7aa",
+            "surface-tint": "#dec800",
+            "on-primary": "#373100",
+            "tertiary": "#ffffff",
+            "on-tertiary-container": "#bd2c32",
+            "error": "#ffb4ab",
+            "tertiary-fixed-dim": "#ffb3af",
+            "on-secondary-container": "#00616d",
+            "on-secondary-fixed-variant": "#004f58",
+            "primary-fixed": "#fde400",
+            "inverse-surface": "#e0e2ec",
+            "surface": "#10131a",
+            "on-tertiary-fixed": "#410005",
+            "tertiary-container": "#ffdad7",
+            "on-primary-fixed": "#201c00",
+            "on-surface": "#e0e2ec",
+            "on-background": "#e0e2ec",
+            "on-error-container": "#ffdad6",
+            "surface-bright": "#363941",
+            "secondary-fixed-dim": "#00daf3",
+            "outline-variant": "#4b4731",
+            "surface-container-high": "#272a31",
+            "background": "#10131a",
+            "surface-dim": "#10131a",
+            "inverse-primary": "#6a5f00",
+            "on-secondary": "#00363d",
+            "primary-fixed-dim": "#dec800",
+            "surface-container-low": "#191c23",
+            "on-tertiary-fixed-variant": "#920418",
+            "on-secondary-fixed": "#001f24",
+            "on-primary-fixed-variant": "#504700",
+            "error-container": "#93000a",
+            "on-primary-container": "#716500",
+            "secondary": "#bdf4ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "gutter": "0.75rem",
+            "space-md": "0.75rem",
+            "space-xl": "1.75rem",
+            "space-sm": "0.375rem",
+            "space-lg": "1.25rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "code-stream": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "label-md": ["JetBrains Mono"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-md": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["JetBrains Mono"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "body-lg": ["JetBrains Mono"],
+            "body-md": ["JetBrains Mono"],
+            "body-sm": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "code-stream": ["12px", { "lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "headline-md": ["18px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-lg": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-xl-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-lg": ["14px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "19px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .brutal-shadow {
+      box-shadow: 3px 3px 0px #000000;
+    }
+    .brutal-shadow-lg {
+      box-shadow: 5px 5px 0px #000000;
+    }
+    .brutal-shadow-cyan {
+      box-shadow: 3px 3px 0px #00e3fd;
+    }
+    .brutal-shadow-yellow {
+      box-shadow: 3px 3px 0px #fde400;
+    }
+    /* Subtle grid background */
+    .bg-grid-tech {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(75, 71, 49, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(75, 71, 49, 0.15) 1px, transparent 1px);
+    }
+    /* Terminal cursor pulse */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .terminal-caret {
+      animation: blink 1s infinite steps(1);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- TOP STICKY BAR -->
+<header class="sticky top-0 z-50 bg-surface-container-low border-b-2 border-outline-variant shadow-[0px_3px_0px_#000000]">
+<div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+<!-- Brand Anchor -->
+<a class="flex items-center gap-2.5 group" href="#">
+<div class="w-7 h-7 bg-primary-fixed border-2 border-surface-container-lowest flex items-center justify-center brutal-shadow group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-on-primary-fixed text-lg" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface flex items-center gap-1.5 leading-none">
+            SE BROWSER AGENT
+          </span>
+<span class="font-label-sm text-label-sm text-secondary-container tracking-wider uppercase">AUTONOMOUS SWE ENGINE</span>
+</div>
+</a>
+<!-- Desktop Links -->
+<nav class="hidden lg:flex items-center gap-6 font-label-md text-label-md">
+<a class="text-on-surface-variant hover:text-primary-fixed transition-colors uppercase tracking-wider" href="#features">FEATURES</a>
+<a class="text-on-surface-variant hover:text-primary-fixed transition-colors uppercase tracking-wider" href="#workflow">WORKFLOW</a>
+<a class="text-on-surface-variant hover:text-primary-fixed transition-colors uppercase tracking-wider" href="#agents">AGENTS</a>
+<a class="text-on-surface-variant hover:text-primary-fixed transition-colors uppercase tracking-wider" href="#benchmarks">BENCHMARKS</a>
+<a class="text-on-surface-variant hover:text-primary-fixed transition-colors uppercase tracking-wider" href="#docs">DOCS</a>
+<a class="text-on-surface-variant hover:text-primary-fixed transition-colors uppercase tracking-wider" href="#pricing">PRICING</a>
+</nav>
+<!-- Right CTAs -->
+<div class="flex items-center gap-3">
+<div class="hidden sm:flex items-center gap-1.5 px-2 py-1 bg-surface-container border border-outline-variant text-secondary-container font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+<span>DOM: READY</span>
+</div>
+<a class="hidden md:inline-flex items-center px-3 py-1.5 font-label-md text-label-md font-bold text-on-surface border border-outline-variant bg-surface hover:bg-surface-container transition-all brutal-shadow active:translate-x-0.5 active:translate-y-0.5" href="#login">
+          LOGIN
+        </a>
+<a class="inline-flex items-center gap-1.5 px-3.5 py-1.5 font-headline-md text-headline-md font-bold bg-primary-fixed text-on-primary-fixed border-2 border-surface-container-lowest brutal-shadow hover:bg-primary-container active:translate-x-1 active:translate-y-1 transition-transform" href="#start">
+<span>START BUILDING</span>
+<span class="material-symbols-outlined text-base">bolt</span>
+</a>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 bg-grid-tech">
+<!-- HERO SECTION -->
+<section class="max-w-7xl mx-auto px-4 pt-12 pb-16 lg:pt-20 lg:pb-24 border-b-2 border-outline-variant">
+<div class="flex flex-col items-start gap-6 max-w-4xl">
+<!-- Live Runtime Pill -->
+<div class="inline-flex items-center gap-2 px-2.5 py-1 bg-surface-container-high border border-outline-variant font-label-sm text-label-sm uppercase tracking-widest text-primary-fixed brutal-shadow">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-ping"></span>
+<span class="font-bold text-secondary-container">● V2.4 PRODUCTION RUNTIME LIVE</span>
+<span class="text-on-surface-variant">|</span>
+<span class="text-on-surface">SOC-2 VERIFIED</span>
+</div>
+<!-- Headline -->
+<h1 class="font-headline-xl text-headline-xl lg:text-5xl font-extrabold uppercase tracking-tight text-primary leading-[1.08]">
+          GIVE YOUR AI ENGINEER A TASK. <br class="hidden sm:inline"/>
+<span class="bg-primary-fixed text-on-primary-fixed px-2 py-0.5 border-2 border-surface-container-lowest inline-block transform -rotate-1 mt-1 brutal-shadow">
+            WATCH IT BUILD THE SOFTWARE.
+          </span>
+</h1>
+<!-- Subtitle -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl leading-relaxed">
+          The autonomous software engineering engine that plans, writes code, controls headless browsers, executes unit tests, auto-debugs DOM regressions, and deploys to production — without hand-holding.
+        </p>
+<!-- Hero CTAs -->
+<div class="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+<a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-fixed text-on-primary-fixed font-headline-md text-headline-md font-bold uppercase border-2 border-surface-container-lowest brutal-shadow-lg hover:bg-primary-container active:translate-x-1 active:translate-y-1 transition-transform" href="#get-started">
+<span>START BUILDING ⚡</span>
+<span class="font-label-sm text-label-sm bg-on-primary-fixed text-primary-fixed px-1.5 py-0.5 rounded-sm">FREE TIER</span>
+</a>
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-surface-container border-2 border-secondary-container text-secondary-container font-headline-md text-headline-md font-bold uppercase hover:bg-surface-container-high transition-colors brutal-shadow active:translate-x-1 active:translate-y-1" onclick="document.getElementById('demo-modal').classList.toggle('hidden')">
+<span class="material-symbols-outlined text-lg">play_circle</span>
+<span>VIEW LIVE DEMO</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant border border-outline-variant px-1">[Ctrl+K]</span>
+</button>
+</div>
+<!-- Live Telemetry Badges -->
+<div class="pt-4 flex flex-wrap items-center gap-4 text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-container text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Zero Chrome Puppetry Leaks</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-fixed text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span>Sub-80ms Action Dispatch</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-on-surface text-sm" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span>gVisor Micro-VM Sandboxes</span>
+</div>
+</div>
+</div>
+</section>
+<!-- HORIZONTAL BRUTALIST PIPELINE BANNER -->
+<section class="bg-surface-container-lowest border-b-2 border-outline-variant py-6 overflow-x-auto" id="workflow">
+<div class="max-w-7xl mx-auto px-4 min-w-[960px]">
+<div class="flex items-center justify-between mb-3 font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">
+<span class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+            ACTIVE AUTONOMOUS EXECUTION PIPELINE
+          </span>
+<span class="text-secondary-fixed-dim">DISPATCH ENGINE v2.4.0 // SERIAL FLOW</span>
+</div>
+<!-- Pipeline Nodes -->
+<div class="grid grid-cols-9 gap-1.5 relative items-center">
+<!-- Node 1 -->
+<div class="bg-surface border-2 border-outline-variant p-2 flex flex-col items-center text-center brutal-shadow">
+<span class="font-label-sm text-label-sm text-secondary-container">01</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">PROMPT</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">Natural Task</span>
+</div>
+<!-- Node 2 -->
+<div class="bg-surface border-2 border-outline-variant p-2 flex flex-col items-center text-center brutal-shadow">
+<span class="font-label-sm text-label-sm text-secondary-container">02</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">PLAN</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">DAG Tree</span>
+</div>
+<!-- Node 3 -->
+<div class="bg-surface border-2 border-outline-variant p-2 flex flex-col items-center text-center brutal-shadow">
+<span class="font-label-sm text-label-sm text-secondary-container">03</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">RESEARCH</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">Docs & CDP</span>
+</div>
+<!-- Node 4 -->
+<div class="bg-surface border-2 border-outline-variant p-2 flex flex-col items-center text-center brutal-shadow">
+<span class="font-label-sm text-label-sm text-secondary-container">04</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">CODE</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">AST Gen</span>
+</div>
+<!-- Node 5 (Active Highlighted Node) -->
+<div class="bg-primary-fixed border-2 border-surface-container-lowest p-2 flex flex-col items-center text-center brutal-shadow-lg transform -translate-y-1">
+<span class="font-label-sm text-label-sm text-on-primary-fixed font-bold">05 // LIVE</span>
+<span class="font-headline-md text-headline-md font-bold text-on-primary-fixed">BROWSER</span>
+<span class="font-code-stream text-code-stream text-on-primary-fixed text-[10px] font-semibold">Headless DOM</span>
+</div>
+<!-- Node 6 -->
+<div class="bg-surface border-2 border-secondary-container p-2 flex flex-col items-center text-center brutal-shadow-cyan">
+<span class="font-label-sm text-label-sm text-secondary-container">06</span>
+<span class="font-headline-md text-headline-md font-bold text-secondary-container">TEST</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">24 Unit Tests</span>
+</div>
+<!-- Node 7 -->
+<div class="bg-surface border-2 border-outline-variant p-2 flex flex-col items-center text-center brutal-shadow">
+<span class="font-label-sm text-label-sm text-secondary-container">07</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">DEBUG</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">Auto-Patch</span>
+</div>
+<!-- Node 8 -->
+<div class="bg-surface border-2 border-outline-variant p-2 flex flex-col items-center text-center brutal-shadow">
+<span class="font-label-sm text-label-sm text-secondary-container">08</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">GITHUB</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">PR Branch</span>
+</div>
+<!-- Node 9 -->
+<div class="bg-surface border-2 border-outline-variant p-2 flex flex-col items-center text-center brutal-shadow">
+<span class="font-label-sm text-label-sm text-secondary-container">09</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">DEPLOY</span>
+<span class="font-code-stream text-code-stream text-on-surface-variant text-[10px]">Vercel / AWS</span>
+</div>
+</div>
+</div>
+</section>
+<!-- LIVE SIMULATION TERMINAL / WORKSPACE PREVIEW CARD -->
+<section class="max-w-7xl mx-auto px-4 py-16 border-b-2 border-outline-variant">
+<div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 gap-2">
+<div>
+<div class="flex items-center gap-2 text-secondary-container font-label-sm text-label-sm uppercase">
+<span class="material-symbols-outlined text-sm">precision_manufacturing</span>
+<span>HEADLESS AGENT VIEWPORT PREVIEW</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl uppercase font-bold text-primary">REAL-TIME EXECUTION COCKPIT</h2>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-3">
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant">NODE: chromium-us-east-4a</span>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-secondary-container">FPS: 60.0 DOM/SEC</span>
+</div>
+</div>
+<!-- Brutalist IDE / Terminal Card Split -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant brutal-shadow-lg grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+<!-- Left: Code Stream & Terminal (5 cols) -->
+<div class="lg:col-span-5 border-b-2 lg:border-b-0 lg:border-r-2 border-outline-variant flex flex-col bg-surface">
+<!-- Terminal Header -->
+<div class="h-9 px-3 bg-surface-container border-b-2 border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-error rounded-none border border-black inline-block"></span>
+<span class="w-3 h-3 bg-primary-fixed rounded-none border border-black inline-block"></span>
+<span class="w-3 h-3 bg-secondary-container rounded-none border border-black inline-block"></span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface ml-2">AGENT_RUNNER // pid: 90214</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container-high px-1.5 py-0.5 text-secondary-container border border-outline-variant">12.4k TOKENS</span>
+</div>
+<!-- Monospace Code Log -->
+<div class="p-4 font-code-stream text-code-stream space-y-2 text-on-surface h-[360px] overflow-y-auto">
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary-container">></span>
+<span>[INIT] Booting Chromium Headless (CDP remote debugging port 9222)</span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary-container">></span>
+<span>[TASK] "Refactor auth middleware to support WebAuthn Passkeys & run E2E specs"</span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary-container">></span>
+<span>[AST] Synthesized 3 patchsets in <code class="text-primary-fixed">src/auth/webauthn.ts</code></span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary-container">></span>
+<span>[NAV] Goto <code class="text-secondary-container">http://localhost:3000/settings/security</code></span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-secondary-container">></span>
+<span>[DOM] Intercepted element click: <code class="text-primary-fixed">button[data-cy="register-passkey"]</code></span>
+</div>
+<div class="p-2.5 bg-surface-container border border-outline-variant text-[11px] font-code-stream space-y-1 my-2">
+<div class="text-secondary-container font-bold flex items-center justify-between">
+<span>PASSKEY VIRTUAL AUTHENTICATOR</span>
+<span class="text-primary-fixed">STATUS: SUCCESS</span>
+</div>
+<div class="text-on-surface-variant">Challenge: 0x9f83bb20e17c0a8f828a272</div>
+<div class="text-on-surface-variant">CredentialID: user_cred_99a80b_ok</div>
+</div>
+<div class="flex items-center gap-2 text-secondary-container">
+<span>></span>
+<span>[VITEST] Running 24 unit specs across 4 suites...</span>
+</div>
+<div class="text-on-surface font-bold">
+<span class="text-primary-fixed">✓</span> 24 / 24 PASSED (842ms)
+            </div>
+<div class="flex items-center gap-1 text-primary-fixed">
+<span>$</span>
+<span>git commit -m "feat(auth): full passkey lifecycle & browser validation"</span>
+<span class="w-2 h-4 bg-primary-fixed inline-block terminal-caret"></span>
+</div>
+</div>
+<!-- Terminal Bottom Status -->
+<div class="p-2.5 bg-surface-container-high border-t-2 border-outline-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">BRANCH: <strong class="text-on-surface">agent/webauthn-flow</strong></span>
+<span class="bg-primary-fixed text-on-primary-fixed px-2 py-0.5 font-bold">AUTOMATION PASSED</span>
+</div>
+</div>
+<!-- Right: Live Chromium Browser Canvas Replica (7 cols) -->
+<div class="lg:col-span-7 flex flex-col bg-surface-container-lowest">
+<!-- Mock Browser Chrome Bar -->
+<div class="h-9 px-3 bg-surface-container border-b-2 border-outline-variant flex items-center gap-3">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+<span class="material-symbols-outlined text-base">refresh</span>
+</div>
+<!-- Address Bar -->
+<div class="flex-1 bg-surface-container-lowest border border-outline-variant px-3 py-0.5 flex items-center justify-between font-code-stream text-code-stream text-[11px]">
+<span class="text-secondary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">lock</span>
+                https://staging-app.internal.dev/auth/passkeys
+              </span>
+<span class="text-primary-fixed font-bold">[INSPECTED]</span>
+</div>
+<div class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span>DOM SYNC</span>
+</div>
+</div>
+<!-- Browser Viewport Render Area -->
+<div class="p-6 flex-1 flex flex-col justify-between bg-surface-container-low min-h-[360px] relative">
+<!-- Floating Agent Cursor Simulation -->
+<div class="absolute top-28 right-36 pointer-events-none z-20 flex items-start gap-1">
+<span class="material-symbols-outlined text-primary-fixed text-2xl drop-shadow-[2px_2px_0px_#000000]">navigation</span>
+<span class="bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm px-1.5 py-0.5 border border-black font-bold brutal-shadow">
+                Agent Click (380, 240)
+              </span>
+</div>
+<!-- DOM Bounding Box Overlay -->
+<div class="absolute top-24 right-20 w-56 h-28 border-2 border-dashed border-secondary-container pointer-events-none z-10 bg-secondary-container/10">
+<span class="bg-secondary-container text-on-primary-fixed font-label-sm text-label-sm px-1 absolute -top-4 left-0 font-bold uppercase">
+                DOM Node: [button#add-key]
+              </span>
+</div>
+<!-- Mocked In-Browser Web Application Interface -->
+<div class="bg-surface border-2 border-outline-variant p-5 brutal-shadow max-w-lg">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3 mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md font-bold text-primary">Security Settings</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Manage FIDO2 WebAuthn & biometric authenticators</p>
+</div>
+<span class="px-2 py-0.5 bg-surface-container-high text-secondary-container font-label-sm text-label-sm border border-outline-variant">ENFORCED</span>
+</div>
+<div class="space-y-3">
+<div class="p-3 bg-surface-container border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed">fingerprint</span>
+<div>
+<div class="font-label-md text-label-md font-bold text-on-surface">MacBook Pro Touch ID</div>
+<div class="font-code-stream text-code-stream text-[10px] text-on-surface-variant">Added 2 minutes ago via agent run #412</div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-container bg-surface-container-highest px-2 py-1">ACTIVE</span>
+</div>
+<div class="flex items-center justify-between pt-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">2-Step Verification: Enrolled</span>
+<button class="px-3 py-1.5 bg-primary-fixed text-on-primary-fixed font-label-md text-label-md font-bold border-2 border-black brutal-shadow">
+                    + Register New Key
+                  </button>
+</div>
+</div>
+</div>
+<!-- Bottom Inspector Strip -->
+<div class="bg-surface-container-highest border border-outline-variant p-2 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant mt-6">
+<div class="flex items-center gap-3">
+<span class="text-secondary-container font-bold">MUTATION OBSERVER:</span>
+<span>4 nodes appended</span>
+<span>0 console warnings</span>
+</div>
+<span class="text-primary-fixed font-bold">READY FOR PR MERGE</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FEATURE GRID (6 BRUTALIST CARDS) -->
+<section class="max-w-7xl mx-auto px-4 py-20 border-b-2 border-outline-variant" id="features">
+<div class="max-w-3xl mb-12">
+<div class="text-secondary-container font-label-sm text-label-sm uppercase tracking-wider mb-2 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+<span>ENTERPRISE-GRADE CAPABILITY SUITE</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl uppercase font-bold text-primary mb-3">
+          BUILT FOR RAW PERFORMANCE & AUTONOMY.
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Engineered from first principles to manipulate real DOM nodes, execute complex full-stack changes, and interact with developer tools like a seasoned Senior Staff Engineer.
+        </p>
+</div>
+<!-- 6 Bento / Grid Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow hover:border-primary-fixed transition-all group flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-surface-container-high border-2 border-outline-variant flex items-center justify-center mb-5 brutal-shadow group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-2xl text-secondary-container group-hover:text-on-primary-fixed">open_in_browser</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider mb-1">CDP & PLAYWRIGHT CORE</div>
+<h3 class="font-headline-lg text-headline-lg font-bold text-primary uppercase mb-3">Autonomous Browser Automation</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-4">
+              Real Chrome browser dispatch. Clicks, scrolls, fills inputs, solves CAPTCHA verification, intercepts network traffic, and grabs visual screenshots natively via CDP.
+            </p>
+</div>
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>HEADLESS CHROMIUM</span>
+<span class="text-primary-fixed font-bold">[CDP v124]</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow hover:border-primary-fixed transition-all group flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-surface-container-high border-2 border-outline-variant flex items-center justify-center mb-5 brutal-shadow group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-2xl text-secondary-container group-hover:text-on-primary-fixed">code_blocks</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider mb-1">FULL-STACK SYNTHESIS</div>
+<h3 class="font-headline-lg text-headline-lg font-bold text-primary uppercase mb-3">Full-Stack Code Generation</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-4">
+              From Next.js App Router frontends to FastAPI microservices and PostgreSQL migrations, generates multi-file architectural refactors with zero hallucinated imports.
+            </p>
+</div>
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>AST PARSER & LINTER</span>
+<span class="text-primary-fixed font-bold">[MULTI-REPO]</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow hover:border-primary-fixed transition-all group flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-surface-container-high border-2 border-outline-variant flex items-center justify-center mb-5 brutal-shadow group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-2xl text-secondary-container group-hover:text-on-primary-fixed">healing</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider mb-1">AUTOMATED RECOVERY</div>
+<h3 class="font-headline-lg text-headline-lg font-bold text-primary uppercase mb-3">Self-Healing Test & Debug</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-4">
+              When tests fail or runtime exceptions trigger, the agent isolates stack traces, queries browser logs, inspects memory states, and iteratively generates patches until all tests pass.
+            </p>
+</div>
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>LOOP LIMIT: 10 RETRIES</span>
+<span class="text-primary-fixed font-bold">[AUTO-PATCH]</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow hover:border-primary-fixed transition-all group flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-surface-container-high border-2 border-outline-variant flex items-center justify-center mb-5 brutal-shadow group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-2xl text-secondary-container group-hover:text-on-primary-fixed">shield_lock</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider mb-1">SECURE RUNTIMES</div>
+<h3 class="font-headline-lg text-headline-lg font-bold text-primary uppercase mb-3">Zero-Trust Micro-VMs</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-4">
+              Every agent execution runs inside an ephemeral, hardware-isolated Firecracker micro-VM with read-only root filesystems and fine-grained outbound network egress control.
+            </p>
+</div>
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>FIRECRACKER / GVISOR</span>
+<span class="text-primary-fixed font-bold">[ISOLATED]</span>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow hover:border-primary-fixed transition-all group flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-surface-container-high border-2 border-outline-variant flex items-center justify-center mb-5 brutal-shadow group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-2xl text-secondary-container group-hover:text-on-primary-fixed">sync_alt</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider mb-1">VCS INTEGRATION</div>
+<h3 class="font-headline-lg text-headline-lg font-bold text-primary uppercase mb-3">GitHub PR & Branch Sync</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-4">
+              Automatically creates atomic feature branches, formats conventional commit messages, generates detailed Markdown pull request summaries, and attaches browser test videos.
+            </p>
+</div>
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>WEBHOOK COMPATIBLE</span>
+<span class="text-primary-fixed font-bold">[CI/CD READY]</span>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow hover:border-primary-fixed transition-all group flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-surface-container-high border-2 border-outline-variant flex items-center justify-center mb-5 brutal-shadow group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-2xl text-secondary-container group-hover:text-on-primary-fixed">rocket_launch</span>
+</div>
+<div class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider mb-1">INSTANT RELEASES</div>
+<h3 class="font-headline-lg text-headline-lg font-bold text-primary uppercase mb-3">1-Click Multi-Cloud Deploy</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-4">
+              Push directly to Vercel, AWS ECS, GCP Cloud Run, or Kubernetes clusters. The agent confirms healthcheck endpoints before completing the deployment pipeline.
+            </p>
+</div>
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>ZERO DOWNTIME ROLLOUT</span>
+<span class="text-primary-fixed font-bold">[MULTI-CLOUD]</span>
+</div>
+</div>
+</div>
+</section>
+<!-- BENCHMARK / TELEMETRY STATS -->
+<section class="bg-surface-container-low border-b-2 border-outline-variant py-16" id="benchmarks">
+<div class="max-w-7xl mx-auto px-4">
+<div class="border-2 border-outline-variant bg-surface p-8 brutal-shadow-lg">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 pb-6 border-b-2 border-outline-variant gap-4">
+<div>
+<span class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider">VERIFIED BENCHMARKS // SWE-BENCH VERIFIED</span>
+<h2 class="font-headline-xl text-headline-xl font-bold uppercase text-primary mt-1">TELEMETRY & HARD NUMBERS</h2>
+</div>
+<div class="px-3 py-1 bg-surface-container border border-outline-variant font-label-sm text-label-sm text-primary-fixed">
+              EVALUATED ACROSS 4,500+ OPEN REPOSITORIES
+            </div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Stat 1 -->
+<div class="p-5 bg-surface-container-lowest border-2 border-outline-variant brutal-shadow">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">SYNTAX ACCURACY</div>
+<div class="font-headline-xl text-headline-xl lg:text-4xl font-extrabold text-primary-fixed tracking-tight">99.4%</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">Zero AST compilation breaks on initial generation pass.</p>
+</div>
+<!-- Stat 2 -->
+<div class="p-5 bg-surface-container-lowest border-2 border-outline-variant brutal-shadow">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">TURNAROUND VELOCITY</div>
+<div class="font-headline-xl text-headline-xl lg:text-4xl font-extrabold text-secondary-container tracking-tight">3.2x</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">Faster feature delivery compared to human-only sprint cycles.</p>
+</div>
+<!-- Stat 3 -->
+<div class="p-5 bg-surface-container-lowest border-2 border-outline-variant brutal-shadow">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">COMPLETED TASKS</div>
+<div class="font-headline-xl text-headline-xl lg:text-4xl font-extrabold text-primary tracking-tight">12,000+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">Autonomous pull requests successfully merged into production.</p>
+</div>
+<!-- Stat 4 -->
+<div class="p-5 bg-surface-container-lowest border-2 border-outline-variant brutal-shadow">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-2">SELF-DEBUG SUCCESS</div>
+<div class="font-headline-xl text-headline-xl lg:text-4xl font-extrabold text-primary-fixed tracking-tight">88.7%</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">Of broken Playwright test assertions resolved without engineer intervention.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PRICING TIERS -->
+<section class="max-w-7xl mx-auto px-4 py-20 border-b-2 border-outline-variant" id="pricing">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<div class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider mb-2">TRANSPARENT DEVELOPER PRICING</div>
+<h2 class="font-headline-xl text-headline-xl font-bold uppercase text-primary mb-3">
+          CHOOSE YOUR COMPUTE SCALE
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Start for free on local browser instances. Upgrade when your team needs persistent headless clusters and multi-agent coordination.
+        </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+<!-- Tier 1: Developer -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase font-bold text-on-surface-variant">COMMUNITY</span>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-[10px] font-label-sm text-on-surface">LOCAL ONLY</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg font-bold uppercase text-primary mb-2">DEVELOPER</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">For individual engineers hacking on personal repos and CLI tools.</p>
+<div class="mb-6 pb-6 border-b border-outline-variant">
+<span class="font-headline-xl text-headline-xl font-extrabold text-primary">$0</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/ FOREVER FREE</span>
+</div>
+<ul class="space-y-3 font-body-sm text-body-sm text-on-surface mb-8">
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-base">check</span>
+<span>1 Concurrent Local Agent</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-base">check</span>
+<span>Local Chrome CDP Control</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-base">check</span>
+<span>50 Tasks / Month</span>
+</li>
+<li class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-base">close</span>
+<span>No Cloud Micro-VMs</span>
+</li>
+<li class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-base">close</span>
+<span>Community Discord Support</span>
+</li>
+</ul>
+</div>
+<a class="w-full py-3 bg-surface-container hover:bg-surface-container-high border-2 border-outline-variant text-center font-headline-md text-headline-md font-bold text-on-surface brutal-shadow active:translate-x-0.5 active:translate-y-0.5 transition-transform" href="#get-started">
+            INSTALL CLI FREE
+          </a>
+</div>
+<!-- Tier 2: Engineering Team (FEATURED) -->
+<div class="bg-surface-container-low border-2 border-primary-fixed p-6 brutal-shadow-lg relative flex flex-col justify-between transform lg:-translate-y-3">
+<!-- Highlight Pill -->
+<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary-fixed text-on-primary-fixed border-2 border-black font-label-sm text-label-sm font-bold uppercase px-3 py-0.5 brutal-shadow">
+            ★ MOST POPULAR AMONG TEAMS
+          </div>
+<div>
+<div class="flex items-center justify-between mb-4 pt-1">
+<span class="font-label-sm text-label-sm uppercase font-bold text-primary-fixed">PRODUCTION CLUSTER</span>
+<span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed text-[10px] font-label-sm font-bold">SCALE OUT</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg font-bold uppercase text-primary mb-2">ENGINEERING TEAM</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">For high-throughput product teams automating daily PR workflows.</p>
+<div class="mb-6 pb-6 border-b border-outline-variant">
+<span class="font-headline-xl text-headline-xl font-extrabold text-primary-fixed">$49</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/ SEAT / MONTH</span>
+</div>
+<ul class="space-y-3 font-body-sm text-body-sm text-on-surface mb-8">
+<li class="flex items-center gap-2 font-bold">
+<span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span>
+<span>Unlimited Headless Cloud Agents</span>
+</li>
+<li class="flex items-center gap-2 font-bold">
+<span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span>
+<span>Dedicated Micro-VM Sandboxes</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-base">check</span>
+<span>Automated GitHub PR Review & Fix</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-base">check</span>
+<span>Parallel Browser Test Matrix (10x)</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-base">check</span>
+<span>Priority Slack & API Channel</span>
+</li>
+</ul>
+</div>
+<a class="w-full py-3.5 bg-primary-fixed text-on-primary-fixed hover:bg-primary-container text-center font-headline-md text-headline-md font-bold uppercase border-2 border-black brutal-shadow active:translate-x-1 active:translate-y-1 transition-transform" href="#checkout">
+            START 14-DAY TEAM TRIAL ⚡
+          </a>
+</div>
+<!-- Tier 3: Enterprise Runtime -->
+<div class="bg-surface border-2 border-outline-variant p-6 brutal-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase font-bold text-secondary-container">AIR-GAPPED & VPC</span>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-[10px] font-label-sm text-secondary-container">CUSTOM</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg font-bold uppercase text-primary mb-2">ENTERPRISE RUNTIME</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">For regulated environments requiring on-premise execution or private VPC.</p>
+<div class="mb-6 pb-6 border-b border-outline-variant">
+<span class="font-headline-xl text-headline-xl font-extrabold text-secondary-container">CUSTOM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">/ ANNUAL BILLING</span>
+</div>
+<ul class="space-y-3 font-body-sm text-body-sm text-on-surface mb-8">
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-base">check</span>
+<span>Deploy Inside Customer AWS/GCP VPC</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-base">check</span>
+<span>Custom Fine-Tuned Models (Llama-3/Claude)</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-base">check</span>
+<span>SOC-2 Type II & HIPAA Compliance Pack</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-base">check</span>
+<span>Single Sign-On (SAML / Okta)</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-base">check</span>
+<span>Dedicated Solutions Architect & 99.99% SLA</span>
+</li>
+</ul>
+</div>
+<a class="w-full py-3 bg-surface-container hover:bg-surface-container-high border-2 border-secondary-container text-center font-headline-md text-headline-md font-bold text-secondary-container brutal-shadow active:translate-x-0.5 active:translate-y-0.5 transition-transform" href="#contact">
+            SCHEDULE ARCHITECTURE CALL
+          </a>
+</div>
+</div>
+</section>
+<!-- FAQ SECTION -->
+<section class="max-w-4xl mx-auto px-4 py-20 border-b-2 border-outline-variant">
+<div class="mb-12">
+<span class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider">SYSTEM INQUIRIES</span>
+<h2 class="font-headline-xl text-headline-xl uppercase font-bold text-primary mt-1">FREQUENTLY ANSWERED QUESTIONS</h2>
+</div>
+<div class="space-y-4">
+<!-- FAQ Item 1 -->
+<div class="bg-surface border-2 border-outline-variant p-5 brutal-shadow">
+<div class="font-headline-md text-headline-md font-bold text-on-surface uppercase mb-2 flex items-center justify-between">
+<span>How does SE Browser Agent differ from standard code autocomplete tools?</span>
+<span class="font-code-stream text-primary-fixed">+</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Autocomplete tools suggest tokens as you type. SE Browser Agent is an autonomous execution loop: it accepts high-level objectives, generates code across files, opens an actual Chromium browser, inspects DOM elements, clicks buttons, observes errors, and iterates until the feature passes all end-to-end specifications.
+          </p>
+</div>
+<!-- FAQ Item 2 -->
+<div class="bg-surface border-2 border-outline-variant p-5 brutal-shadow">
+<div class="font-headline-md text-headline-md font-bold text-on-surface uppercase mb-2 flex items-center justify-between">
+<span>Can the agent run inside our private GitHub Enterprise repositories?</span>
+<span class="font-code-stream text-primary-fixed">+</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Yes. Through our GitHub App integration, you can grant scoped access per repository. Code is processed exclusively within temporary, zero-retention micro-VM sandboxes. Your proprietary code is never stored or used to train public foundation models.
+          </p>
+</div>
+<!-- FAQ Item 3 -->
+<div class="bg-surface border-2 border-outline-variant p-5 brutal-shadow">
+<div class="font-headline-md text-headline-md font-bold text-on-surface uppercase mb-2 flex items-center justify-between">
+<span>What happens if the agent gets trapped in an infinite retry loop?</span>
+<span class="font-code-stream text-primary-fixed">+</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            The execution engine is bounded by strict step budgets and circuit breakers (defaulting to 10 iteration cycles or 5 minutes max per subtask). If a test suite cannot be healed, the agent rolls back its working tree, commits a detailed diagnostic trace to the PR comments, and alerts the engineering lead.
+          </p>
+</div>
+<!-- FAQ Item 4 -->
+<div class="bg-surface border-2 border-outline-variant p-5 brutal-shadow">
+<div class="font-headline-md text-headline-md font-bold text-on-surface uppercase mb-2 flex items-center justify-between">
+<span>Which front-end frameworks and testing libraries are officially supported?</span>
+<span class="font-code-stream text-primary-fixed">+</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Native integrations exist for Playwright, Cypress, Puppeteer, Vitest, Jest, Next.js, React, Vue, Svelte, Django, FastAPI, and Go Gin. Custom testing frameworks can be hooked in via a simple JSON-RPC configuration file.
+          </p>
+</div>
+</div>
+</section>
+<!-- FINAL BOLD CTA BANNER -->
+<section class="max-w-7xl mx-auto px-4 py-16">
+<div class="bg-primary-fixed border-4 border-surface-container-lowest p-8 md:p-14 brutal-shadow-lg flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="max-w-2xl">
+<div class="font-label-sm text-label-sm bg-surface-container-lowest text-primary-fixed px-2 py-0.5 inline-block font-bold uppercase mb-3">
+            DEPLOY YOUR FIRST AUTONOMOUS AGENT IN 90 SECONDS
+          </div>
+<h2 class="font-headline-xl text-headline-xl lg:text-4xl font-extrabold uppercase text-on-primary-fixed leading-tight">
+            STOP WRITING BOILERPLATE. <br/>
+            LET THE ENGINE BUILD.
+          </h2>
+<p class="font-body-md text-body-md text-on-primary-fixed-variant mt-3 font-semibold">
+            Join 4,200+ forward-thinking software engineers shipping verified browser software with autonomous agent loops.
+          </p>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+<a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-surface-container-lowest text-primary hover:bg-surface border-2 border-surface-container-lowest font-headline-md text-headline-md font-bold uppercase brutal-shadow active:translate-x-1 active:translate-y-1 transition-transform" href="#signup">
+<span>START BUILDING NOW</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+</main>
+<!-- FOOTER WITH SYSTEM STATUS STRIP -->
+<footer class="bg-surface-container-lowest border-t-2 border-outline-variant">
+<!-- Status Strip -->
+<div class="border-b border-outline-variant py-2.5 px-4 bg-surface-container">
+<div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 font-label-sm text-label-sm">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5 text-secondary-container">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+            DOM RUNTIME: OPERATIONAL
+          </span>
+<span class="text-on-surface-variant">|</span>
+<span class="text-on-surface">ENGINE: v2.4.0-rc1</span>
+<span class="text-on-surface-variant">|</span>
+<span class="text-primary-fixed">GLOBAL LATENCY: 22ms</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span>SOC-2 TYPE II CERTIFIED</span>
+<span>•</span>
+<span>ISO/IEC 27001</span>
+</div>
+</div>
+</div>
+<!-- Main Footer Grid -->
+<div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-5 gap-8">
+<div class="col-span-2">
+<div class="flex items-center gap-2 mb-3">
+<div class="w-6 h-6 bg-primary-fixed border border-black flex items-center justify-center font-bold text-black text-xs">
+            SE
+          </div>
+<span class="font-headline-md text-headline-md font-bold text-primary">SE BROWSER AGENT</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm mb-4">
+          The next-generation autonomous software engineering platform. Direct Chromium headless dispatch, self-healing code generation, and automated production rollouts.
+        </p>
+<div class="font-code-stream text-code-stream text-[11px] text-on-surface-variant">
+          © 2025 SE Browser Agent Inc. All rights reserved.
+        </div>
+</div>
+<!-- Links 1 -->
+<div>
+<h4 class="font-label-md text-label-md font-bold uppercase text-on-surface mb-3 tracking-wider">PRODUCT</h4>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary-fixed transition-colors" href="#features">Browser Dispatch</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#features">Micro-VM Sandboxes</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#benchmarks">SWE-Bench Results</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#pricing">Pricing Matrix</a></li>
+</ul>
+</div>
+<!-- Links 2 -->
+<div>
+<h4 class="font-label-md text-label-md font-bold uppercase text-on-surface mb-3 tracking-wider">DEVELOPERS</h4>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary-fixed transition-colors" href="#docs">Documentation</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#api">CDP RPC API</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#github">GitHub Actions App</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#status">Status Dashboard</a></li>
+</ul>
+</div>
+<!-- Links 3 -->
+<div>
+<h4 class="font-label-md text-label-md font-bold uppercase text-on-surface mb-3 tracking-wider">COMPANY</h4>
+<ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant">
+<li><a class="hover:text-primary-fixed transition-colors" href="#about">About Team</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#security">Security Whitepaper</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#careers">Careers (Hiring!)</a></li>
+<li><a class="hover:text-primary-fixed transition-colors" href="#contact">Contact Sales</a></li>
+</ul>
+</div>
+</div>
+</footer>
+<!-- SIMPLE INTERACTIVE DEMO MODAL (TOGGLEABLE) -->
+<div class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" id="demo-modal">
+<div class="bg-surface border-2 border-primary-fixed max-w-xl w-full brutal-shadow-lg p-6 relative">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant mb-4">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-primary-fixed inline-block"></span>
+<span class="font-headline-md text-headline-md font-bold text-primary">LIVE AGENT DISPATCH PROMPT</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary font-bold" onclick="document.getElementById('demo-modal').classList.add('hidden')">
+          [ESC]
+        </button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">
+        Input an autonomous task to simulate how the runtime coordinates browser actions:
+      </p>
+<div class="relative mb-4">
+<textarea class="w-full bg-surface-container-lowest border-2 border-outline-variant text-on-surface font-code-stream text-code-stream p-3 focus:outline-none focus:border-primary-fixed focus:ring-0" rows="3">Write a Playwright test that verifies user login with OAuth and intercepts 401 unauthorized tokens.</textarea>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-container">EST. COST: ~320 TOKENS</span>
+<button class="px-4 py-2 bg-primary-fixed text-on-primary-fixed font-headline-md text-headline-md font-bold uppercase border border-black brutal-shadow" onclick="alert('Agent execution thread spawned! Open Cockpit to monitor CDP actions.'); document.getElementById('demo-modal').classList.add('hidden');">
+          SPAWN AGENT >
+        </button>
+</div>
+</div>
+</div>
+<!-- KEYBOARD SHORTCUT LISTENER SCRIPT -->
+<script>
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const modal = document.getElementById('demo-modal');
+        if (modal) {
+          modal.classList.toggle('hidden');
+        }
+      }
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('demo-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          modal.classList.add('hidden');
+        }
+      }
+    });
+  </script>
+</body></html>
