@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #0c0e12;
+    color: #e0e2ec;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  ::selection {
+    background: #fde400;
+    color: #000000;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0e15;
+}
+::-webkit-scrollbar-thumb {
+  background: #282e3d;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4b4731;
+}
+
+/* Neo-Brutalist Hard Edge Shadows & Borders */
+.brutal-border {
+  border: 1.5px solid #282e3d;
+}
+.brutal-border-active {
+  border: 1.5px solid #ffe600;
+}
+.brutal-border-cyan {
+  border: 1.5px solid #00e5ff;
+}
+.brutal-border-heavy {
+  border: 2px solid #000000;
+}
+.brutal-shadow {
+  box-shadow: 3px 3px 0px #000000;
+}
+.brutal-shadow-sm {
+  box-shadow: 2px 2px 0px #000000;
+}
+.brutal-shadow-lg {
+  box-shadow: 5px 5px 0px #000000;
+}
+.brutal-shadow-yellow {
+  box-shadow: 3px 3px 0px #fde400;
+}
+.brutal-shadow-cyan {
+  box-shadow: 2px 2px 0px #00e5ff;
+}
+
+.brutal-btn-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px transparent;
+}
+
+/* Tree Guides */
+.tree-guide {
+  background-image: linear-gradient(to bottom, #282e3d 40%, rgba(255,255,255,0) 0%);
+  background-position: left;
+  background-size: 1px 6px;
+  background-repeat: repeat-y;
+}
+
+/* Keyframe Animations */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseCanary {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(253, 228, 0, 0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(253, 228, 0, 0); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-fadeSlideIn {
+  animation: fadeSlideIn 0.35s ease-out forwards;
+}
+.animate-pulseCanary {
+  animation: pulseCanary 2s ease-in-out infinite;
+}
+.animate-blink {
+  animation: blink 0.8s step-end infinite;
+}
+
+/* Status Badges */
+.badge-running {
+  background: #ffe600;
+  color: #000000;
+  border: 1px solid #000000;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+}
+.badge-success {
+  color: #00f5a0;
+  border: 1px solid #00f5a0;
+  background: rgba(0, 245, 160, 0.08);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+}
+.badge-error {
+  color: #ff5c5c;
+  border: 1px solid #ff5c5c;
+  background: rgba(255, 92, 92, 0.08);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+}
+.badge-queued {
+  color: #8c96a8;
+  border: 1px solid #282e3d;
+  background: transparent;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+}
+
+/* Panel Header */
+.panel-header {
+  height: 32px;
+  border-bottom: 1.5px solid #282e3d;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8c96a8;
+}
