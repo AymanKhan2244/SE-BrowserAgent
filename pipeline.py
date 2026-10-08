@@ -23,17 +23,24 @@ from typing import List, Dict, Any, Optional
 
 from dotenv import load_dotenv
 load_dotenv()
+from langchain_groq import ChatGroq
+planner_key = os.environ["GROQ_API_KEY1"] = os.getenv("GROQ_API_KEY1")
+architect_key = os.environ["GROQ_API_KEY2"] = os.getenv("GROQ_API_KEY2")
+coder_key = os.environ["GROQ_API_KEY3"] = os.getenv("GROQ_API_KEY3")
+debugger_key = os.environ["GROQ_API_KEY4"] = os.getenv("GROQ_API_KEY4")
 
+
+
+llm_planner = ChatGroq(model="openai/gpt-oss-120b", temperature=0.2, api_key= planner_key)
+llm_architect =  ChatGroq(model="openai/gpt-oss-120b", temperature=0.2, api_key= architect_key)
+llm_coder = ChatGroq(model="openai/gpt-oss-120b", temperature=0.2, api_key= coder_key)
+llm_debugger = ChatGroq(model="openai/gpt-oss-120b", temperature=0.2, api_key= debugger_key)
 # ── LLM setup ──────────────────────────────────────────────────────────────────
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-LLM = ChatGroq(
-    model="openai/gpt-oss-120b",
-    temperature=0.2,
-    api_key=os.getenv("GROQ_API_KEY"),
-)
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -99,7 +106,7 @@ User request:
 
 def planner_agent(query: str) -> PlannerOutput:
     print("\n[1/4] Planner Agent running...")
-    chain = PLANNER_PROMPT | LLM.with_structured_output(PlannerOutput)
+    chain = PLANNER_PROMPT | llm_planner.with_structured_output(PlannerOutput)
     result = chain.invoke({"query": query})
     print(f"     Project  : {result.project_name}")
     print(f"     Stack    : {result.tech_stack}")
@@ -136,7 +143,7 @@ def architect_agent(plan: PlannerOutput) -> ProjectManifest:
         f"Tech Stack: {plan.tech_stack}\n"
         f"Features:\n" + "\n".join(f"  - {f}" for f in plan.features)
     )
-    chain = ARCHITECT_PROMPT | LLM.with_structured_output(ProjectManifest)
+    chain = ARCHITECT_PROMPT | llm_architect.with_structured_output(ProjectManifest)
     result = chain.invoke({"spec": spec_text})
     print(f"     Files planned : {len(result.files)}")
     print(f"     Entrypoint    : {result.entrypoint}")
@@ -215,7 +222,7 @@ def coding_agent(manifest: ProjectManifest, plan: PlannerOutput) -> List[Generat
             context_files = "(No dependencies generated yet or no dependencies specified.)"
 
         try:
-            response = (CODING_PROMPT | LLM).invoke(
+            response = (CODING_PROMPT | llm_coder).invoke(
                 {
                     "project_overview": project_overview,
                     "all_files": all_files_txt,
@@ -363,7 +370,7 @@ def debugger_agent(generated_files: List[GeneratedFile], errors: str = None) -> 
         return generated_files
 
     project_structure = "\n".join(f"  {f.path}" for f in generated_files)
-    chain = DEBUGGER_PROMPT | LLM
+    chain = DEBUGGER_PROMPT | llm_debugger
 
     error_section = ""
     if errors:
