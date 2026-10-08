@@ -21,8 +21,7 @@ import zipfile
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-from dotenv import load_dotenv
-load_dotenv()
+
 from langchain_groq import ChatGroq
 planner_key = os.environ["GROQ_API_KEY1"] = os.getenv("GROQ_API_KEY1")
 architect_key = os.environ["GROQ_API_KEY2"] = os.getenv("GROQ_API_KEY2")
