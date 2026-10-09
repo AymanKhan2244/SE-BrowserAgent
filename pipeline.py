@@ -21,12 +21,23 @@ import zipfile
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
+from dotenv import load_dotenv
+load_dotenv()
 
 from langchain_groq import ChatGroq
-planner_key = os.environ["GROQ_API_KEY1"] = os.getenv("GROQ_API_KEY1")
-architect_key = os.environ["GROQ_API_KEY2"] = os.getenv("GROQ_API_KEY2")
-coder_key = os.environ["GROQ_API_KEY3"] = os.getenv("GROQ_API_KEY3")
-debugger_key = os.environ["GROQ_API_KEY4"] = os.getenv("GROQ_API_KEY4")
+planner_key = os.getenv("GROQ_API_KEY1", "")
+architect_key = os.getenv("GROQ_API_KEY2", "")
+coder_key = os.getenv("GROQ_API_KEY3", "")
+debugger_key = os.getenv("GROQ_API_KEY4", "")
+
+if planner_key:
+    os.environ["GROQ_API_KEY1"] = planner_key
+if architect_key:
+    os.environ["GROQ_API_KEY2"] = architect_key
+if coder_key:
+    os.environ["GROQ_API_KEY3"] = coder_key
+if debugger_key:
+    os.environ["GROQ_API_KEY4"] = debugger_key
 
 
 
