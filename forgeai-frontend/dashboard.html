@@ -141,8 +141,16 @@
       background-repeat: repeat-y;
     }
   </style>
+  <link rel="stylesheet" href="assets/forgeai-ui.css">
 </head>
-<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen overflow-x-hidden font-body-md">
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen overflow-x-hidden font-body-md page-dashboard" data-page="dashboard">
+<nav class="forge-mobile-nav" aria-label="Primary navigation">
+  <a href="dashboard.html" aria-current="page"><span class="material-symbols-outlined" aria-hidden="true">dashboard</span><span>Overview</span></a>
+  <a href="new_task.html"><span class="material-symbols-outlined" aria-hidden="true">add_circle</span><span>New task</span></a>
+  <a href="tasks.html"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span><span>Tasks</span></a>
+  <a href="agent_workspace.html"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><span>Workspace</span></a>
+</nav>
+
 <!-- ========================================================================= -->
 <!-- SHARED COMPONENT: SideNavBar (Strict compliance to JSON & Style Guidance) -->
 <!-- ========================================================================= -->
@@ -159,44 +167,44 @@
 </div>
 </div>
 <!-- Quick Action CTA -->
-<button class="w-full py-2 px-3 bg-secondary-container text-on-secondary font-headline-md text-body-md font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] hover:bg-secondary-fixed transition-all flex items-center justify-center gap-2 brutal-btn-press">
+<button onclick="window.location.href='new_task.html'" class="w-full py-2 px-3 bg-secondary-container text-on-secondary font-headline-md text-body-md font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] hover:bg-secondary-fixed transition-all flex items-center justify-center gap-2 brutal-btn-press">
 <span class="material-symbols-outlined text-body-lg" data-icon="add_box">add_box</span>
 <span>NEW TASK</span>
 </button>
 <!-- Primary Navigation Tabs -->
 <nav class="flex flex-col gap-1">
 <!-- Tab 0: HOME (ACTIVE: closest match to Dashboard) -->
-<a class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 transition-all" href="#">
+<a aria-current="page" href="dashboard.html" class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 transition-all">
 <span class="material-symbols-outlined text-body-lg" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
 <span class="font-label-sm text-label-sm">HOME</span>
 </a>
 <!-- Tab 1: NEW TASK -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<a href="new_task.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all">
 <span class="material-symbols-outlined text-body-lg" data-icon="add_box">add_box</span>
 <span class="font-label-sm text-label-sm">NEW TASK</span>
 </a>
 <!-- Tab 2: PROJECTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<a href="dashboard.html#projects" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all">
 <span class="material-symbols-outlined text-body-lg" data-icon="folder">folder</span>
 <span class="font-label-sm text-label-sm">PROJECTS</span>
 </a>
 <!-- Tab 3: TASKS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<a href="tasks.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all">
 <span class="material-symbols-outlined text-body-lg" data-icon="check_circle">check_circle</span>
 <span class="font-label-sm text-label-sm">TASKS</span>
 </a>
 <!-- Tab 4: AGENTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<a href="agent_workspace.html#agent-pipeline" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all">
 <span class="material-symbols-outlined text-body-lg" data-icon="smart_toy">smart_toy</span>
 <span class="font-label-sm text-label-sm">AGENTS</span>
 </a>
 <!-- Tab 5: DEPLOYMENTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<a href="code.html#deploy-example" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all">
 <span class="material-symbols-outlined text-body-lg" data-icon="rocket_launch">rocket_launch</span>
 <span class="font-label-sm text-label-sm">DEPLOYMENTS</span>
 </a>
 <!-- Tab 6: ACTIVITY -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#">
+<a href="agent_workspace.html#event-stream" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all">
 <span class="material-symbols-outlined text-body-lg" data-icon="dynamic_form">dynamic_form</span>
 <span class="font-label-sm text-label-sm">ACTIVITY</span>
 </a>
@@ -623,7 +631,7 @@
 <!-- ===================================================================== -->
 <!-- SECTION 4: RECENT PROJECTS (Master Cards Bento Grid)                  -->
 <!-- ===================================================================== -->
-<section class="flex flex-col gap-3">
+<section id="projects" class="flex flex-col gap-3">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-primary-fixed text-[20px]" data-icon="folder">folder</span>

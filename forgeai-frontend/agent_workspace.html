@@ -131,8 +131,16 @@
       background: #4b4731;
     }
   </style>
+  <link rel="stylesheet" href="assets/forgeai-ui.css">
 </head>
-<body class="bg-surface-container-lowest text-on-surface font-body-md text-body-md overflow-hidden h-screen select-none antialiased">
+<body class="bg-surface-container-lowest text-on-surface font-body-md text-body-md overflow-hidden h-screen select-none antialiased page-workspace" data-page="workspace">
+<nav class="forge-mobile-nav" aria-label="Primary navigation">
+  <a href="dashboard.html"><span class="material-symbols-outlined" aria-hidden="true">dashboard</span><span>Overview</span></a>
+  <a href="new_task.html"><span class="material-symbols-outlined" aria-hidden="true">add_circle</span><span>New task</span></a>
+  <a href="tasks.html"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span><span>Tasks</span></a>
+  <a href="agent_workspace.html" aria-current="page"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><span>Workspace</span></a>
+</nav>
+
 <!-- ==================== PERSISTENT SIDEBAR (240px wide per JSON style w-60) ==================== -->
 <aside class="fixed top-0 left-0 h-screen w-60 flex flex-col justify-between p-3 z-40 bg-surface border-r-2 border-outline-variant shadow-[3px_0px_0px_#000000]">
 <div class="flex flex-col gap-3">
@@ -147,39 +155,39 @@
 </div>
 </div>
 <!-- Quick Action CTA -->
-<button class="w-full py-1.5 px-3 bg-primary-fixed text-on-primary-fixed font-headline-md text-[13px] font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] flex items-center justify-center gap-2 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+<button onclick="window.location.href='new_task.html'" class="w-full py-1.5 px-3 bg-primary-fixed text-on-primary-fixed font-headline-md text-[13px] font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] flex items-center justify-center gap-2 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
 <span class="material-symbols-outlined text-on-primary-fixed text-[16px]">add_box</span>
 <span>NEW TASK</span>
 </button>
 <!-- Primary Navigation Cluster -->
 <nav class="flex flex-col gap-1 mt-1">
 <!-- Exact JSON tabs: HOME, NEW TASK, PROJECTS, TASKS, AGENTS, DEPLOYMENTS, ACTIVITY -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md" href="#">
+<a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md">
 <span class="material-symbols-outlined">home</span>
 <span>HOME</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md" href="#">
+<a href="new_task.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md">
 <span class="material-symbols-outlined">add_box</span>
 <span>NEW TASK</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md" href="#">
+<a href="dashboard.html#projects" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md">
 <span class="material-symbols-outlined">folder</span>
 <span>PROJECTS</span>
 </a>
 <!-- TASKS is the Active Top-Level Target for the current Task Workspace -->
-<a class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 font-label-md text-label-md" href="#">
+<a aria-current="page" href="tasks.html" class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 font-label-md text-label-md">
 <span class="material-symbols-outlined">check_circle</span>
 <span>TASKS</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md" href="#">
+<a href="agent_workspace.html#agent-pipeline" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md">
 <span class="material-symbols-outlined">smart_toy</span>
 <span>AGENTS</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md" href="#">
+<a href="code.html#deploy-example" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md">
 <span class="material-symbols-outlined">rocket_launch</span>
 <span>DEPLOYMENTS</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md" href="#">
+<a href="agent_workspace.html#event-stream" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all font-label-md text-label-md">
 <span class="material-symbols-outlined">dynamic_form</span>
 <span>ACTIVITY</span>
 </a>
@@ -309,7 +317,7 @@
 </div>
 </header>
 <!-- ==================== THREE-COLUMN SPLIT WORKSPACE ==================== -->
-<main class="fixed top-14 left-60 right-0 bottom-0 flex overflow-hidden">
+<main id="agent-pipeline" class="fixed top-14 left-60 right-0 bottom-0 flex overflow-hidden">
 <!-- ==================== LEFT COLUMN: AGENT PIPELINE (~20% width) ==================== -->
 <section class="w-[280px] min-w-[260px] h-full flex flex-col bg-surface border-r-2 border-outline-variant">
 <!-- Section Header -->
@@ -592,7 +600,7 @@
 </div>
 </section>
 <!-- ==================== RIGHT COLUMN: LIVE ACTIVITY & TERMINAL (~25% width) ==================== -->
-<section class="w-[340px] min-w-[300px] h-full flex flex-col bg-surface overflow-hidden">
+<section id="event-stream" class="w-[340px] min-w-[300px] h-full flex flex-col bg-surface overflow-hidden">
 <!-- Section Header with Filter Pills -->
 <div class="p-2.5 bg-surface-container-low border-b border-outline-variant flex flex-col gap-2">
 <div class="flex items-center justify-between">

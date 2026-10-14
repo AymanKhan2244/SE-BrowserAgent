@@ -218,14 +218,22 @@ tailwind.config = {
 .fn { color: #00f5a0; font-weight: 600; }
 .cmt { color: #4b4731; font-style: italic; }
 </style>
+  <link rel="stylesheet" href="assets/forgeai-ui.css">
 </head>
 
-<body class="bg-void text-chalk antialiased selection:bg-primary-container selection:text-black min-h-screen overflow-x-hidden font-body-md">
+<body class="bg-void text-chalk antialiased selection:bg-primary-container selection:text-black min-h-screen overflow-x-hidden font-body-md page-code" data-page="code">
+<nav class="forge-mobile-nav" aria-label="Primary navigation">
+  <a href="dashboard.html"><span class="material-symbols-outlined" aria-hidden="true">dashboard</span><span>Overview</span></a>
+  <a href="new_task.html" aria-current="page"><span class="material-symbols-outlined" aria-hidden="true">add_circle</span><span>New task</span></a>
+  <a href="tasks.html"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span><span>Tasks</span></a>
+  <a href="agent_workspace.html"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><span>Workspace</span></a>
+</nav>
+
 
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <!-- SIDEBAR NAVIGATION -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
-<aside class="fixed top-0 left-0 h-screen w-[220px] flex flex-col justify-between p-3 z-40 bg-surface border-r-2 border-divider shadow-[3px_0px_0px_#000000]">
+<aside class="fixed top-0 left-0 h-screen w-60 flex flex-col justify-between p-3 z-40 bg-surface border-r-2 border-divider shadow-[3px_0px_0px_#000000]">
   <div class="flex flex-col gap-4">
     <!-- Logo -->
     <div class="flex items-center gap-2 px-1 py-2">
@@ -246,23 +254,23 @@ tailwind.config = {
 
     <!-- Navigation -->
     <nav class="flex flex-col gap-0.5">
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 bg-surface-container-low brutal-border text-chalk font-label-lg text-label-lg uppercase tracking-wider">
+      <a href="dashboard.html" class="flex items-center gap-2.5 px-3 py-2 bg-surface-container-low brutal-border text-chalk font-label-lg text-label-lg uppercase tracking-wider">
         <span class="material-symbols-outlined text-[18px] text-primary-container" style="font-variation-settings: 'FILL' 1;">home</span>
         HOME
       </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+      <a href="tasks.html" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
         <span class="material-symbols-outlined text-[18px]">task</span>
         TASKS
       </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+      <a href="agent_workspace.html#agent-pipeline" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
         <span class="material-symbols-outlined text-[18px]">smart_toy</span>
         AGENTS
       </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+      <a href="code.html#deploy-example" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
         <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
         DEPLOYMENTS
       </a>
-      <a href="#" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
+      <a href="agent_workspace.html#event-stream" class="flex items-center gap-2.5 px-3 py-2 text-steel font-label-lg text-label-lg uppercase tracking-wider hover:bg-surface-container-low hover:text-chalk transition-colors">
         <span class="material-symbols-outlined text-[18px]">monitoring</span>
         ACTIVITY
       </a>
@@ -292,7 +300,7 @@ tailwind.config = {
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <!-- TOP BAR -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
-<header class="fixed top-0 left-[220px] right-0 z-30 h-[52px] bg-surface border-b-2 border-divider flex items-center justify-between px-4">
+<header class="fixed top-0 left-60 right-0 z-30 h-14 bg-surface border-b-2 border-divider flex items-center justify-between px-4">
   <!-- Left: Search + Version -->
   <div class="flex items-center gap-3">
     <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low brutal-border text-steel font-body-sm text-body-sm">
@@ -328,7 +336,7 @@ tailwind.config = {
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <!-- MAIN CONTENT -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
-<main class="ml-[220px] mt-[52px] min-h-[calc(100vh-52px)] bg-void">
+<main class="ml-60 mt-14 min-h-[calc(100vh-56px)] bg-void">
 <div class="flex flex-col w-full">
 <div class="w-full p-4">
 
@@ -426,7 +434,7 @@ tailwind.config = {
                 <span class="font-label-sm text-label-sm text-steel block">E2E Tests</span>
               </div>
             </button>
-            <button onclick="setExample('Build a blog platform with markdown support, user auth, and deployment pipeline using Flask + Docker.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-mint hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
+            <button id="deploy-example" onclick="setExample('Build a blog platform with markdown support, user auth, and deployment pipeline using Flask + Docker.')" class="flex flex-col items-center gap-2 p-3 bg-raised brutal-border hover:border-mint hover:brutal-shadow-sm transition-all text-center brutal-btn-press group">
               <span class="material-symbols-outlined text-[24px] text-steel group-hover:text-mint transition-colors">deployed_code</span>
               <div>
                 <span class="font-label-lg text-label-lg text-chalk block uppercase">DEPLOY</span>
@@ -650,7 +658,7 @@ tailwind.config = {
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <!-- STATUS BAR (Bottom) -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
-<footer class="fixed bottom-0 left-[220px] right-0 z-30 h-[28px] bg-surface border-t-2 border-divider flex items-center justify-between px-4 font-label-sm text-label-sm">
+<footer class="fixed bottom-0 left-60 right-0 z-30 h-[28px] bg-surface border-t-2 border-divider flex items-center justify-between px-4 font-label-sm text-label-sm">
   <div class="flex items-center gap-4">
     <div class="flex items-center gap-1.5">
       <span id="footer-status-dot" class="w-1.5 h-1.5 bg-steel"></span>
