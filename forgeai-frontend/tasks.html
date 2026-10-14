@@ -109,8 +109,16 @@
       }
     }
   </script>
+  <link rel="stylesheet" href="assets/forgeai-ui.css">
 </head>
-<body class="bg-background text-on-surface antialiased select-none font-body-md text-body-md overflow-x-hidden">
+<body class="bg-background text-on-surface antialiased select-none font-body-md text-body-md overflow-x-hidden page-tasks" data-page="tasks">
+<nav class="forge-mobile-nav" aria-label="Primary navigation">
+  <a href="dashboard.html"><span class="material-symbols-outlined" aria-hidden="true">dashboard</span><span>Overview</span></a>
+  <a href="new_task.html"><span class="material-symbols-outlined" aria-hidden="true">add_circle</span><span>New task</span></a>
+  <a href="tasks.html" aria-current="page"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span><span>Tasks</span></a>
+  <a href="agent_workspace.html"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><span>Workspace</span></a>
+</nav>
+
 <!-- PERSISTENT SIDEBAR (240px = w-60) -->
 <aside class="fixed top-0 left-0 h-screen w-60 flex flex-col justify-between p-3 z-40 bg-surface dark:bg-surface border-r-2 border-outline-variant dark:border-outline-variant shadow-[3px_0px_0px_#000000]">
 <div class="flex flex-col gap-3">
@@ -125,44 +133,44 @@
 </div>
 </div>
 <!-- Quick Action CTA -->
-<button class="w-full py-2 px-3 bg-primary-fixed text-on-primary-fixed font-headline-md font-bold text-xs uppercase flex items-center justify-center gap-1.5 border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+<button onclick="window.location.href='new_task.html'" class="w-full py-2 px-3 bg-primary-fixed text-on-primary-fixed font-headline-md font-bold text-xs uppercase flex items-center justify-center gap-1.5 border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
 <span class="material-symbols-outlined text-sm font-bold">add_box</span>
 <span>NEW TASK</span>
 </button>
 <!-- Nav Items -->
 <nav class="flex flex-col gap-1 mt-1">
 <!-- 1. HOME -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent" href="#">
+<a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent">
 <span class="material-symbols-outlined text-sm">home</span>
 <span class="font-label-md text-label-md">HOME</span>
 </a>
 <!-- 2. NEW TASK -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent" href="#">
+<a href="new_task.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent">
 <span class="material-symbols-outlined text-sm">add_box</span>
 <span class="font-label-md text-label-md">NEW TASK</span>
 </a>
 <!-- 3. PROJECTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent" href="#">
+<a href="dashboard.html#projects" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent">
 <span class="material-symbols-outlined text-sm">folder</span>
 <span class="font-label-md text-label-md">PROJECTS</span>
 </a>
 <!-- 4. TASKS (Active Page) -->
-<a class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1" href="#">
+<a aria-current="page" href="tasks.html" class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1">
 <span class="material-symbols-outlined text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
 <span class="font-label-md text-label-md">TASKS</span>
 </a>
 <!-- 5. AGENTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent" href="#">
+<a href="agent_workspace.html#agent-pipeline" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent">
 <span class="material-symbols-outlined text-sm">smart_toy</span>
 <span class="font-label-md text-label-md">AGENTS</span>
 </a>
 <!-- 6. DEPLOYMENTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent" href="#">
+<a href="code.html#deploy-example" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent">
 <span class="material-symbols-outlined text-sm">rocket_launch</span>
 <span class="font-label-md text-label-md">DEPLOYMENTS</span>
 </a>
 <!-- 7. ACTIVITY -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent" href="#">
+<a href="agent_workspace.html#event-stream" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all border border-transparent">
 <span class="material-symbols-outlined text-sm">dynamic_form</span>
 <span class="font-label-md text-label-md">ACTIVITY</span>
 </a>
