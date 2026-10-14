@@ -90,7 +90,7 @@ class ProjectManifest(BaseModel):
     )
 
 
-class GeneratedFile(BaseModel):\
+class GeneratedFile(BaseModel):
 
     path: str = Field(description="Relative file path")
     content: str = Field(description="Complete, production-ready source code for this file")
