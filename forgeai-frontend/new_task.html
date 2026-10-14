@@ -234,8 +234,16 @@
       background: #4b4731;
     }
   </style>
+  <link rel="stylesheet" href="assets/forgeai-ui.css">
 </head>
-<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed page-new-task" data-page="new_task">
+<nav class="forge-mobile-nav" aria-label="Primary navigation">
+  <a href="dashboard.html"><span class="material-symbols-outlined" aria-hidden="true">dashboard</span><span>Overview</span></a>
+  <a href="new_task.html" aria-current="page"><span class="material-symbols-outlined" aria-hidden="true">add_circle</span><span>New task</span></a>
+  <a href="tasks.html"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span><span>Tasks</span></a>
+  <a href="agent_workspace.html"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><span>Workspace</span></a>
+</nav>
+
 <!-- ========================================================================= -->
 <!-- SHARED COMPONENT: SideNavBar (Persistent Desktop Shell - 240px)           -->
 <!-- ========================================================================= -->
@@ -252,44 +260,44 @@
 </div>
 </div>
 <!-- Quick Action / CTA -->
-<button class="w-full py-1.5 px-3 bg-primary-fixed text-on-primary-fixed font-headline-md text-body-md font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none flex items-center justify-center gap-2 uppercase tracking-wide">
+<button onclick="window.location.href='new_task.html'" class="w-full py-1.5 px-3 bg-primary-fixed text-on-primary-fixed font-headline-md text-body-md font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none flex items-center justify-center gap-2 uppercase tracking-wide">
 <span class="material-symbols-outlined text-base font-bold" data-icon="add_box">add_box</span>
 <span>NEW TASK</span>
 </button>
 <!-- Primary Tabs -->
 <nav class="flex flex-col gap-1 mt-1">
 <!-- 0: HOME -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md">
 <span class="material-symbols-outlined" data-icon="home">home</span>
 <span>HOME</span>
 </a>
 <!-- 1: NEW TASK (CURRENT ACTIVE DESTINATION) -->
-<a class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 font-label-md text-label-md" href="#">
+<a aria-current="page" href="new_task.html" class="flex items-center gap-3 px-3 py-2 bg-primary-fixed text-on-primary-fixed font-bold border-2 border-surface-container-lowest shadow-[2px_2px_0px_#000000] translate-x-1 font-label-md text-label-md">
 <span class="material-symbols-outlined font-bold" data-icon="add_box">add_box</span>
 <span>NEW TASK</span>
 </a>
 <!-- 2: PROJECTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<a href="dashboard.html#projects" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md">
 <span class="material-symbols-outlined" data-icon="folder">folder</span>
 <span>PROJECTS</span>
 </a>
 <!-- 3: TASKS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<a href="tasks.html" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md">
 <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
 <span>TASKS</span>
 </a>
 <!-- 4: AGENTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<a href="agent_workspace.html#agent-pipeline" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md">
 <span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
 <span>AGENTS</span>
 </a>
 <!-- 5: DEPLOYMENTS -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<a href="code.html#deploy-example" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md">
 <span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
 <span>DEPLOYMENTS</span>
 </a>
 <!-- 6: ACTIVITY -->
-<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md" href="#">
+<a href="agent_workspace.html#event-stream" class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all active:translate-x-1 active:translate-y-1 active:shadow-none font-label-md text-label-md">
 <span class="material-symbols-outlined" data-icon="dynamic_form">dynamic_form</span>
 <span>ACTIVITY</span>
 </a>
