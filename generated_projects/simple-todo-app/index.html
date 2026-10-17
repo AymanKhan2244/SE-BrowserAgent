@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="app">
+        <h1>Todo List</h1>
+        <section class="todo-input" aria-label="Add new todo">
+            <input type="text" id="new-todo-input" placeholder="What needs to be done?" aria-label="New todo">
+            <button id="add-todo-btn" aria-label="Add todo">Add</button>
+        </section>
+        <ul id="todo-list" class="todo-list" aria-label="Todo items"></ul>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

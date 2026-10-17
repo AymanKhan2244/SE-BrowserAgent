@@ -46,12 +46,12 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="fixed top-0 left-0 h-screen w-16 z-40 bg-[#090C12]/90 backdrop-blur-xl border-r border-white/[0.08] flex flex-col justify-between items-center py-4 select-none">
+      <aside className="fixed top-0 left-0 h-screen w-16 z-40 glass-rail flex flex-col justify-between items-center py-4 select-none">
         {/* Top Logo / Brand Starburst Icon */}
         <div className="flex flex-col items-center gap-6">
           <Link
             href="/"
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-white/90 hover:text-white transition-all hover:scale-105 group relative"
+            className="w-10 h-10 rounded-2xl glass-chip flex items-center justify-center text-white/90 hover:text-white transition-all hover:scale-105 group relative"
             title="ForgeAI - SE Browser Agent"
           >
             {/* Target 6-lobe geometric starburst emblem */}
@@ -75,15 +75,15 @@ export default function Sidebar() {
             {/* Home */}
             <Link
               href="/"
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all group relative ${
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all group relative ${
                 pathname === "/"
-                  ? "bg-white/[0.1] text-white shadow-[0_0_15px_rgba(255,255,255,0.15)]"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.05]"
+                  ? "glass-pill text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.08]"
               }`}
               title="Home"
             >
               <Home className="w-4 h-4" />
-              <span className="absolute left-14 ml-2 px-2.5 py-1 bg-[#141824] text-white text-xs rounded-md shadow-xl border border-white/10 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
+              <span className="absolute left-14 ml-2 px-3 py-1.5 glass-panel text-white text-xs rounded-xl shadow-2xl border border-white/15 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
                 Home
               </span>
             </Link>

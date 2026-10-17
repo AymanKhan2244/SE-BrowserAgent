@@ -443,21 +443,15 @@ function WorkspaceCanvas() {
         {/* ───────────────────────────────────────────────────────────── */}
         {/* CARD 1: ACTIVE PROMINENT GLOWING AGENT CARD (Left Side)       */}
         {/* ───────────────────────────────────────────────────────────── */}
-        <div
-          className="absolute left-[340px] top-[240px] w-[340px] rounded-[28px] glass-active-card p-6 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.01]"
-          style={{
-            background: "linear-gradient(145deg, #184288 0%, #112F66 100%)",
-            boxShadow: "0 0 55px -5px rgba(59, 130, 246, 0.42), 0 25px 45px -15px rgba(0, 0, 0, 0.8)",
-          }}
-        >
+        <div className="absolute left-[340px] top-[240px] w-[340px] rounded-[28px] glass-active-card p-6 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.01]">
           {/* Top Bar: Icon Badge & Status Pill */}
           <div className="flex items-center justify-between mb-5">
-            <div className="w-8 h-8 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20">
+            <div className="w-8 h-8 rounded-xl glass-chip flex items-center justify-center">
               <Bot className="w-4 h-4 text-white" />
             </div>
 
             {/* Glowing Status Pill */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/25 backdrop-blur-md border border-white/10 text-[11px] font-medium text-emerald-300 shadow-sm">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full glass-chip text-[11px] font-medium text-emerald-300 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
               <span>{isRunning ? "Analyzing" : "Analyzing"}</span>
             </div>
@@ -473,14 +467,14 @@ function WorkspaceCanvas() {
             </p>
           </div>
 
-          {/* Activity Pills (Exactly like target reference) */}
+          {/* Activity Pills (Frosted Glass Chips) */}
           <div className="space-y-2 mb-6">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs text-white/95">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-full glass-chip text-xs text-white/95">
               <CheckCircle2 className="w-3.5 h-3.5 text-blue-200 shrink-0" />
               <span className="truncate">Analyzing market trends</span>
             </div>
 
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs text-white/95">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-full glass-chip text-xs text-white/95">
               <Sparkles className="w-3.5 h-3.5 text-blue-200 shrink-0" />
               <span className="truncate">124 data points processed</span>
             </div>
@@ -522,7 +516,7 @@ function WorkspaceCanvas() {
                 <Bot className="w-3.5 h-3.5" />
                 <span>Model</span>
               </div>
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[11px] text-white">
+              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full glass-chip text-[11px] text-white">
                 <span>{selectedModel}</span>
                 <ChevronDown className="w-3 h-3 text-blue-200" />
               </div>
@@ -536,13 +530,13 @@ function WorkspaceCanvas() {
         <div className="absolute left-[860px] top-[320px] w-[530px] z-20 interactive-card">
           {/* Top Pill: "6 active agent" */}
           <div className="flex justify-center mb-[-12px] relative z-30">
-            <div className="px-3 py-0.5 rounded-full bg-[#121622] border border-white/[0.12] text-[11px] text-zinc-400 font-medium shadow-md">
+            <div className="px-3.5 py-0.5 rounded-full glass-pill text-[11px] text-zinc-300 font-medium shadow-md">
               6 active agent
             </div>
           </div>
 
           {/* Main Translucent Glass Box */}
-          <div className="rounded-[28px] bg-[#10141F]/90 backdrop-blur-2xl border border-white/[0.1] shadow-[0_24px_50px_rgba(0,0,0,0.85)] p-5 text-white relative">
+          <div className="rounded-[28px] glass-command-panel p-5 text-white relative">
             {/* Task Prompt Textarea */}
             <textarea
               value={prompt}
@@ -554,8 +548,8 @@ function WorkspaceCanvas() {
             />
 
             {/* Status Ribbon (Target: "Dessn is thinking... See steps >") */}
-            <div className="mt-2 mb-4 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-blue-950/40 via-[#131B2E] to-blue-950/40 border border-blue-500/20 flex items-center justify-between text-xs">
-              <span className="text-zinc-300 font-normal truncate max-w-[340px]">
+            <div className="mt-2 mb-4 px-3.5 py-2 rounded-2xl glass-ribbon flex items-center justify-between text-xs">
+              <span className="text-zinc-200 font-normal truncate max-w-[340px]">
                 {currentStepText}
               </span>
               <button
@@ -575,7 +569,7 @@ function WorkspaceCanvas() {
                 <button
                   type="button"
                   onClick={() => setActiveOverlay("code")}
-                  className="w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center text-zinc-300 hover:text-white transition-all"
+                  className="w-8 h-8 rounded-full glass-pill flex items-center justify-center text-zinc-300 hover:text-white transition-all active:scale-95"
                   title="Inspect files & attachments"
                 >
                   <Plus className="w-4 h-4" />
@@ -589,7 +583,7 @@ function WorkspaceCanvas() {
                       "Build a full-stack Next.js application with Supabase authentication, Tailwind styling, and Playwright tests."
                     )
                   }
-                  className="w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center text-zinc-300 hover:text-white transition-all"
+                  className="w-8 h-8 rounded-full glass-pill flex items-center justify-center text-zinc-300 hover:text-white transition-all active:scale-95"
                   title="Load recommended template"
                 >
                   <Zap className="w-4 h-4" />
@@ -600,14 +594,14 @@ function WorkspaceCanvas() {
                   <button
                     type="button"
                     onClick={() => setShowModelMenu(!showModelMenu)}
-                    className="h-8 px-3 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] flex items-center gap-1.5 text-xs text-zinc-300 hover:text-white transition-all"
+                    className="h-8 px-3 rounded-full glass-pill flex items-center gap-1.5 text-xs text-zinc-300 hover:text-white transition-all"
                   >
                     <span>Model</span>
                     <ChevronDown className="w-3 h-3 text-zinc-400" />
                   </button>
 
                   {showModelMenu && (
-                    <div className="absolute left-0 bottom-10 w-44 rounded-xl bg-[#141824] border border-white/10 shadow-2xl py-1 z-40 text-xs">
+                    <div className="absolute left-0 bottom-10 w-44 rounded-2xl glass-panel shadow-2xl py-1 z-40 text-xs">
                       {["GPT-4o", "Claude 3.5 Sonnet", "Gemini 3.8 Flash", "Llama 3.3 70B"].map(
                         (m) => (
                           <button
@@ -635,7 +629,7 @@ function WorkspaceCanvas() {
                 <button
                   type="button"
                   onClick={() => setActiveOverlay("steps")}
-                  className="w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.08] flex items-center justify-center text-zinc-300 hover:text-white transition-all"
+                  className="w-8 h-8 rounded-full glass-pill flex items-center justify-center text-zinc-300 hover:text-white transition-all active:scale-95"
                   title="Live Terminal Stream"
                 >
                   <Activity className="w-4 h-4" />
@@ -655,7 +649,7 @@ function WorkspaceCanvas() {
                   <button
                     type="button"
                     onClick={() => startPipeline(prompt)}
-                    className="w-9 h-9 rounded-2xl bg-white hover:bg-zinc-100 text-[#090C12] flex items-center justify-center shadow-[0_0_25px_rgba(255,255,255,0.35)] transition-all active:scale-95"
+                    className="w-9 h-9 rounded-2xl bg-white/95 hover:bg-white text-[#090C12] flex items-center justify-center shadow-[0_0_25px_rgba(255,255,255,0.35),inset_0_1px_1px_rgba(255,255,255,0.8)] transition-all active:scale-95"
                     title="Run Agent Pipeline"
                   >
                     <Play className="w-4 h-4 fill-current ml-0.5" />
@@ -669,15 +663,12 @@ function WorkspaceCanvas() {
         {/* ───────────────────────────────────────────────────────────── */}
         {/* CARD 3: SECONDARY AGENT - TOP RIGHT (Marketing / Architect)   */}
         {/* ───────────────────────────────────────────────────────────── */}
-        <div
-          className="absolute left-[1530px] top-[190px] w-[310px] rounded-[24px] bg-[#121622]/80 backdrop-blur-xl border border-white/[0.08] p-5 text-white z-10 interactive-card transition-all hover:border-white/20"
-          style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.6)" }}
-        >
+        <div className="absolute left-[1530px] top-[190px] w-[310px] rounded-[24px] glass-secondary-card p-5 text-white z-10 interactive-card transition-all hover:border-white/20">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-zinc-300">
               Architect &amp; Coder Agent
             </h3>
-            <span className="w-2 h-2 rounded-full bg-zinc-500" />
+            <span className="w-2 h-2 rounded-full bg-zinc-500 shadow-sm" />
           </div>
 
           <div className="flex items-end justify-between pt-2">
@@ -689,16 +680,13 @@ function WorkspaceCanvas() {
         {/* ───────────────────────────────────────────────────────────── */}
         {/* CARD 4: SECONDARY AGENT - BOTTOM RIGHT (Legal / Browser)      */}
         {/* ───────────────────────────────────────────────────────────── */}
-        <div
-          className="absolute left-[1600px] top-[560px] w-[340px] rounded-[24px] bg-[#121622]/85 backdrop-blur-xl border border-white/[0.08] p-5 text-white z-10 interactive-card transition-all hover:border-white/20"
-          style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.6)" }}
-        >
+        <div className="absolute left-[1600px] top-[560px] w-[340px] rounded-[24px] glass-secondary-card p-5 text-white z-10 interactive-card transition-all hover:border-white/20">
           <div className="flex items-center justify-between mb-3">
-            <div className="w-7 h-7 rounded-lg bg-white/[0.08] flex items-center justify-center text-zinc-300">
+            <div className="w-7 h-7 rounded-lg glass-chip flex items-center justify-center text-zinc-300">
               <Globe className="w-3.5 h-3.5" />
             </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] text-emerald-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]" />
               <span>In progress</span>
             </div>
           </div>
@@ -712,7 +700,7 @@ function WorkspaceCanvas() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.06] text-xs text-zinc-300">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
             <CheckCircle2 className="w-3.5 h-3.5 text-zinc-400" />
             <span className="truncate">Verifying DOM &amp; endpoints</span>
           </div>
@@ -721,9 +709,7 @@ function WorkspaceCanvas() {
         {/* ───────────────────────────────────────────────────────────── */}
         {/* CARD 5: SECONDARY AGENT - BOTTOM LEFT (Debugger Agent)        */}
         {/* ───────────────────────────────────────────────────────────── */}
-        <div
-          className="absolute left-[400px] top-[710px] w-[280px] rounded-[22px] bg-[#121622]/70 backdrop-blur-lg border border-white/[0.06] p-4 text-white z-10 interactive-card opacity-80 hover:opacity-100 transition-opacity"
-        >
+        <div className="absolute left-[400px] top-[710px] w-[280px] rounded-[22px] glass-secondary-card p-4 text-white z-10 interactive-card opacity-85 hover:opacity-100 transition-all">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-medium text-zinc-400">Debugger Agent</span>
             <span className="text-[10px] font-mono text-emerald-400">0 ERRORS</span>
@@ -822,7 +808,7 @@ function WorkspaceCanvas() {
       {/* SLIDE-UP OVERLAYS: TERMINAL LOGS, GENERATED CODE & LIVE PREVIEW   */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {activeOverlay !== "none" && (
-        <div className="fixed inset-x-20 bottom-20 top-20 z-40 bg-[#0C101A]/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden animate-fadeSlideIn">
+        <div className="fixed inset-x-20 bottom-20 top-20 z-40 glass-command-panel rounded-[28px] flex flex-col overflow-hidden animate-fadeSlideIn">
           {/* Header Bar */}
           <div className="px-6 py-4 border-b border-white/[0.08] flex items-center justify-between">
             <div className="flex items-center gap-3">

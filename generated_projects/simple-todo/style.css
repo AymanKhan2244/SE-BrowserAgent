@@ -1,0 +1,230 @@
+/* =========================================================
+   Simple Todo App – style.css
+   Responsive, accessible styling for the vanilla JS Todo UI
+   ========================================================= */
+
+/* ---- Root variables (light & dark mode) ---- */
+:root {
+    --bg-color: #f9f9f9;
+    --card-bg: #ffffff;
+    --primary-color: #4caf50;
+    --primary-hover: #45a049;
+    --danger-color: #e53935;
+    --danger-hover: #d32f2f;
+    --text-color: #333333;
+    --border-radius: 4px;
+    --font-family: "Helvetica Neue", Arial, sans-serif;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #212121;
+        --card-bg: #2c2c2c;
+        --text-color: #e0e0e0;
+        --primary-color: #81c784;
+        --primary-hover: #66bb6a;
+        --danger-color: #ef5350;
+        --danger-hover: #e53935;
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* ---- Global reset & layout ---- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: var(--font-family);
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Center the app vertically with some top padding */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 1rem;
+}
+
+/* ---- Todo app container ---- */
+.todo-app {
+    width: 100%;
+    max-width: 600px;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+}
+
+/* ---- Header ---- */
+.todo-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.todo-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* ---- Input area (section) ---- */
+.todo-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Input field */
+#new-todo {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background: transparent;
+    color: inherit;
+}
+
+#new-todo:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Add button */
+#add-btn {
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s ease;
+}
+
+#add-btn:hover,
+#add-btn:focus-visible {
+    background: var(--primary-hover);
+}
+
+/* ---- Todo list (ul) ---- */
+#todos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Individual todo item */
+.todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.todo-item:last-child {
+    border-bottom: none;
+}
+
+/* Completed state */
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* Text of the todo */
+.todo-text {
+    flex: 1;
+    margin: 0 0.5rem;
+    word-break: break-word;
+}
+
+/* Action buttons container */
+.todo-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Generic button style for icons */
+.todo-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover/focus states for buttons */
+.todo-btn:hover,
+.todo-btn:focus-visible {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Specific colors */
+.todo-btn.edit {
+    color: var(--primary-color);
+}
+
+.todo-btn.edit:hover,
+.todo-btn.edit:focus-visible {
+    color: var(--primary-hover);
+}
+
+.todo-btn.delete {
+    color: var(--danger-color);
+}
+
+.todo-btn.delete:hover,
+.todo-btn.delete:focus-visible {
+    color: var(--danger-hover);
+}
+
+/* ---- Footer actions ---- */
+.todo-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+/* ---- Responsive tweaks ---- */
+@media (max-width: 480px) {
+    .todo-header h1 {
+        font-size: 1.5rem;
+    }
+
+    #new-todo,
+    #add-btn,
+    .todo-text {
+        font-size: 0.9rem;
+    }
+
+    .todo-btn {
+        font-size: 0.9rem;
+    }
+}
+
+/* ---- Accessibility focus outlines ---- */
+:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}

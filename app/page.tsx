@@ -25,10 +25,10 @@ export default function HomePage() {
     return (
       <div className="relative w-full h-screen">
         {/* Subtle toggle floating at top center left */}
-        <div className="fixed top-4 left-72 z-30 pointer-events-auto flex items-center bg-[#121622]/80 backdrop-blur-xl border border-white/[0.08] p-1 rounded-full text-xs">
+        <div className="fixed top-4 left-72 z-30 pointer-events-auto flex items-center glass-pill p-1 rounded-full text-xs">
           <button
             onClick={() => setViewMode("canvas")}
-            className="px-3 py-1 rounded-full bg-blue-600/30 text-blue-400 border border-blue-500/30 font-medium flex items-center gap-1.5 shadow-sm"
+            className="px-3 py-1 rounded-full bg-blue-600/35 text-blue-300 border border-blue-400/40 font-medium flex items-center gap-1.5 shadow-sm"
           >
             <Box className="w-3.5 h-3.5" />
             <span>Canvas View</span>
@@ -61,7 +61,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="flex items-center bg-[#121622]/80 backdrop-blur-xl border border-white/[0.08] p-1 rounded-full text-xs">
+        <div className="flex items-center glass-pill p-1 rounded-full text-xs">
           <button
             onClick={() => setViewMode("canvas")}
             className="px-3.5 py-1.5 rounded-full text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5"
@@ -71,7 +71,7 @@ export default function HomePage() {
           </button>
           <button
             onClick={() => setViewMode("dashboard")}
-            className="px-3.5 py-1.5 rounded-full bg-blue-600/30 text-blue-400 border border-blue-500/30 font-medium flex items-center gap-1.5"
+            className="px-3.5 py-1.5 rounded-full bg-blue-600/35 text-blue-300 border border-blue-400/40 font-medium flex items-center gap-1.5"
           >
             <LayoutGrid className="w-3.5 h-3.5" />
             <span>Dashboard Overview</span>
