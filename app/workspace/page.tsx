@@ -160,9 +160,16 @@ function WorkspaceCanvas() {
       const res = await fetch(`http://localhost:8000/api/forge/${sid}/files`);
       if (res.ok) {
         const data = await res.json();
-        setFiles(data.files || []);
+        const loadedFiles = data.files || [];
+        setFiles(loadedFiles);
         setSessionId(sid);
         setPipelineComplete(true);
+        setCurrentStepText(`Project ${sid} loaded (${loadedFiles.length} files synthesized)`);
+        setTerminalLogs([
+          `[SYSTEM] Session loaded: "${sid}"`,
+          `[SYSTEM] Found ${loadedFiles.length} synthesized project files.`,
+          `[SYSTEM] Ready for code inspection or sandbox preview.`,
+        ]);
         setAgents((prev) => {
           const next = { ...prev };
           Object.keys(next).forEach((k) => {

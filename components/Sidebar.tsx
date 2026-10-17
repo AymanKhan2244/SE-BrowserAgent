@@ -23,6 +23,34 @@ export default function Sidebar() {
   const [showProjectsDrawer, setShowProjectsDrawer] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
+  const [backendProjects, setBackendProjects] = useState<any[]>([]);
+
+  // Check backend health and fetch real projects
+  React.useEffect(() => {
+    const checkBackend = async () => {
+      try {
+        const res = await fetch("/api/health");
+        if (res.ok) {
+          setBackendOnline(true);
+          const projRes = await fetch("/api/forge/projects");
+          if (projRes.ok) {
+            const data = await projRes.json();
+            if (data.projects && data.projects.length > 0) {
+              setBackendProjects(data.projects);
+            }
+          }
+        } else {
+          setBackendOnline(false);
+        }
+      } catch {
+        setBackendOnline(false);
+      }
+    };
+    checkBackend();
+    const interval = setInterval(checkBackend, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const navItems = [
     { label: "Home", href: "/", icon: Home },
@@ -32,15 +60,23 @@ export default function Sidebar() {
     { label: "Tasks & Pipelines", href: "/tasks", icon: Grid },
   ];
 
-  const pinnedProjects = [
-    { name: "SE Browser Agent", status: "LIVE", branch: "main", color: "bg-emerald-400" },
-    { name: "AI Researcher", status: "IDLE", branch: "dev", color: "bg-zinc-500" },
-    { name: "Vision RAG", status: "RUNNING", branch: "feat/cdp", color: "bg-blue-400" },
-    { name: "AutoML Engineer", status: "IDLE", branch: "v1.2", color: "bg-zinc-500" },
-    { name: "Medical Assistant", status: "STANDBY", branch: "eval", color: "bg-zinc-500" },
+  const defaultProjects = [
+    { id: "se-browser-agent", name: "SE Browser Agent", status: "LIVE", branch: "main", color: "bg-emerald-400" },
+    { id: "ai-researcher", name: "AI Researcher", status: "IDLE", branch: "dev", color: "bg-zinc-500" },
+    { id: "vision-rag", name: "Vision RAG", status: "RUNNING", branch: "feat/cdp", color: "bg-blue-400" },
   ];
 
-  const filteredProjects = pinnedProjects.filter(p =>
+  const displayProjects = backendProjects.length > 0
+    ? backendProjects.map((bp) => ({
+        id: bp.id,
+        name: bp.name,
+        status: `${bp.file_count} files`,
+        branch: bp.has_zip ? "zip available" : "workspace",
+        color: "bg-blue-400",
+      }))
+    : defaultProjects;
+
+  const filteredProjects = displayProjects.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -225,13 +261,16 @@ export default function Sidebar() {
 
               {/* Projects List */}
               <div className="mt-4 flex flex-col gap-2">
-                <div className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-1">
-                  Pinned Repositories ({pinnedProjects.length})
+                <div className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-1 flex items-center justify-between">
+                  <span>Workspace Repositories ({displayProjects.length})</span>
+                  {backendProjects.length > 0 && (
+                    <span className="text-[9px] text-blue-400 font-mono">FROM DISK</span>
+                  )}
                 </div>
-                {pinnedProjects.map((p, idx) => (
+                {displayProjects.map((p, idx) => (
                   <Link
                     key={idx}
-                    href="/workspace"
+                    href={`/workspace?session_id=${p.id}`}
                     onClick={() => setShowProjectsDrawer(false)}
                     className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.05] hover:border-blue-500/30 transition-all flex items-center justify-between group"
                   >
@@ -266,17 +305,22 @@ export default function Sidebar() {
 
             {/* Bottom Engine Telemetry */}
             <div className="pt-4 border-t border-white/[0.08] text-[11px] text-zinc-400 space-y-2">
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span>FastAPI Backend</span>
-                <span className="text-emerald-400 font-mono">http://localhost:8000</span>
+                <span className="flex items-center gap-1.5 font-mono">
+                  <span className={`w-1.5 h-1.5 rounded-full ${backendOnline ? 'bg-emerald-400 animate-pulse' : 'bg-red-500'}`} />
+                  <span className={backendOnline ? 'text-emerald-400' : 'text-red-400'}>
+                    {backendOnline ? 'CONNECTED' : 'DISCONNECTED'}
+                  </span>
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>API Endpoint</span>
+                <span className="text-zinc-300 font-mono">:8000</span>
               </div>
               <div className="flex justify-between">
                 <span>CDP Headless Engine</span>
                 <span className="text-blue-400 font-mono">Playwright 1.62</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Telemetry Status</span>
-                <span className="text-zinc-300 font-mono">ACTIVE_SYNC</span>
               </div>
             </div>
           </div>

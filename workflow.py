@@ -465,39 +465,113 @@ async def forge_stream(query: str = Query(..., description="Project description"
     )
 
 
+@app.get("/api/health")
+async def health_check():
+    """Return API health status."""
+    return {"status": "ok", "service": "ForgeAI Multi-Agent Pipeline", "version": "2.4.0"}
+
+
+@app.get("/api/forge/projects")
+async def list_projects():
+    """List all generated projects available on disk and in memory."""
+    projects = []
+    if OUTPUT_BASE.exists():
+        for d in sorted(OUTPUT_BASE.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+            if d.is_dir():
+                file_count = sum(1 for _ in d.rglob("*") if _.is_file())
+                has_zip = Path(str(d) + ".zip").exists()
+                projects.append({
+                    "id": d.name,
+                    "name": d.name.replace("-", " ").title(),
+                    "path": str(d),
+                    "file_count": file_count,
+                    "has_zip": has_zip,
+                    "updated_at": d.stat().st_mtime,
+                })
+    return {"projects": projects}
+
+
 @app.get("/api/forge/{session_id}/files")
 async def get_files(session_id: str):
-    """Return the generated files (path + content) for a session."""
+    """Return the generated files (path + content) for a session, checking in-memory and disk."""
     session = sessions.get(session_id)
-    if not session:
-        return JSONResponse({"error": "Session not found"}, status_code=404)
+    if session and "files" in session and session["files"]:
+        return {
+            "files": [
+                {"path": gf.path if hasattr(gf, "path") else gf["path"], 
+                 "content": gf.content if hasattr(gf, "content") else gf["content"]}
+                for gf in session["files"]
+            ]
+        }
 
-    files = session["files"]
-    return {
-        "files": [
-            {"path": gf.path, "content": gf.content}
-            for gf in files
-        ]
-    }
+    # Fallback to disk scan
+    target_dir = OUTPUT_BASE / session_id
+    if not target_dir.exists():
+        for d in OUTPUT_BASE.iterdir():
+            if d.is_dir() and (session_id in d.name or d.name in session_id):
+                target_dir = d
+                break
+
+    if target_dir.exists() and target_dir.is_dir():
+        disk_files = []
+        for f in sorted(target_dir.rglob("*")):
+            if f.is_file() and not f.name.endswith(".zip") and ".git" not in str(f) and "node_modules" not in str(f):
+                try:
+                    rel = f.relative_to(target_dir).as_posix()
+                    content = f.read_text(encoding="utf-8", errors="replace")
+                    disk_files.append({"path": rel, "content": content})
+                except Exception:
+                    pass
+        return {"files": disk_files}
+
+    return JSONResponse({"error": "Session not found"}, status_code=404)
 
 
 @app.get("/api/forge/{session_id}/download")
 async def download_zip(session_id: str):
-    """Download the generated project as a ZIP file."""
+    """Download the generated project as a ZIP file, supporting disk-based archives."""
     session = sessions.get(session_id)
-    if not session:
-        return JSONResponse({"error": "Session not found"}, status_code=404)
+    zip_path = None
+    project_name = session_id
 
-    zip_path = Path(session["output_dir"] + ".zip")
-    if not zip_path.exists():
+    if session and session.get("output_dir"):
+        zip_path = Path(session["output_dir"] + ".zip")
+        if session.get("plan") and hasattr(session["plan"], "project_name"):
+            project_name = session["plan"].project_name
+    
+    if not zip_path or not zip_path.exists():
+        direct_zip = OUTPUT_BASE / f"{session_id}.zip"
+        if direct_zip.exists():
+            zip_path = direct_zip
+        else:
+            for z in OUTPUT_BASE.glob("*.zip"):
+                if session_id in z.stem or z.stem in session_id:
+                    zip_path = z
+                    project_name = z.stem
+                    break
+
+    if not zip_path or not zip_path.exists():
+        target_dir = OUTPUT_BASE / session_id
+        if not target_dir.exists():
+            for d in OUTPUT_BASE.iterdir():
+                if d.is_dir() and (session_id in d.name or d.name in session_id):
+                    target_dir = d
+                    project_name = d.name
+                    break
+        if target_dir.exists() and target_dir.is_dir():
+            import shutil
+            shutil.make_archive(str(target_dir), "zip", str(target_dir))
+            zip_path = Path(str(target_dir) + ".zip")
+
+    if not zip_path or not zip_path.exists():
         return JSONResponse({"error": "ZIP not found"}, status_code=404)
 
-    project_name = session["plan"].project_name if session.get("plan") else "project"
     return FileResponse(
         str(zip_path),
         media_type="application/zip",
         filename=f"{project_name}.zip",
     )
+
 
 @dataclass
 class AppInstance:
@@ -544,8 +618,6 @@ async def launch_app(session_id: str, project_root: str, run_command: str) -> Ap
 async def launch_preview(session_id: str):
     """Launch the generated app and return its reverse proxy URL."""
     session = sessions.get(session_id)
-    if not session:
-        return JSONResponse({"error": "Session not found"}, status_code=404)
 
     # Check if already running
     existing = registry.get(session_id)
@@ -554,38 +626,127 @@ async def launch_preview(session_id: str):
             "status": "already_running",
             "preview_url": f"/preview/{session_id}/",
             "port": existing.port,
+            "base_url": existing.base_url,
         }
 
-    manifest = session.get("manifest")
-    output_dir = session.get("output_dir")
-    if not manifest or not output_dir:
+    output_dir = session.get("output_dir") if session else None
+    manifest = session.get("manifest") if session else None
+
+    # Fallback to disk scan if server was restarted
+    if not output_dir or not Path(output_dir).exists():
+        target_dir = OUTPUT_BASE / session_id
+        if not target_dir.exists():
+            for d in OUTPUT_BASE.iterdir():
+                if d.is_dir() and (session_id in d.name or d.name in session_id):
+                    target_dir = d
+                    break
+        if target_dir.exists():
+            output_dir = str(target_dir)
+
+    if not output_dir:
         return JSONResponse(
-            {"error": "Session is incomplete — no manifest or output directory"},
+            {"error": "Session is incomplete — no output directory found"},
             status_code=400,
         )
 
-    try:
-        app_instance = await launch_app(
-            session_id=session_id,
-            project_root=output_dir,
-            run_command=manifest.run_command,
-        )
-        return {
-            "status": "started",
-            "preview_url": f"/preview/{session_id}/",
-            "port": app_instance.port,
-            "base_url": app_instance.base_url,
-        }
-    except RuntimeError as exc:
-        return JSONResponse({"error": str(exc)}, status_code=500)
+    run_cmd = manifest.run_command if manifest else None
+    if not run_cmd:
+        pkg_json = Path(output_dir) / "package.json"
+        if pkg_json.exists():
+            run_cmd = "npm start"
+        elif (Path(output_dir) / "main.py").exists():
+            run_cmd = "python main.py"
+        elif (Path(output_dir) / "app.py").exists():
+            run_cmd = "python app.py"
+
+    if run_cmd:
+        try:
+            app_instance = await launch_app(
+                session_id=session_id,
+                project_root=output_dir,
+                run_command=run_cmd,
+            )
+            return {
+                "status": "started",
+                "preview_url": f"/preview/{session_id}/",
+                "port": app_instance.port,
+                "base_url": app_instance.base_url,
+            }
+        except Exception:
+            pass
+
+    # Static preview fallback
+    return {
+        "status": "static_ready",
+        "preview_url": f"/preview/{session_id}/",
+        "port": 8000,
+        "base_url": f"http://localhost:8000/preview/{session_id}/",
+    }
+
+
+@app.get("/preview/{session_id}/{path:path}")
+@app.get("/preview/{session_id}")
+async def serve_preview(session_id: str, path: str = ""):
+    """Serve preview for the session, either via running process or static files."""
+    instance = registry.get(session_id)
+    if instance and instance.is_alive:
+        import urllib.request
+        target_url = f"http://localhost:{instance.port}/{path}"
+        try:
+            req = urllib.request.Request(target_url)
+            with urllib.request.urlopen(req, timeout=4) as response:
+                content = response.read()
+                content_type = response.headers.get("content-type", "text/html")
+                return HTMLResponse(content=content.decode("utf-8", errors="replace"), media_type=content_type)
+        except Exception:
+            pass
+
+    # Static fallback from disk
+    target_dir = OUTPUT_BASE / session_id
+    if not target_dir.exists():
+        for d in OUTPUT_BASE.iterdir():
+            if d.is_dir() and (session_id in d.name or d.name in session_id):
+                target_dir = d
+                break
+
+    if target_dir.exists():
+        file_to_serve = target_dir / (path if path else "index.html")
+        if file_to_serve.is_file():
+            if file_to_serve.suffix == ".html":
+                return HTMLResponse(file_to_serve.read_text(encoding="utf-8", errors="replace"))
+            return FileResponse(str(file_to_serve))
+        index_file = target_dir / "index.html"
+        if index_file.is_file():
+            return HTMLResponse(index_file.read_text(encoding="utf-8", errors="replace"))
+
+    return HTMLResponse(
+        f"""
+        <!DOCTYPE html>
+        <html>
+        <head><title>Preview - {session_id}</title><style>body {{ background: #0A0D14; color: #E2E8F0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }} .box {{ text-align: center; padding: 2.5rem; border-radius: 1.5rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(20px); }} h2 {{ margin-top: 0; color: #60A5FA; }} code {{ background: rgba(255,255,255,0.08); padding: 0.2rem 0.5rem; border-radius: 0.4rem; }}</style></head>
+        <body>
+            <div class="box">
+                <h2>Autonomous Sandbox App</h2>
+                <p>Project Identifier: <code>{session_id}</code></p>
+                <p style="color: #94A3B8; font-size: 14px;">The code files are active and inspected in the Workspace Code Inspector.</p>
+            </div>
+        </body>
+        </html>
+        """
+    )
 
 
 @app.post("/api/forge/{session_id}/preview/stop")
 async def stop_preview_endpoint(session_id: str):
     """Stop a running preview app."""
-    stopped = registry.stop(session_id)
-    if stopped:
-        return {"status": "stopped", "session_id": session_id}
+    instance = registry.get(session_id)
+    if instance and instance.is_alive:
+        try:
+            instance.process.terminate()
+            del registry[session_id]
+            return {"status": "stopped", "session_id": session_id}
+        except Exception as e:
+            return JSONResponse({"error": str(e)}, status_code=500)
     return JSONResponse(
         {"error": "No active preview for this session"},
         status_code=404,
