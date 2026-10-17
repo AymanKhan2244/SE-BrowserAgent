@@ -23,8 +23,14 @@ export default function Header({
   const handleSaveClick = () => {
     if (onSave) {
       onSave();
+      return;
+    }
+    const sid = typeof window !== "undefined" ? localStorage.getItem("forgeai_session_id") : null;
+    if (sid) {
+      window.location.href = `http://localhost:8000/api/forge/${sid}/download`;
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
     } else {
-      // Default: copy or notify save
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
