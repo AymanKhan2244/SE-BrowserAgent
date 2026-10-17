@@ -3,48 +3,59 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+  Grid,
+  Search,
+  Filter,
+  CheckCircle2,
+  Clock,
+  Zap,
+  FileCode,
+  ArrowRight,
+  ExternalLink,
+  Plus,
+  Play,
+  RotateCcw,
+} from "lucide-react";
 
 export default function TasksPage() {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProject, setSelectedProject] = useState("All Projects");
 
   const tasksData = [
     {
       id: "8821",
-      title: "NextAuth OAuth Implementation",
+      title: "NextAuth OAuth PKCE Implementation",
       meta: "feat/auth-pkce • commit c319af2",
       project: "SE Browser Agent",
-      step: "● CODING (Stage 4/8)",
-      stepBadge: "bg-surface-container-highest border-secondary-container text-secondary-container",
+      step: "CODING (Stage 4/8)",
+      stepBadge: "bg-blue-500/20 text-blue-400 border-blue-500/30",
       duration: "08:42",
       tokens: "84.2K",
       changed: "18 files",
       changedDiff: "(+14 / -0)",
       tests: "24 PASS",
       status: "RUNNING",
-      statusBadge: "bg-primary-fixed text-on-primary-fixed font-bold border-surface-container-lowest",
-      actionText: "[OPEN WORKSPACE >]",
-      actionStyle: "bg-primary-fixed text-on-primary-fixed border-surface-container-lowest",
-      link: "/workspace",
+      statusBadge: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+      actionText: "Open Canvas",
+      link: "/workspace?session_id=8821",
     },
     {
       id: "8820",
       title: "Production Vercel Deployment & Schema Migration",
       meta: "release/v2.4.1 • schema/db-v4",
       project: "AI Researcher",
-      step: "⚠ DEPLOYMENT APPROVAL",
-      stepBadge: "bg-error-container text-on-error-container border-error font-bold",
+      step: "DEPLOYMENT APPROVAL",
+      stepBadge: "bg-amber-500/20 text-amber-400 border-amber-500/30",
       duration: "14:20",
       tokens: "112.5K",
       changed: "32 files",
       changedDiff: "(+412 / -18)",
       tests: "48 PASS",
-      status: "ATTENTION REQUIRED",
-      statusBadge: "bg-error-container text-on-error-container font-bold border-error",
-      actionText: "[REVIEW GATE >]",
-      actionStyle: "bg-error-container text-on-error-container border-error",
+      status: "ATTENTION",
+      statusBadge: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+      actionText: "Review Gate",
       link: "/workspace",
     },
     {
@@ -52,325 +63,171 @@ export default function TasksPage() {
       title: "Stripe Webhook Idempotency & Customer Portal",
       meta: "fix/stripe-idemp • merge 44ba90",
       project: "SE Browser Agent",
-      step: "✓ COMPLETED",
-      stepBadge: "bg-surface-container-high border-outline text-primary",
+      step: "COMPLETED",
+      stepBadge: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
       duration: "04:15",
       tokens: "42.1K",
       changed: "6 files",
-      changedDiff: "",
-      tests: "18 PASS",
-      status: "DEPLOYED",
-      statusBadge: "bg-surface-container-highest border-outline text-primary font-bold",
-      actionText: "[Inspect Logs]",
-      actionStyle: "text-on-surface hover:text-primary-fixed border-outline-variant hover:border-primary-fixed",
+      changedDiff: "(+82 / -12)",
+      tests: "16 PASS",
+      status: "COMPLETED",
+      statusBadge: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+      actionText: "Inspect Code",
       link: "/workspace",
     },
     {
       id: "8818",
-      title: "ArXiv Paper Deep Research & Vector Indexing",
-      meta: "pipeline/arxiv-sync • batch_2991",
-      project: "AI Researcher",
-      step: "✓ COMPLETED",
-      stepBadge: "bg-surface-container-high border-outline text-primary",
-      duration: "22:10",
-      tokens: "184K",
-      changed: "4 md files",
-      changedDiff: "",
-      tests: "N/A",
-      status: "COMPLETED",
-      statusBadge: "bg-surface-container-highest border-outline text-on-surface font-bold",
-      actionText: "[Inspect Artifacts]",
-      actionStyle: "text-on-surface hover:text-primary-fixed border-outline-variant hover:border-primary-fixed",
-      link: "/workspace",
-    },
-    {
-      id: "8817",
-      title: "Headless DOM Interaction Benchmark",
-      meta: "eval/headless-bench • playwright_run_8",
+      title: "Playwright Headless Cart E2E Verification Suite",
+      meta: "test/cart-checkout • automated",
       project: "Vision RAG",
-      step: "✕ TEST ERROR",
-      stepBadge: "bg-error-container text-on-error-container border-error font-bold",
-      duration: "02:08",
-      tokens: "19.4K",
-      changed: "0 files",
-      changedDiff: "",
-      tests: "2 FAIL",
-      status: "FAILED (Missing API Secret)",
-      statusBadge: "bg-error-container text-error border-error font-bold",
-      actionText: "[Retry with Secret]",
-      actionStyle: "bg-surface-container-high text-primary border-outline-variant hover:border-primary-fixed hover:text-primary-fixed",
+      step: "COMPLETED",
+      stepBadge: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+      duration: "02:50",
+      tokens: "28.4K",
+      changed: "4 files",
+      changedDiff: "(+120 / -4)",
+      tests: "32 PASS",
+      status: "COMPLETED",
+      statusBadge: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+      actionText: "Inspect Code",
       link: "/workspace",
     },
   ];
 
   const filteredTasks = tasksData.filter((t) => {
-    const matchesFilter =
-      activeFilter === "ALL" ||
-      (activeFilter === "RUNNING" && t.status === "RUNNING") ||
-      (activeFilter === "COMPLETED" && (t.status === "COMPLETED" || t.status === "DEPLOYED")) ||
-      (activeFilter === "AWAITING APPROVAL" && t.status === "ATTENTION REQUIRED") ||
-      (activeFilter === "FAILED" && t.status.includes("FAILED"));
-
-    const matchesProject = selectedProject === "All Projects" || t.project === selectedProject;
-
-    const matchesQuery =
-      t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.id.includes(searchQuery) ||
-      t.meta.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return matchesFilter && matchesProject && matchesQuery;
+    if (activeFilter !== "ALL" && t.status !== activeFilter) return false;
+    if (
+      searchQuery &&
+      !t.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !t.project.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return false;
+    }
+    return true;
   });
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto flex flex-col gap-6">
-      {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-2 border-outline-variant bg-surface-container-low p-5 shadow-[4px_4px_0px_#000000]">
+    <div className="min-h-screen p-8 max-w-7xl mx-auto w-full pt-20">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-6 border-b border-white/[0.08] mb-8">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed text-[10px] font-label-sm font-bold">
-              DISPATCHER v2.4
-            </span>
-            <span className="text-on-surface-variant font-code-stream text-xs">
-              / ROOT / SWE_TASKS_MATRIX
-            </span>
-          </div>
-          <h1 className="font-headline-xl text-headline-xl font-bold tracking-tight text-on-surface uppercase">
-            TASK ORCHESTRATION & RUNS
+          <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2.5">
+            <Grid className="w-6 h-6 text-blue-400" />
+            <span>Tasks &amp; Orchestration Pipelines</span>
           </h1>
-          <p className="font-code-stream text-code-stream text-on-surface-variant text-sm mt-1">
-            Audit, manage, and inspect autonomous SWE agent task executions and pipelines across projects.
+          <p className="text-xs text-zinc-400">
+            Real-time execution queue, pipeline telemetry, and completed project runs
           </p>
         </div>
+
         <button
           onClick={() => router.push("/new-task")}
-          className="px-5 py-2.5 bg-primary-fixed text-on-primary-fixed font-headline-md font-bold text-sm uppercase flex items-center gap-2 border-2 border-surface-container-lowest shadow-[3px_3px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+          className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(77,142,255,0.3)] transition-all"
         >
-          <span className="material-symbols-outlined text-base font-bold">add</span>
-          <span>[+ START NEW TASK]</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>New Task</span>
         </button>
       </div>
 
-      {/* FILTER CONTROLS & BARS */}
-      <div className="flex flex-col gap-3">
-        {/* Filter Pills Bar */}
-        <div className="flex flex-wrap items-center gap-2 p-2 bg-surface-container border-2 border-outline-variant shadow-[3px_3px_0px_#000000]">
-          {[
-            { label: "ALL", count: "48", countColor: "bg-surface-container-lowest text-primary-fixed" },
-            { label: "RUNNING", count: "3", countColor: "bg-surface-container-high text-secondary-container border border-outline-variant" },
-            { label: "COMPLETED", count: "38", countColor: "bg-surface-container-high text-on-surface-variant border border-outline-variant" },
-            { label: "AWAITING APPROVAL", count: "2", countColor: "bg-error-container text-on-error-container font-bold border border-error" },
-            { label: "PAUSED", count: "1", countColor: "bg-surface-container-high text-on-surface-variant border border-outline-variant" },
-            { label: "FAILED", count: "4", countColor: "bg-error-container text-error border border-outline-variant" },
-          ].map((pill) => {
-            const isActive = activeFilter === pill.label;
-            return (
-              <button
-                key={pill.label}
-                onClick={() => setActiveFilter(pill.label)}
-                className={`px-3 py-1.5 font-label-md text-label-md flex items-center gap-2 transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-primary-fixed text-on-primary-fixed border border-surface-container-lowest shadow-[2px_2px_0px_#000000] font-bold"
-                    : "bg-surface-container-low text-on-surface hover:text-primary-fixed border border-outline-variant"
-                }`}
-              >
-                <span>{pill.label}</span>
-                <span className={`px-1.5 py-0.2 text-[10px] ${pill.countColor}`}>{pill.count}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Search Bar and Dropdown Filters */}
-        <div className="flex flex-col md:flex-row gap-3">
-          <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-container font-code-stream text-sm">
-              &gt;
-            </span>
-            <input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface-container-lowest border-2 border-outline-variant pl-8 pr-4 py-2 font-code-stream text-code-stream text-on-surface focus:border-primary-fixed focus:shadow-[2px_2px_0px_#fde400] outline-none"
-              placeholder="Filter tasks by name, commit, or agent step..."
-              type="text"
-            />
-          </div>
-          <div className="w-full md:w-64">
-            <select
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
-              className="w-full bg-surface-container-low border-2 border-outline-variant px-3 py-2 font-code-stream text-code-stream text-on-surface focus:border-primary-fixed outline-none cursor-pointer"
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        {/* Status Filters */}
+        <div className="flex items-center gap-2 bg-[#10141F]/80 backdrop-blur-xl border border-white/[0.08] p-1 rounded-2xl w-full md:w-auto overflow-x-auto">
+          {["ALL", "RUNNING", "COMPLETED", "ATTENTION"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setActiveFilter(f)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                activeFilter === f
+                  ? "bg-blue-600/30 text-blue-400 border border-blue-500/40"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+              }`}
             >
-              <option>All Projects</option>
-              <option>SE Browser Agent</option>
-              <option>AI Researcher</option>
-              <option>Vision RAG</option>
-            </select>
-          </div>
+              {f}
+            </button>
+          ))}
+        </div>
+
+        {/* Search input */}
+        <div className="relative w-full md:w-80">
+          <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search tasks, commits, or projects..."
+            className="w-full bg-[#10141F]/80 backdrop-blur-xl border border-white/[0.08] rounded-2xl pl-10 pr-4 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500/50"
+          />
         </div>
       </div>
 
-      {/* TASKS DATA MATRIX / TABLE */}
-      <div className="border-2 border-outline-variant bg-surface-container-low shadow-[4px_4px_0px_#000000] overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-surface-container border-b-2 border-outline-variant text-[11px] font-label-md text-on-surface-variant tracking-wider uppercase">
-              <th className="p-3 border-r border-outline-variant">TASK / IDENTIFIER</th>
-              <th className="p-3 border-r border-outline-variant">PROJECT</th>
-              <th className="p-3 border-r border-outline-variant">CURRENT STEP</th>
-              <th className="p-3 border-r border-outline-variant">DURATION</th>
-              <th className="p-3 border-r border-outline-variant">TOKENS</th>
-              <th className="p-3 border-r border-outline-variant">CHANGED</th>
-              <th className="p-3 border-r border-outline-variant">TESTS</th>
-              <th className="p-3 border-r border-outline-variant">STATUS</th>
-              <th className="p-3 text-right">ACTION</th>
-            </tr>
-          </thead>
-          <tbody className="font-code-stream text-xs divide-y divide-outline-variant">
-            {filteredTasks.map((t) => (
-              <tr key={t.id} className="bg-surface hover:bg-surface-container-high transition-colors">
-                <td className="p-3 border-r border-outline-variant">
-                  <div className="font-bold text-primary flex items-center gap-1.5">
-                    <span className={t.status.includes("FAILED") || t.status === "ATTENTION REQUIRED" ? "text-error" : "text-primary-fixed"}>
-                      #{t.id}:
+      {/* Task Cards List */}
+      <div className="space-y-4">
+        {filteredTasks.length === 0 ? (
+          <div className="p-12 text-center text-zinc-500 rounded-3xl bg-[#10141F]/80 border border-white/[0.08]">
+            No tasks found matching your filter.
+          </div>
+        ) : (
+          filteredTasks.map((task) => (
+            <div
+              key={task.id}
+              className="p-5 rounded-3xl bg-[#10141F]/80 backdrop-blur-xl border border-white/[0.08] hover:border-white/15 transition-all shadow-xl group"
+            >
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                {/* Left Info */}
+                <div>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <span className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
+                      Task #{task.id}: {task.title}
                     </span>
-                    <span>{t.title}</span>
+                    <span
+                      className={`text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full border ${task.statusBadge}`}
+                    >
+                      {task.status}
+                    </span>
                   </div>
-                  <div className="text-[10px] text-on-surface-variant mt-0.5 font-code-stream">{t.meta}</div>
-                </td>
-                <td className="p-3 border-r border-outline-variant text-on-surface">{t.project}</td>
-                <td className="p-3 border-r border-outline-variant">
-                  <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 font-label-sm text-[10px] border ${t.stepBadge}`}>
-                    {t.step}
-                  </span>
-                </td>
-                <td className="p-3 border-r border-outline-variant text-on-surface">{t.duration}</td>
-                <td className="p-3 border-r border-outline-variant text-on-surface font-bold">{t.tokens}</td>
-                <td className="p-3 border-r border-outline-variant">
-                  <span className="text-primary-fixed">{t.changed}</span>
-                  {t.changedDiff && <span className="text-[10px] text-on-surface-variant block">{t.changedDiff}</span>}
-                </td>
-                <td className="p-3 border-r border-outline-variant">
-                  <span className={`px-1.5 py-0.2 text-[10px] border ${t.tests.includes("FAIL") ? "border-error bg-error-container text-on-error-container font-bold" : "border-outline bg-surface-container text-primary"}`}>
-                    {t.tests}
-                  </span>
-                </td>
-                <td className="p-3 border-r border-outline-variant">
-                  <span className={`px-2 py-0.5 text-[10px] ${t.statusBadge}`}>{t.status}</span>
-                </td>
-                <td className="p-3 text-right">
+                  <div className="flex items-center gap-3 text-xs text-zinc-400">
+                    <span className="font-medium text-zinc-300">{task.project}</span>
+                    <span>•</span>
+                    <span className="font-mono text-zinc-500">{task.meta}</span>
+                  </div>
+                </div>
+
+                {/* Right Metrics & Action */}
+                <div className="flex items-center gap-6">
+                  {/* Telemetry Stats */}
+                  <div className="grid grid-cols-4 gap-4 text-xs font-mono text-zinc-400 text-center">
+                    <div>
+                      <div className="text-[10px] text-zinc-500">Duration</div>
+                      <div className="text-zinc-200 mt-0.5">{task.duration}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-zinc-500">Tokens</div>
+                      <div className="text-zinc-200 mt-0.5">{task.tokens}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-zinc-500">Diff</div>
+                      <div className="text-emerald-400 mt-0.5">{task.changed}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-zinc-500">Tests</div>
+                      <div className="text-zinc-200 mt-0.5">{task.tests}</div>
+                    </div>
+                  </div>
+
+                  {/* Open Button */}
                   <Link
-                    href={t.link}
-                    className={`inline-block px-3 py-1.5 font-headline-md font-bold text-xs uppercase border shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all ${t.actionStyle}`}
+                    href={task.link}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium flex items-center gap-1.5 shadow-md transition-all shrink-0"
                   >
-                    {t.actionText}
+                    <span>{task.actionText}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* BOTTOM PAGINATION & CLUSTER SUMMARY */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-3 bg-surface-container border-2 border-outline-variant text-xs font-code-stream shadow-[3px_3px_0px_#000000]">
-        <div className="flex items-center gap-2 text-on-surface-variant">
-          <span className="text-on-surface font-bold">Showing 1–{filteredTasks.length} of 48 tasks</span>
-          <span>|</span>
-          <span>
-            Cluster: <span className="text-secondary-container">dev_cluster_01</span>
-          </span>
-          <span>|</span>
-          <span>
-            Active Workers: <span className="text-primary-fixed font-bold">6/8</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <button className="px-2.5 py-1 bg-surface-container-low border border-outline-variant text-on-surface-variant hover:text-on-surface disabled:opacity-50">
-            &lt; PREV
-          </button>
-          <button className="px-2.5 py-1 bg-primary-fixed text-on-primary-fixed font-bold border border-surface-container-lowest">
-            1
-          </button>
-          <button className="px-2.5 py-1 bg-surface-container-low border border-outline-variant text-on-surface hover:text-primary-fixed">
-            2
-          </button>
-          <button className="px-2.5 py-1 bg-surface-container-low border border-outline-variant text-on-surface hover:text-primary-fixed">
-            3
-          </button>
-          <button className="px-2.5 py-1 bg-surface-container-low border border-outline-variant text-on-surface hover:text-on-surface">
-            NEXT &gt;
-          </button>
-        </div>
-      </div>
-
-      {/* SECONDARY BENTO WIDGETS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Node Health */}
-        <div className="p-3 border-2 border-outline-variant bg-surface-container-low shadow-[3px_3px_0px_#000000] flex flex-col gap-2">
-          <div className="flex items-center justify-between border-b border-outline-variant pb-1.5">
-            <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-              POD QUEUE CAPACITY
-            </span>
-            <span className="px-1.5 py-0.2 bg-secondary-container text-on-secondary-container text-[10px] font-bold">
-              NORMAL
-            </span>
-          </div>
-          <div className="flex justify-between items-center text-xs font-code-stream">
-            <span className="text-on-surface-variant">Allocated GPUs:</span>
-            <span className="text-on-surface font-bold">4x A100 (80GB)</span>
-          </div>
-          <div className="w-full bg-surface-container-highest h-2 border border-outline-variant">
-            <div className="bg-primary-fixed h-full w-[72%]"></div>
-          </div>
-          <div className="flex justify-between text-[10px] font-code-stream text-on-surface-variant">
-            <span>Utilization: 72%</span>
-            <span>Max Parallel: 12</span>
-          </div>
-        </div>
-
-        {/* Orchestrator Rate */}
-        <div className="p-3 border-2 border-outline-variant bg-surface-container-low shadow-[3px_3px_0px_#000000] flex flex-col gap-2">
-          <div className="flex items-center justify-between border-b border-outline-variant pb-1.5">
-            <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-              STEP DISPATCH LATENCY
-            </span>
-            <span className="text-primary-fixed font-code-stream text-xs font-bold">42ms avg</span>
-          </div>
-          <div className="flex justify-between items-center text-xs font-code-stream">
-            <span className="text-on-surface-variant">DOM Intercept Loop:</span>
-            <span className="text-secondary-container font-bold">18ms (Fast)</span>
-          </div>
-          <div className="flex justify-between items-center text-xs font-code-stream">
-            <span className="text-on-surface-variant">LLM Inference RTT:</span>
-            <span className="text-on-surface font-bold">410ms (DeepSeek-V3)</span>
-          </div>
-          <div className="text-[10px] text-on-surface-variant font-code-stream">
-            <span>Network Gateway: 0 dropped frames</span>
-          </div>
-        </div>
-
-        {/* Security & Sandbox Lock */}
-        <div className="p-3 border-2 border-outline-variant bg-surface-container-low shadow-[3px_3px_0px_#000000] flex flex-col gap-2">
-          <div className="flex items-center justify-between border-b border-outline-variant pb-1.5">
-            <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-              ISOLATION SANDBOX
-            </span>
-            <span className="px-1.5 py-0.2 bg-primary-fixed text-on-primary-fixed text-[10px] font-bold">
-              SECURED
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-xs font-code-stream">
-            <span className="text-on-surface-variant">V8 Isolation Engine:</span>
-            <span className="text-on-surface">ENABLED</span>
-          </div>
-          <div className="flex items-center justify-between text-xs font-code-stream">
-            <span className="text-on-surface-variant">Network Policy:</span>
-            <span className="text-primary-fixed">EGRESS_WHITELISTED</span>
-          </div>
-          <div className="text-[10px] text-on-surface-variant font-code-stream">
-            <span>Container: gVisor RunSC sandbox-node-2</span>
-          </div>
-        </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

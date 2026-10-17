@@ -2,13 +2,30 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import {
+  Activity,
+  Bot,
+  Layers,
+  Sparkles,
+  ArrowRight,
+  Code2,
+  Terminal,
+  Globe,
+  Bug,
+  ShieldCheck,
+  CheckCircle2,
+  Cpu,
+  FileCode,
+  Zap,
+} from "lucide-react";
 
 interface AgentNodeInfo {
   id: string;
   name: string;
   role: string;
+  icon: any;
   badge: string;
-  badgeStyle: string;
+  badgeColor: string;
   systemPrompt: string;
   capabilities: string[];
   inputSchema: string;
@@ -20,10 +37,11 @@ export default function AgentWorkspacePage() {
   const nodes: AgentNodeInfo[] = [
     {
       id: "planner",
-      name: "01 PLANNER AGENT",
-      role: "Requirements & Tech Stack Specialist",
+      name: "Planner Agent",
+      role: "Requirements & Architecture Planning",
+      icon: Cpu,
       badge: "ACTIVE",
-      badgeStyle: "bg-primary-fixed text-on-primary-fixed border-surface-container-lowest",
+      badgeColor: "text-blue-400 bg-blue-500/10 border-blue-500/30",
       systemPrompt:
         "You are the Lead Technical Planner. Analyze user requirements, determine optimal architecture, select framework and database dependencies, and output structured engineering specification.",
       capabilities: [
@@ -38,10 +56,11 @@ export default function AgentWorkspacePage() {
     },
     {
       id: "architect",
-      name: "02 ARCHITECT AGENT",
+      name: "Architect Agent",
       role: "File Manifest & DAG Designer",
+      icon: Layers,
       badge: "READY",
-      badgeStyle: "bg-secondary-container text-on-secondary-container border-outline",
+      badgeColor: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
       systemPrompt:
         "You are the Solutions Architect. Design the project directory tree, file manifests, entrypoint script paths, and build/run scripts.",
       capabilities: [
@@ -56,16 +75,17 @@ export default function AgentWorkspacePage() {
     },
     {
       id: "coder",
-      name: "03 CODING AGENT",
+      name: "Coding Agent",
       role: "Full-Stack Code Synthesizer",
+      icon: Code2,
       badge: "READY",
-      badgeStyle: "bg-secondary-container text-on-secondary-container border-outline",
+      badgeColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
       systemPrompt:
         "You are the Senior Full-Stack Engineer. Synthesize complete, production-ready code files matching the manifest specs.",
       capabilities: [
         "React & Next.js Code Synthesis",
         "FastAPI & Python Logic",
-        "Neo-Brutalist Tailwind Styling",
+        "Modern Glassmorphism Tailwind Styling",
         "AST Clean Code Formatting",
       ],
       inputSchema: `{ "manifest": "ProjectManifest", "plan": "PlannerOutput" }`,
@@ -74,10 +94,11 @@ export default function AgentWorkspacePage() {
     },
     {
       id: "debugger",
-      name: "04 DEBUGGER AGENT",
-      role: "AST Review & Self-Healing Agent",
+      name: "Debugger Agent",
+      role: "AST Review & Self-Healing",
+      icon: Bug,
       badge: "READY",
-      badgeStyle: "bg-secondary-container text-on-secondary-container border-outline",
+      badgeColor: "text-purple-400 bg-purple-500/10 border-purple-500/30",
       systemPrompt:
         "You are the AST Syntax Inspector & Self-Healing Debugger. Parse code for type errors, missing imports, or runtime crashes and repair them.",
       capabilities: [
@@ -92,181 +113,215 @@ export default function AgentWorkspacePage() {
     },
     {
       id: "terminal",
-      name: "05 TERMINAL AGENT",
-      role: "Build & Package Verification",
+      name: "Terminal Agent",
+      role: "Build & Sandbox Execution",
+      icon: Terminal,
       badge: "READY",
-      badgeStyle: "bg-secondary-container text-on-secondary-container border-outline",
+      badgeColor: "text-amber-400 bg-amber-500/10 border-amber-500/30",
       systemPrompt:
         "You are the Build & Sandbox Engineer. Execute npm/pip dependency installations and run static type checking.",
-      inputSchema: `{ "project_root": "string", "install_command": "string" }`,
-      outputSchema: `{ "success": "boolean", "stderr": "string", "executed_commands": "string[]" }`,
       capabilities: [
-        "Subprocess Execution",
-        "Dependency Resolution (npm/pip)",
-        "Build & Linting Verification",
-        "Terminal Stderr Intercept",
+        "Subprocess Sandbox Spawning",
+        "Virtual Environment Isolation",
+        "Dependency Resolution",
+        "Exit Code Interception",
       ],
-      sampleLog: "[TERMINAL] Dependencies resolved. Build exit code 0.",
+      inputSchema: `{ "manifest": "ProjectManifest" }`,
+      outputSchema: `{ "build_status": "string", "exit_code": "number" }`,
+      sampleLog: "[TERMINAL] Dependencies installed cleanly. Next.js ready on port 3000.",
     },
     {
       id: "browser",
-      name: "06 BROWSER AGENT",
-      role: "Playwright CDP E2E Smoke Tester",
+      name: "Browser Agent",
+      role: "Playwright Headless DOM Verification",
+      icon: Globe,
       badge: "READY",
-      badgeStyle: "bg-secondary-container text-on-secondary-container border-outline",
+      badgeColor: "text-blue-400 bg-blue-500/10 border-blue-500/30",
       systemPrompt:
-        "You are the Playwright E2E Tester. Launch the generated web app in a headless browser, interact with buttons, and verify DOM functionality.",
-      inputSchema: `{ "project_root": "string", "run_command": "string" }`,
-      outputSchema: `{ "success": "boolean", "page_title": "string", "screenshot_path": "string" }`,
+        "You are the Autonomous Browser Verification Agent. Navigate the running web app using Playwright CDP, test critical interactive user flows, and capture screenshots.",
       capabilities: [
-        "Playwright Headless Chrome Control",
-        "DOM Event & Form Intercept",
-        "Automated Screenshot Capture",
-        "E2E Smoke Verification",
+        "Playwright Chromium Execution",
+        "DOM Tree Inspection & Snapshot",
+        "Form Filling & Route Validation",
+        "Visual Regression & Error Capture",
       ],
-      sampleLog: "[BROWSER] Playwright smoke test passed. Page Title: 'SE BROWSER AGENT'.",
+      inputSchema: `{ "port": "number", "entrypoint": "string" }`,
+      outputSchema: `{ "passed": "boolean", "test_logs": "string[]" }`,
+      sampleLog: "[BROWSER] All smoke tests passed. HTTP 200 on all endpoints.",
     },
   ];
 
-  const [selectedId, setSelectedId] = useState("planner");
-  const selectedNode = nodes.find((n) => n.id === selectedId) || nodes[0];
+  const [selectedAgentId, setSelectedAgentId] = useState<string>("planner");
+  const selectedAgent = nodes.find((n) => n.id === selectedAgentId) || nodes[0];
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto flex flex-col gap-6">
-      {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-2 border-outline-variant bg-surface-container-low p-5 shadow-[4px_4px_0px_#000000]">
+    <div className="min-h-screen p-8 max-w-7xl mx-auto w-full pt-20">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-6 border-b border-white/[0.08] mb-8">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed text-[10px] font-label-sm font-bold">
-              LANGGRAPH DAG v2.4
-            </span>
-            <span className="text-on-surface-variant font-code-stream text-xs">
-              / GRAPH / ORCHESTRATION_NODES
-            </span>
-          </div>
-          <h1 className="font-headline-xl text-headline-xl font-bold tracking-tight text-on-surface uppercase">
-            MULTI-AGENT ARCHITECTURE &amp; MEMORY GRAPH
+          <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2.5">
+            <Activity className="w-6 h-6 text-blue-400" />
+            <span>Multi-Agent Orchestration Architecture</span>
           </h1>
-          <p className="font-code-stream text-code-stream text-on-surface-variant text-sm mt-1">
-            Inspect individual agent node instructions, capabilities, input/output schemas, and execution state graph.
+          <p className="text-xs text-zinc-400">
+            LangGraph stateful agent topology • 6 autonomous specialist nodes
           </p>
         </div>
+
         <Link
           href="/workspace"
-          className="px-5 py-2.5 bg-primary-fixed text-on-primary-fixed font-headline-md font-bold text-sm uppercase flex items-center gap-2 border-2 border-surface-container-lowest shadow-[3px_3px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
+          className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(77,142,255,0.3)] transition-all"
         >
-          <span className="material-symbols-outlined text-base font-bold">terminal</span>
-          <span>[OPEN WORKSPACE &gt;]</span>
+          <span>Launch Live Canvas</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
-      {/* HORIZONTAL DAG CHAIN FLOW */}
-      <div className="border-2 border-outline-variant bg-surface-container-low p-4 shadow-[4px_4px_0px_#000000] overflow-x-auto">
-        <div className="flex items-center gap-3 min-w-[950px] justify-between font-code-stream text-xs">
-          <div className="px-3 py-2 bg-surface-container-lowest border-2 border-outline-variant font-bold text-on-surface">
-            START
-          </div>
-          <span className="text-secondary-container font-bold">&gt;&gt;</span>
-
-          {nodes.map((node) => {
-            const isSelected = node.id === selectedId;
+      {/* DAG Flow Visualization Strip */}
+      <div className="mb-8 p-5 rounded-3xl bg-[#10141F]/80 backdrop-blur-xl border border-white/[0.08] shadow-xl">
+        <div className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-4">
+          Pipeline Flow Execution Graph
+        </div>
+        <div className="flex items-center gap-2 overflow-x-auto pb-2">
+          {nodes.map((node, index) => {
+            const Icon = node.icon;
+            const isSelected = selectedAgentId === node.id;
             return (
               <React.Fragment key={node.id}>
                 <button
-                  onClick={() => setSelectedId(node.id)}
-                  className={`p-3 border-2 shadow-[2px_2px_0px_#000000] flex-1 text-left transition-all cursor-pointer ${
+                  onClick={() => setSelectedAgentId(node.id)}
+                  className={`px-3.5 py-2.5 rounded-2xl border transition-all flex items-center gap-2.5 text-xs shrink-0 ${
                     isSelected
-                      ? "bg-surface-container border-primary-fixed shadow-[3px_3px_0px_#fde400]"
-                      : "bg-surface-container-lowest border-outline-variant hover:border-on-surface"
+                      ? "bg-blue-600/30 text-white border-blue-500/50 shadow-[0_0_25px_rgba(77,142,255,0.35)]"
+                      : "bg-white/[0.03] text-zinc-400 border-white/[0.06] hover:bg-white/[0.07] hover:text-white"
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className={`px-1.5 py-0.2 font-label-sm text-[9px] font-bold border ${node.badgeStyle}`}>
-                      {node.badge}
-                    </span>
-                    {isSelected && <span className="w-2 h-2 rounded-full bg-primary-fixed animate-ping"></span>}
-                  </div>
-                  <div className={`font-bold text-[11px] truncate ${isSelected ? "text-primary-fixed" : "text-on-surface"}`}>
-                    {node.name}
-                  </div>
-                  <div className="text-[9px] text-on-surface-variant truncate mt-0.5">{node.role}</div>
+                  <Icon className={`w-4 h-4 ${isSelected ? "text-blue-400" : "text-zinc-500"}`} />
+                  <span className="font-medium">{node.name}</span>
                 </button>
-                <span className="text-secondary-container font-bold">&gt;&gt;</span>
+                {index < nodes.length - 1 && (
+                  <span className="text-zinc-600 text-xs shrink-0">→</span>
+                )}
               </React.Fragment>
             );
           })}
-
-          <div className="px-3 py-2 bg-surface-container-lowest border-2 border-primary-fixed font-bold text-primary-fixed">
-            END
-          </div>
         </div>
       </div>
 
-      {/* SELECTED NODE INSPECTOR */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Left Column: System Prompt & Capabilities (7 Cols) */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
-          <div className="border-2 border-outline-variant bg-surface-container-low shadow-[4px_4px_0px_#000000] p-4 flex flex-col gap-4">
-            <div className="flex items-center justify-between border-b border-outline-variant pb-2">
-              <span className="font-headline-md font-bold text-primary-fixed uppercase">
-                {selectedNode.name} — SYSTEM SPECIFICATION
-              </span>
-              <span className={`px-2 py-0.5 text-[10px] font-bold border ${selectedNode.badgeStyle}`}>
-                {selectedNode.badge}
-              </span>
-            </div>
-
-            <div>
-              <span className="font-code-stream text-[10px] text-on-surface-variant uppercase font-bold">
-                SYSTEM PROMPT &amp; INSTRUCTIONS
-              </span>
-              <p className="mt-1.5 p-3 bg-surface-container-lowest border border-outline-variant font-code-stream text-xs text-on-surface leading-relaxed">
-                {selectedNode.systemPrompt}
-              </p>
-            </div>
-
-            <div>
-              <span className="font-code-stream text-[10px] text-on-surface-variant uppercase font-bold mb-1.5 block">
-                NODE CAPABILITIES &amp; AGENT ACTIONS
-              </span>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 font-code-stream text-xs">
-                {selectedNode.capabilities.map((cap, idx) => (
-                  <div key={idx} className="p-2 bg-surface-container-lowest border border-outline-variant text-on-surface flex items-center gap-2">
-                    <span className="text-secondary-container font-bold">▸</span>
-                    {cap}
+      {/* Agent Detail Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left: Node List */}
+        <div className="lg:col-span-5 space-y-3">
+          {nodes.map((node) => {
+            const Icon = node.icon;
+            const isSelected = selectedAgentId === node.id;
+            return (
+              <button
+                key={node.id}
+                onClick={() => setSelectedAgentId(node.id)}
+                className={`w-full text-left p-4 rounded-2xl border transition-all flex items-start justify-between group ${
+                  isSelected
+                    ? "bg-[#141B2B] border-blue-500/40 shadow-[0_0_30px_rgba(77,142,255,0.25)]"
+                    : "bg-[#10141F]/80 border-white/[0.08] hover:bg-white/[0.04]"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${
+                      isSelected
+                        ? "bg-blue-600/20 border-blue-500/40 text-blue-400"
+                        : "bg-white/[0.05] border-white/[0.08] text-zinc-400 group-hover:text-white"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
                   </div>
-                ))}
+                  <div>
+                    <div className="text-xs font-semibold text-white group-hover:text-blue-300 transition-colors">
+                      {node.name}
+                    </div>
+                    <div className="text-[11px] text-zinc-400 mt-0.5">{node.role}</div>
+                  </div>
+                </div>
+
+                <span
+                  className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${node.badgeColor}`}
+                >
+                  {node.badge}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right: Selected Node Specification & System Prompt */}
+        <div className="lg:col-span-7 rounded-3xl bg-[#10141F]/80 backdrop-blur-xl border border-white/[0.08] p-6 shadow-xl space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+            <div>
+              <h2 className="text-lg font-bold text-white">{selectedAgent.name}</h2>
+              <p className="text-xs text-zinc-400">{selectedAgent.role}</p>
+            </div>
+            <span
+              className={`text-xs font-mono px-3 py-1 rounded-full border ${selectedAgent.badgeColor}`}
+            >
+              {selectedAgent.badge}
+            </span>
+          </div>
+
+          {/* System Prompt */}
+          <div>
+            <div className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-2">
+              System Instruction
+            </div>
+            <div className="p-3.5 rounded-2xl bg-[#090C12] border border-white/[0.06] text-xs text-zinc-300 leading-relaxed font-mono">
+              {selectedAgent.systemPrompt}
+            </div>
+          </div>
+
+          {/* Capabilities */}
+          <div>
+            <div className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-2">
+              Core Capabilities
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {selectedAgent.capabilities.map((cap, i) => (
+                <div
+                  key={i}
+                  className="px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs text-zinc-300 flex items-center gap-2"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                  <span className="truncate">{cap}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Schemas */}
+          <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+            <div>
+              <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-wider mb-1.5">
+                Input Schema
+              </div>
+              <div className="p-2.5 rounded-xl bg-[#090C12] border border-white/[0.06] text-blue-300 text-[11px] overflow-x-auto">
+                {selectedAgent.inputSchema}
+              </div>
+            </div>
+            <div>
+              <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-wider mb-1.5">
+                Output Schema
+              </div>
+              <div className="p-2.5 rounded-xl bg-[#090C12] border border-white/[0.06] text-emerald-300 text-[11px] overflow-x-auto">
+                {selectedAgent.outputSchema}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Right Column: Schemas & Log Emissions (5 Cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-4">
-          <div className="border-2 border-outline-variant bg-surface-container-low shadow-[4px_4px_0px_#000000] p-4 flex flex-col gap-4 font-code-stream text-xs">
-            <div className="font-headline-md font-bold text-secondary-container border-b border-outline-variant pb-2">
-              STATE SCHEMA &amp; TELEMETRY
+          {/* Sample Log */}
+          <div>
+            <div className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider mb-2">
+              Sample Subprocess Trace
             </div>
-
-            <div>
-              <span className="text-on-surface-variant font-bold text-[10px] uppercase">INPUT STATE SCHEMA</span>
-              <pre className="mt-1 p-2 bg-surface-container-lowest border border-outline-variant text-secondary-container text-xs overflow-x-auto">
-                {selectedNode.inputSchema}
-              </pre>
-            </div>
-
-            <div>
-              <span className="text-on-surface-variant font-bold text-[10px] uppercase">OUTPUT STATE SCHEMA</span>
-              <pre className="mt-1 p-2 bg-surface-container-lowest border border-outline-variant text-primary-fixed text-xs overflow-x-auto">
-                {selectedNode.outputSchema}
-              </pre>
-            </div>
-
-            <div>
-              <span className="text-on-surface-variant font-bold text-[10px] uppercase">RECENT TELEMETRY LOG</span>
-              <div className="mt-1 p-2 bg-surface-container-lowest border border-outline-variant text-on-surface text-xs font-mono">
-                {selectedNode.sampleLog}
-              </div>
+            <div className="p-3 rounded-xl bg-[#090C12] border border-white/[0.06] text-[11px] text-zinc-400 font-mono">
+              {selectedAgent.sampleLog}
             </div>
           </div>
         </div>

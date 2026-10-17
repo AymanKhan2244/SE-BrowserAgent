@@ -1,10 +1,9 @@
-﻿import "./globals.css";
+import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "SE Browser Agent | Autonomous SWE Engine",
+  title: "SE Browser Agent | Autonomous Multi-Agent SWE Canvas",
   description: "Autonomous Multi-Agent Software Engineering Pipeline built with Next.js, React, TypeScript, and LangGraph.",
 };
 
@@ -15,15 +14,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-background text-on-surface antialiased font-body-md text-body-md overflow-x-hidden min-h-screen">
+      <body className="bg-[#07090D] text-[#F3F5F9] antialiased font-sans overflow-x-hidden min-h-screen">
         <Sidebar />
         <Header />
-        <main className="ml-60 pt-14 pb-12 min-h-screen bg-background brutal-grid">
+        <main className="ml-16 min-h-screen bg-[#07090D] canvas-grid relative">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );
 }
-
