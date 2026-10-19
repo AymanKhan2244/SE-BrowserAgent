@@ -27,8 +27,9 @@ import traceback
 import socket
 from dataclasses import dataclass
 from fastapi import FastAPI, Query
-from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from starlette.responses import StreamingResponse
 from dotenv import load_dotenv
 
@@ -153,6 +154,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve Next.js static assets (_next/static chunks, images, etc.)
+_NEXT_STATIC = Path(__file__).parent / "out" / "_next"
+if _NEXT_STATIC.exists():
+    app.mount("/_next", StaticFiles(directory=str(_NEXT_STATIC)), name="next_assets")
+
 # In-memory session store: session_id -> session data
 sessions: Dict[str, Dict[str, Any]] = {}
 
@@ -191,35 +197,51 @@ NODE_START_MESSAGES = {
 # Routes
 # ══════════════════════════════════════════════════════════════════════════════
 
+# ── Next.js Static Export — Frontend Routes ───────────────────────────────────
+# These routes serve the pre-rendered HTML pages from the Next.js `out/` build.
+# Run `npm run build` to regenerate after frontend changes.
+
+def _serve_next_page(page: str) -> HTMLResponse:
+    """Read a page from the Next.js static export and return it as HTML."""
+    out_dir = Path(__file__).parent / "out"
+    html_path = out_dir / page
+    if not html_path.exists():
+        # Fallback: try index.html in a subdirectory
+        html_path = out_dir / page.replace(".html", "") / "index.html"
+    if not html_path.exists():
+        return HTMLResponse("<h1>Page not found — run <code>npm run build</code></h1>", status_code=404)
+    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+
+
 @app.get("/", response_class=HTMLResponse)
+async def serve_home():
+    """Serve the Next.js home page."""
+    return _serve_next_page("index.html")
+
+@app.get("/workspace", response_class=HTMLResponse)
 async def serve_workspace():
-    """Serve the agent workspace dashboard HTML."""
-    html_path = Path(__file__).parent / "forgeai-frontend" / "code.html"
-    return HTMLResponse(html_path.read_text(encoding="utf-8"))
-
-@app.get("/dashboard", response_class=HTMLResponse)
-async def serve_dashboard():
-    """Serve the dashboard HTML."""
-    html_path = Path(__file__).parent / "forgeai-frontend" / "dashboard.html"
-    return HTMLResponse(html_path.read_text(encoding="utf-8"))
-
-@app.get("/tasks", response_class=HTMLResponse)
-async def serve_tasks():
-    """Serve the tasks HTML."""
-    html_path = Path(__file__).parent / "forgeai-frontend" / "tasks.html"
-    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+    """Serve the Next.js workspace canvas page."""
+    return _serve_next_page("workspace.html")
 
 @app.get("/new-task", response_class=HTMLResponse)
 async def serve_new_task():
-    """Serve the new task HTML."""
-    html_path = Path(__file__).parent / "forgeai-frontend" / "new_task.html"
-    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+    """Serve the Next.js new-task configuration page."""
+    return _serve_next_page("new-task.html")
+
+@app.get("/tasks", response_class=HTMLResponse)
+async def serve_tasks():
+    """Serve the Next.js tasks list page."""
+    return _serve_next_page("tasks.html")
 
 @app.get("/agent-workspace", response_class=HTMLResponse)
 async def serve_agent_workspace():
-    """Serve the agent workspace mockup HTML."""
-    html_path = Path(__file__).parent / "forgeai-frontend" / "agent_workspace.html"
-    return HTMLResponse(html_path.read_text(encoding="utf-8"))
+    """Serve the Next.js agent workspace architecture page."""
+    return _serve_next_page("agent-workspace.html")
+
+@app.get("/code", response_class=HTMLResponse)
+async def serve_code():
+    """Serve the Next.js code inspector page."""
+    return _serve_next_page("code.html")
 
 
 @app.get("/api/forge/stream")
