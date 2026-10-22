@@ -1,5 +1,3 @@
-
-
 from langgraph.graph import StateGraph, END, START
 from pipeline import (
     planner_agent,
@@ -25,6 +23,7 @@ import asyncio
 import threading
 import traceback
 import socket
+import uvicorn
 from dataclasses import dataclass
 from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, RedirectResponse
@@ -780,7 +779,7 @@ async def stop_preview_endpoint(session_id: str):
 # ══════════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    import uvicorn
+    
     print("=" * 60)
     print("  ForgeAI Server (LangGraph Pipeline)")
     print("  Open http://localhost:8000 in your browser")

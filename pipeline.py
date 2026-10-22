@@ -25,10 +25,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain_groq import ChatGroq
-planner_key = os.getenv("GROQ_API_KEY1", "")
-architect_key = os.getenv("GROQ_API_KEY2", "")
-coder_key = os.getenv("GROQ_API_KEY3", "")
-debugger_key = os.getenv("GROQ_API_KEY4", "")
+default_key = os.getenv("GROQ_API_KEY", "")
+planner_key = os.getenv("GROQ_API_KEY1") or default_key
+architect_key = os.getenv("GROQ_API_KEY2") or default_key
+coder_key = os.getenv("GROQ_API_KEY3") or default_key
+debugger_key = os.getenv("GROQ_API_KEY4") or default_key
 
 if planner_key:
     os.environ["GROQ_API_KEY1"] = planner_key
