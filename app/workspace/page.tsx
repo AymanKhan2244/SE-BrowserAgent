@@ -46,6 +46,12 @@ interface AgentState {
   logs: string[];
 }
 
+// Resolve API base: empty string = same origin (works when FastAPI serves the static export).
+// In Next.js dev mode, next.config.js rewrites /api/* → FastAPI, so this still works.
+const API_BASE = typeof window !== "undefined" && window.location.port === "3000"
+  ? "http://localhost:8000"
+  : "";
+
 function WorkspaceCanvas() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -157,7 +163,7 @@ function WorkspaceCanvas() {
 
   const fetchExistingSession = async (sid: string) => {
     try {
-      const res = await fetch(`http://localhost:8000/api/forge/${sid}/files`);
+      const res = await fetch(`${API_BASE}/api/forge/${sid}/files`);
       if (res.ok) {
         const data = await res.json();
         const loadedFiles = data.files || [];
@@ -213,7 +219,7 @@ function WorkspaceCanvas() {
       setElapsedMs(Date.now() - startTimeRef.current);
     }, 200);
 
-    const sseUrl = `http://localhost:8000/api/forge/stream?query=${encodeURIComponent(queryText)}`;
+    const sseUrl = `${API_BASE}/api/forge/stream?query=${encodeURIComponent(queryText)}`;
     const eventSource = new EventSource(sseUrl);
 
     eventSource.onmessage = (event) => {
@@ -289,12 +295,12 @@ function WorkspaceCanvas() {
   const handleLaunchPreview = async () => {
     if (!sessionId) return;
     try {
-      const res = await fetch(`http://localhost:8000/api/forge/${sessionId}/preview`, {
+      const res = await fetch(`${API_BASE}/api/forge/${sessionId}/preview`, {
         method: "POST",
       });
       if (res.ok) {
         const data = await res.json();
-        setPreviewUrl(`http://localhost:8000${data.preview_url}`);
+        setPreviewUrl(`${API_BASE}${data.preview_url}`);
         setIsPreviewRunning(true);
         setActiveOverlay("preview");
       }
@@ -305,7 +311,7 @@ function WorkspaceCanvas() {
 
   const handleDownloadZip = () => {
     if (!sessionId) return;
-    window.location.href = `http://localhost:8000/api/forge/${sessionId}/download`;
+    window.location.href = `${API_BASE}/api/forge/${sessionId}/download`;
   };
 
   // Zoom and Pan Handlers

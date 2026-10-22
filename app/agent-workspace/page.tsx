@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Activity,
@@ -154,6 +154,23 @@ export default function AgentWorkspacePage() {
   const [selectedAgentId, setSelectedAgentId] = useState<string>("planner");
   const selectedAgent = nodes.find((n) => n.id === selectedAgentId) || nodes[0];
 
+  // Live backend status
+  const [backendStatus, setBackendStatus] = useState<"checking" | "online" | "offline">("checking");
+  const [projectCount, setProjectCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Health check
+    fetch("/api/health")
+      .then((r) => r.ok ? setBackendStatus("online") : setBackendStatus("offline"))
+      .catch(() => setBackendStatus("offline"));
+
+    // Project count from real data
+    fetch("/api/forge/projects")
+      .then((r) => r.json())
+      .then((d) => setProjectCount(d.projects?.length ?? 0))
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="min-h-screen p-8 max-w-7xl mx-auto w-full pt-20">
       {/* Header */}
@@ -168,13 +185,43 @@ export default function AgentWorkspacePage() {
           </p>
         </div>
 
-        <Link
-          href="/workspace"
-          className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(77,142,255,0.3)] transition-all"
-        >
-          <span>Launch Live Canvas</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white mb-1 flex items-center gap-2.5">
+            <Activity className="w-6 h-6 text-blue-400" />
+            <span>Multi-Agent Orchestration Architecture</span>
+          </h1>
+          <p className="text-xs text-zinc-400">
+            LangGraph stateful agent topology • 6 autonomous specialist nodes
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Live Backend Status Badge */}
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-mono ${
+            backendStatus === "online"
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+              : backendStatus === "offline"
+              ? "bg-red-500/10 border-red-500/30 text-red-400"
+              : "bg-zinc-500/10 border-zinc-500/30 text-zinc-400"
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${
+              backendStatus === "online" ? "bg-emerald-400 animate-pulse" :
+              backendStatus === "offline" ? "bg-red-400" : "bg-zinc-400"
+            }`} />
+            {backendStatus === "online" ? "Backend Online" : backendStatus === "offline" ? "Backend Offline" : "Checking..."}
+            {projectCount !== null && backendStatus === "online" && (
+              <span className="text-zinc-500 ml-1">• {projectCount} project{projectCount !== 1 ? "s" : ""}</span>
+            )}
+          </div>
+
+          <Link
+            href="/workspace"
+            className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-2 shadow-[0_0_20px_rgba(77,142,255,0.3)] transition-all"
+          >
+            <span>Launch Live Canvas</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </div>
 
       {/* DAG Flow Visualization Strip */}
