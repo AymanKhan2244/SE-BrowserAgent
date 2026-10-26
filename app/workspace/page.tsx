@@ -369,7 +369,7 @@ function WorkspaceCanvas() {
           transformOrigin: "center center",
         }}
       >
-        {/* SVG CURVED CONNECTOR LINES BETWEEN CARDS */}
+        {/* SVG CURVED CONNECTOR LINES — Hub-and-spoke from Central Panel to 6 Agent Cards */}
         <svg
           className="absolute inset-0 w-[2400px] h-[1600px] pointer-events-none z-0"
           xmlns="http://www.w3.org/2000/svg"
@@ -379,222 +379,350 @@ function WorkspaceCanvas() {
               <stop offset="0%" stopColor="#4D8EFF" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#6AD9FF" stopOpacity="0.4" />
             </linearGradient>
+            <linearGradient id="emeraldGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#34d399" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#6ee7b7" stopOpacity="0.3" />
+            </linearGradient>
+            <linearGradient id="cyanGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#67e8f9" stopOpacity="0.3" />
+            </linearGradient>
+            <linearGradient id="amberGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.3" />
+            </linearGradient>
+            <linearGradient id="violetGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.3" />
+            </linearGradient>
+            <linearGradient id="roseGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#fb7185" stopOpacity="0.3" />
+            </linearGradient>
             <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
           </defs>
 
-          {/* Connection 1: Active Card (x: 680, y: 450) to Central Command Panel (x: 860, y: 440) */}
+          {/* Connection 1: Planner Agent (top-left) → Central Panel */}
           <path
-            d="M 680 450 C 740 450, 780 440, 860 440"
+            d="M 590 260 C 700 260, 780 380, 860 400"
             fill="none"
-            stroke="url(#blueGlowGrad)"
-            strokeWidth="2.5"
-            filter="url(#glowFilter)"
+            stroke={agents.planner.status === "RUNNING" ? "url(#blueGlowGrad)" : "rgba(255,255,255,0.12)"}
+            strokeWidth={agents.planner.status === "RUNNING" ? "2.5" : "1.5"}
+            filter={agents.planner.status === "RUNNING" ? "url(#glowFilter)" : undefined}
           />
-          <path
-            d="M 680 450 C 740 450, 780 440, 860 440"
-            fill="none"
-            stroke="#4D8EFF"
-            strokeWidth="1.5"
-            className="connector-pulse"
-          />
-          <circle cx="680" cy="450" r="3.5" fill="#4D8EFF" />
-          <circle cx="860" cy="440" r="3.5" fill="#6AD9FF" />
+          <circle cx="590" cy="260" r="3.5" fill="#4D8EFF" />
+          <circle cx="860" cy="400" r="3" fill={agents.planner.status === "RUNNING" ? "#6AD9FF" : "rgba(255,255,255,0.3)"} />
 
-          {/* Connection 2: Central Panel (x: 1390, y: 390) to Top-Right Card (x: 1530, y: 255) */}
+          {/* Connection 2: Architect Agent (top-right) → Central Panel */}
           <path
-            d="M 1390 390 C 1450 390, 1460 255, 1530 255"
+            d="M 1530 260 C 1440 260, 1420 380, 1390 400"
             fill="none"
-            stroke="rgba(255, 255, 255, 0.16)"
-            strokeWidth="1.5"
+            stroke={agents.architect.status === "RUNNING" ? "url(#cyanGlowGrad)" : "rgba(255,255,255,0.12)"}
+            strokeWidth={agents.architect.status === "RUNNING" ? "2.5" : "1.5"}
+            filter={agents.architect.status === "RUNNING" ? "url(#glowFilter)" : undefined}
           />
-          <circle cx="1390" cy="390" r="3" fill="rgba(255, 255, 255, 0.4)" />
-          <circle cx="1530" cy="255" r="3" fill="#4D8EFF" />
+          <circle cx="1530" cy="260" r="3.5" fill="#22d3ee" />
+          <circle cx="1390" cy="400" r="3" fill={agents.architect.status === "RUNNING" ? "#67e8f9" : "rgba(255,255,255,0.3)"} />
 
-          {/* Connection 3: Top-Right Card (x: 1685, y: 320) down to Bottom-Right Card (x: 1700, y: 560) */}
+          {/* Connection 3: Coder Agent (right) → Central Panel */}
           <path
-            d="M 1685 320 C 1685 440, 1700 460, 1700 560"
+            d="M 1580 530 C 1500 500, 1430 470, 1390 450"
             fill="none"
-            stroke="rgba(255, 255, 255, 0.14)"
-            strokeWidth="1.5"
+            stroke={agents.coder.status === "RUNNING" ? "url(#emeraldGlowGrad)" : "rgba(255,255,255,0.12)"}
+            strokeWidth={agents.coder.status === "RUNNING" ? "2.5" : "1.5"}
+            filter={agents.coder.status === "RUNNING" ? "url(#glowFilter)" : undefined}
           />
-          <circle cx="1685" cy="320" r="3" fill="rgba(255, 255, 255, 0.3)" />
-          <circle cx="1700" cy="560" r="3" fill="#10B981" />
+          <circle cx="1580" cy="530" r="3.5" fill="#34d399" />
+          <circle cx="1390" cy="450" r="3" fill={agents.coder.status === "RUNNING" ? "#6ee7b7" : "rgba(255,255,255,0.3)"} />
 
-          {/* Connection 4: Central Panel (x: 1390, y: 480) to Bottom-Right Card (x: 1600, y: 640) */}
+          {/* Connection 4: Debugger Agent (bottom-right) → Central Panel */}
           <path
-            d="M 1390 480 C 1480 480, 1500 640, 1600 640"
+            d="M 1480 760 C 1400 700, 1350 580, 1300 530"
             fill="none"
-            stroke="rgba(255, 255, 255, 0.14)"
-            strokeWidth="1.5"
+            stroke={agents.debugger.status === "RUNNING" ? "url(#violetGlowGrad)" : "rgba(255,255,255,0.12)"}
+            strokeWidth={agents.debugger.status === "RUNNING" ? "2.5" : "1.5"}
+            filter={agents.debugger.status === "RUNNING" ? "url(#glowFilter)" : undefined}
           />
-          <circle cx="1390" cy="480" r="3" fill="rgba(255, 255, 255, 0.3)" />
-          <circle cx="1600" cy="640" r="3" fill="#10B981" />
+          <circle cx="1480" cy="760" r="3.5" fill="#8b5cf6" />
+          <circle cx="1300" cy="530" r="3" fill={agents.debugger.status === "RUNNING" ? "#a78bfa" : "rgba(255,255,255,0.3)"} />
 
-          {/* Connection 5: Central Panel (x: 1050, y: 560) to Bottom-Left Card (x: 680, y: 755) */}
+          {/* Connection 5: Terminal Agent (bottom-left) → Central Panel */}
           <path
-            d="M 1050 560 C 950 720, 800 755, 680 755"
+            d="M 620 760 C 720 700, 840 580, 940 530"
             fill="none"
-            stroke="rgba(255, 255, 255, 0.12)"
-            strokeWidth="1.5"
+            stroke={agents.terminal.status === "RUNNING" ? "url(#amberGlowGrad)" : "rgba(255,255,255,0.12)"}
+            strokeWidth={agents.terminal.status === "RUNNING" ? "2.5" : "1.5"}
+            filter={agents.terminal.status === "RUNNING" ? "url(#glowFilter)" : undefined}
           />
-          <circle cx="1050" cy="560" r="3" fill="rgba(255, 255, 255, 0.3)" />
-          <circle cx="680" cy="755" r="3" fill="#6AD9FF" />
+          <circle cx="620" cy="760" r="3.5" fill="#f59e0b" />
+          <circle cx="940" cy="530" r="3" fill={agents.terminal.status === "RUNNING" ? "#fbbf24" : "rgba(255,255,255,0.3)"} />
 
-          {/* Connection 6: Gentle Arch from Central Panel Top */}
+          {/* Connection 6: Browser Agent (left) → Central Panel */}
           <path
-            d="M 1125 320 C 1125 240, 1260 200, 1340 200"
+            d="M 540 530 C 620 500, 770 450, 860 450"
             fill="none"
-            stroke="rgba(255, 255, 255, 0.1)"
-            strokeWidth="1.5"
+            stroke={agents.browser.status === "RUNNING" ? "url(#roseGlowGrad)" : "rgba(255,255,255,0.12)"}
+            strokeWidth={agents.browser.status === "RUNNING" ? "2.5" : "1.5"}
+            filter={agents.browser.status === "RUNNING" ? "url(#glowFilter)" : undefined}
           />
-          <circle cx="1340" cy="200" r="3" fill="rgba(77, 142, 255, 0.6)" />
+          <circle cx="540" cy="530" r="3.5" fill="#f43f5e" />
+          <circle cx="860" cy="450" r="3" fill={agents.browser.status === "RUNNING" ? "#fb7185" : "rgba(255,255,255,0.3)"} />
         </svg>
 
-        {/* ───────────────────────────────────────────────────────────── */}
-        {/* CARD 1: ACTIVE PROMINENT GLOWING AGENT CARD (Left Side)       */}
-        {/* ───────────────────────────────────────────────────────────── */}
-        <div className="absolute left-[340px] top-[240px] w-[340px] rounded-[28px] glass-active-card p-6 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.01]">
-          {/* Top Bar: Icon Badge & Status Pill */}
-          <div className="flex items-center justify-between mb-5">
-            <div className="w-8 h-8 rounded-xl glass-chip flex items-center justify-center">
-              <Bot className="w-4 h-4 text-white" />
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* AGENT CARD 1: PLANNER AGENT (Top-Left)                        */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <div className={`absolute left-[280px] top-[140px] w-[310px] rounded-[24px] ${agents.planner.status === "RUNNING" ? "glass-active-card" : "glass-secondary-card"} p-5 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.02] hover:border-blue-500/30`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
+              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
             </div>
-
-            {/* Glowing Status Pill */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full glass-chip text-[11px] font-medium text-emerald-300 shadow-sm">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isRunning
-                    ? "bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]"
-                    : pipelineComplete
-                    ? "bg-emerald-400 shadow-[0_0_8px_#34d399]"
-                    : "bg-blue-400 shadow-[0_0_8px_#60a5fa]"
-                }`}
-              />
-              <span>
-                {isRunning
-                  ? agents[activeAgentKey]?.status === "RUNNING"
-                    ? "EXECUTING"
-                    : "ANALYZING"
-                  : pipelineComplete
-                  ? "COMPLETE"
-                  : "READY"}
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] font-medium">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                agents.planner.status === "RUNNING" ? "bg-blue-400 animate-pulse shadow-[0_0_6px_#60a5fa]"
+                : agents.planner.status === "DONE" ? "bg-emerald-400 shadow-[0_0_6px_#34d399]"
+                : "bg-zinc-500"
+              }`} />
+              <span className={agents.planner.status === "RUNNING" ? "text-blue-300" : agents.planner.status === "DONE" ? "text-emerald-300" : "text-zinc-400"}>
+                {agents.planner.status === "RUNNING" ? "EXECUTING" : agents.planner.status === "DONE" ? "COMPLETE" : "QUEUED"}
               </span>
             </div>
           </div>
 
-          {/* Agent Title & Subtitle (Dynamically bound to backend agent) */}
-          <div className="mb-5">
-            <h2 className="text-xl font-semibold tracking-tight text-white mb-0.5">
-              {activeAgentKey === "planner"
-                ? "Planner Agent"
-                : activeAgentKey === "architect"
-                ? "Architect Agent"
-                : activeAgentKey === "coder"
-                ? "Coding Agent"
-                : activeAgentKey === "debugger"
-                ? "Debugger Agent"
-                : activeAgentKey === "terminal"
-                ? "Terminal Agent"
-                : activeAgentKey === "browser"
-                ? "Browser Agent"
-                : "Market Research Agent"}
-            </h2>
-            <p className="text-xs text-blue-200/70 font-normal">
-              {activeAgentKey === "planner"
-                ? "Requirements & Architecture Planning"
-                : activeAgentKey === "architect"
-                ? "File Manifest & DAG Designer"
-                : activeAgentKey === "coder"
-                ? "Full-Stack Source Code Synthesis"
-                : activeAgentKey === "debugger"
-                ? "AST Syntax Review & Self-Healing"
-                : activeAgentKey === "terminal"
-                ? "Build & Sandbox Verification"
-                : activeAgentKey === "browser"
-                ? "Playwright Headless Smoke Testing"
-                : "Market & Industry Research"}
-            </p>
+          <div className="mb-3">
+            <h3 className="text-base font-semibold text-white">Planner Agent</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">Requirements & Architecture Planning</p>
           </div>
 
-          {/* Activity Pills (Dynamically bound to backend thoughts & output) */}
-          <div className="space-y-2 mb-6">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full glass-chip text-xs text-white/95">
-              <CheckCircle2 className="w-3.5 h-3.5 text-blue-200 shrink-0" />
-              <span className="truncate">
-                {currentStepText || "Analyzing requirements & dependencies"}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
+            <CheckCircle2 className="w-3.5 h-3.5 text-blue-400/70 shrink-0" />
+            <span className="truncate">
+              {agents.planner.status === "DONE"
+                ? agents.planner.data?.features ? `${agents.planner.data.features.length} features mapped` : "Requirements analyzed"
+                : agents.planner.status === "RUNNING" ? "Analyzing project requirements..."
+                : "Awaiting task directive"}
+            </span>
+          </div>
+
+          {agents.planner.data && (
+            <div className="flex items-end justify-between pt-3 mt-3 border-t border-white/10">
+              <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">Features</span>
+              <span className="text-xl font-light tracking-tight text-white font-mono">
+                {agents.planner.data?.features?.length || "—"}
               </span>
             </div>
+          )}
+        </div>
 
-            <div className="flex items-center gap-2 px-3 py-2 rounded-full glass-chip text-xs text-white/95">
-              <Sparkles className="w-3.5 h-3.5 text-blue-200 shrink-0" />
-              <span className="truncate">
-                {agents.architect.data?.files_count
-                  ? `${agents.architect.data.files_count} files planned (${files.length} generated)`
-                  : agents.planner.data?.features
-                  ? `${agents.planner.data.features.length} features mapped`
-                  : agents.coder.data?.files_generated
-                  ? `${agents.coder.data.files_generated} files synthesized`
-                  : `${tokenCount > 0 ? tokenCount : 124} AST tokens processed`}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* AGENT CARD 2: ARCHITECT AGENT (Top-Right)                     */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <div className={`absolute left-[1530px] top-[140px] w-[310px] rounded-[24px] ${agents.architect.status === "RUNNING" ? "glass-active-card" : "glass-secondary-card"} p-5 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.02] hover:border-cyan-500/30`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-7 h-7 rounded-lg bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
+              <Layers className="w-3.5 h-3.5 text-cyan-400" />
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] font-medium">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                agents.architect.status === "RUNNING" ? "bg-cyan-400 animate-pulse shadow-[0_0_6px_#22d3ee]"
+                : agents.architect.status === "DONE" ? "bg-emerald-400 shadow-[0_0_6px_#34d399]"
+                : "bg-zinc-500"
+              }`} />
+              <span className={agents.architect.status === "RUNNING" ? "text-cyan-300" : agents.architect.status === "DONE" ? "text-emerald-300" : "text-zinc-400"}>
+                {agents.architect.status === "RUNNING" ? "DESIGNING" : agents.architect.status === "DONE" ? "COMPLETE" : "QUEUED"}
               </span>
             </div>
           </div>
 
-          {/* Metrics Strip */}
-          <div className="space-y-3 pt-3 border-t border-white/15 text-xs">
-            {/* Progress */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-blue-200/80">
-                <Layers className="w-3.5 h-3.5" />
-                <span>Progress</span>
-              </div>
-              <span className="font-semibold text-white">{progressPercent}%</span>
-            </div>
+          <div className="mb-3">
+            <h3 className="text-base font-semibold text-white">Architect Agent</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">File Manifest & DAG Designer</p>
+          </div>
 
-            {/* Token Usage with Sparkline */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-blue-200/80">
-                <Zap className="w-3.5 h-3.5" />
-                <span>Token Usage</span>
-              </div>
-              <div className="flex items-center gap-2 font-mono text-white text-[11px]">
-                <span>{(tokenCount / 1000).toFixed(1)}K</span>
-                {/* Mini SVG Sparkline Wave */}
-                <svg className="w-9 h-3.5 stroke-blue-200 fill-none" viewBox="0 0 40 16">
-                  <path
-                    d="M 0 10 Q 10 2, 20 8 T 40 4"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-            </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
+            <Layers className="w-3.5 h-3.5 text-cyan-400/70 shrink-0" />
+            <span className="truncate">
+              {agents.architect.status === "DONE"
+                ? agents.architect.data?.files_count ? `${agents.architect.data.files_count} files manifested` : "Manifest complete"
+                : agents.architect.status === "RUNNING" ? "Designing system architecture..."
+                : "Awaiting planner output"}
+            </span>
+          </div>
 
-            {/* Model Selector Pill */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-blue-200/80">
-                <Bot className="w-3.5 h-3.5" />
-                <span>Model</span>
-              </div>
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full glass-chip text-[11px] text-white">
-                <span>{selectedModel}</span>
-                <ChevronDown className="w-3 h-3 text-blue-200" />
-              </div>
+          {agents.architect.data && (
+            <div className="flex items-end justify-between pt-3 mt-3 border-t border-white/10">
+              <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">Files Planned</span>
+              <span className="text-xl font-light tracking-tight text-white font-mono">
+                {agents.architect.data?.files_count || "—"}
+              </span>
             </div>
+          )}
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* AGENT CARD 3: CODING AGENT (Right)                            */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <div className={`absolute left-[1580px] top-[430px] w-[330px] rounded-[24px] ${agents.coder.status === "RUNNING" ? "glass-active-card" : "glass-secondary-card"} p-5 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.02] hover:border-emerald-500/30`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-7 h-7 rounded-lg bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center">
+              <FileCode className="w-3.5 h-3.5 text-emerald-400" />
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] font-medium">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                agents.coder.status === "RUNNING" ? "bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]"
+                : agents.coder.status === "DONE" ? "bg-emerald-400 shadow-[0_0_6px_#34d399]"
+                : "bg-zinc-500"
+              }`} />
+              <span className={agents.coder.status === "RUNNING" ? "text-emerald-300" : agents.coder.status === "DONE" ? "text-emerald-300" : "text-zinc-400"}>
+                {agents.coder.status === "RUNNING" ? "GENERATING" : agents.coder.status === "DONE" ? "COMPLETE" : "QUEUED"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <h3 className="text-base font-semibold text-white">Coding Agent</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">Full-Stack Source Code Synthesis</p>
+          </div>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
+            <FileCode className="w-3.5 h-3.5 text-emerald-400/70 shrink-0" />
+            <span className="truncate">
+              {agents.coder.status === "DONE"
+                ? agents.coder.data?.files_generated ? `${agents.coder.data.files_generated} files synthesized` : "Code generation complete"
+                : agents.coder.status === "RUNNING" ? "Generating production-ready code..."
+                : "Awaiting architect manifest"}
+            </span>
+          </div>
+
+          {agents.coder.data && (
+            <div className="flex items-end justify-between pt-3 mt-3 border-t border-white/10">
+              <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">Files Generated</span>
+              <span className="text-xl font-light tracking-tight text-white font-mono">
+                {agents.coder.data?.files_generated || files.length || "—"}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* AGENT CARD 4: DEBUGGER AGENT (Bottom-Right)                   */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <div className={`absolute left-[1380px] top-[720px] w-[310px] rounded-[24px] ${agents.debugger.status === "RUNNING" ? "glass-active-card" : "glass-secondary-card"} p-5 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.02] hover:border-violet-500/30`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-7 h-7 rounded-lg bg-violet-500/15 border border-violet-500/20 flex items-center justify-center">
+              <ShieldCheck className="w-3.5 h-3.5 text-violet-400" />
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] font-medium">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                agents.debugger.status === "RUNNING" ? "bg-violet-400 animate-pulse shadow-[0_0_6px_#8b5cf6]"
+                : agents.debugger.status === "DONE" ? "bg-emerald-400 shadow-[0_0_6px_#34d399]"
+                : "bg-zinc-500"
+              }`} />
+              <span className={agents.debugger.status === "RUNNING" ? "text-violet-300" : agents.debugger.status === "DONE" ? "text-emerald-300" : "text-zinc-400"}>
+                {agents.debugger.status === "RUNNING" ? "REVIEWING" : agents.debugger.status === "DONE" ? "0 ERRORS" : "QUEUED"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <h3 className="text-base font-semibold text-white">Debugger Agent</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">AST Syntax Review & Self-Healing</p>
+          </div>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
+            <ShieldCheck className="w-3.5 h-3.5 text-violet-400/70 shrink-0" />
+            <span className="truncate">
+              {agents.debugger.status === "DONE"
+                ? "AST analysis passed — 0 errors"
+                : agents.debugger.status === "RUNNING" ? "Performing static analysis..."
+                : "Awaiting generated code"}
+            </span>
           </div>
         </div>
 
-        {/* ───────────────────────────────────────────────────────────── */}
-        {/* CARD 2: CENTRAL TASK COMMAND PANEL (Middle)                   */}
-        {/* ───────────────────────────────────────────────────────────── */}
-        <div className="absolute left-[860px] top-[320px] w-[530px] z-20 interactive-card">
-          {/* Top Pill: "6 active agent" */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* AGENT CARD 5: TERMINAL AGENT (Bottom-Left)                    */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <div className={`absolute left-[380px] top-[720px] w-[310px] rounded-[24px] ${agents.terminal.status === "RUNNING" ? "glass-active-card" : "glass-secondary-card"} p-5 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.02] hover:border-amber-500/30`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
+              <Terminal className="w-3.5 h-3.5 text-amber-400" />
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] font-medium">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                agents.terminal.status === "RUNNING" ? "bg-amber-400 animate-pulse shadow-[0_0_6px_#f59e0b]"
+                : agents.terminal.status === "DONE" ? "bg-emerald-400 shadow-[0_0_6px_#34d399]"
+                : "bg-zinc-500"
+              }`} />
+              <span className={agents.terminal.status === "RUNNING" ? "text-amber-300" : agents.terminal.status === "DONE" ? "text-emerald-300" : "text-zinc-400"}>
+                {agents.terminal.status === "RUNNING" ? "BUILDING" : agents.terminal.status === "DONE" ? "BUILD OK" : "QUEUED"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <h3 className="text-base font-semibold text-white">Terminal Agent</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">Build & Sandbox Verification</p>
+          </div>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
+            <Terminal className="w-3.5 h-3.5 text-amber-400/70 shrink-0" />
+            <span className="truncate">
+              {agents.terminal.status === "DONE"
+                ? "Dependencies installed — build clean"
+                : agents.terminal.status === "RUNNING" ? "Installing packages & compile check..."
+                : "Awaiting debugged source files"}
+            </span>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* AGENT CARD 6: BROWSER AGENT (Left)                            */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <div className={`absolute left-[220px] top-[430px] w-[320px] rounded-[24px] ${agents.browser.status === "RUNNING" ? "glass-active-card" : "glass-secondary-card"} p-5 text-white z-10 interactive-card transition-all duration-300 hover:scale-[1.02] hover:border-rose-500/30`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-7 h-7 rounded-lg bg-rose-500/15 border border-rose-500/20 flex items-center justify-center">
+              <Globe className="w-3.5 h-3.5 text-rose-400" />
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] font-medium">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                agents.browser.status === "RUNNING" ? "bg-rose-400 animate-pulse shadow-[0_0_6px_#f43f5e]"
+                : agents.browser.status === "DONE" ? "bg-emerald-400 shadow-[0_0_6px_#34d399]"
+                : "bg-zinc-500"
+              }`} />
+              <span className={agents.browser.status === "RUNNING" ? "text-rose-300" : agents.browser.status === "DONE" ? "text-emerald-300" : "text-zinc-400"}>
+                {agents.browser.status === "RUNNING" ? "TESTING" : agents.browser.status === "DONE" ? "PASSED" : "QUEUED"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <h3 className="text-base font-semibold text-white">Browser Agent</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">Playwright Headless Smoke Testing</p>
+          </div>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
+            <Globe className="w-3.5 h-3.5 text-rose-400/70 shrink-0" />
+            <span className="truncate">
+              {agents.browser.status === "DONE"
+                ? "Playwright E2E passed — 0 errors"
+                : agents.browser.status === "RUNNING" ? "Verifying DOM & API endpoints..."
+                : "Awaiting build verification"}
+            </span>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        {/* CENTRAL TASK COMMAND PANEL (Chat Section — Unchanged)          */}
+        {/* ═══════════════════════════════════════════════════════════════ */}
+        <div className="absolute left-[760px] top-[320px] w-[530px] z-20 interactive-card">
+          {/* Top Pill: "6 active agents" */}
           <div className="flex justify-center mb-[-12px] relative z-30">
             <div className="px-3.5 py-0.5 rounded-full glass-pill text-[11px] text-zinc-300 font-medium shadow-md">
-              6 active agent
+              6 active agents
             </div>
           </div>
 
@@ -616,7 +744,7 @@ function WorkspaceCanvas() {
               className="w-full bg-transparent border-0 text-[14px] leading-relaxed text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-0 resize-none font-normal"
             />
 
-            {/* Status Ribbon (Target: "Dessn is thinking... See steps >") */}
+            {/* Status Ribbon */}
             <div className="mt-2 mb-4 px-3.5 py-2 rounded-2xl glass-ribbon flex items-center justify-between text-xs">
               {pipelineComplete ? (
                 <span className="text-emerald-300 font-normal truncate max-w-[340px] flex items-center gap-1.5">
@@ -655,7 +783,6 @@ function WorkspaceCanvas() {
             <div className="flex items-center justify-between pt-1">
               {/* Left Action Buttons (+, Lightning, Model Dropdown) */}
               <div className="flex items-center gap-2">
-                {/* Plus button */}
                 <button
                   type="button"
                   onClick={() => setActiveOverlay("code")}
@@ -665,7 +792,6 @@ function WorkspaceCanvas() {
                   <Plus className="w-4 h-4" />
                 </button>
 
-                {/* Lightning button (Quick preset) */}
                 <button
                   type="button"
                   onClick={() =>
@@ -679,7 +805,6 @@ function WorkspaceCanvas() {
                   <Zap className="w-4 h-4" />
                 </button>
 
-                {/* Model dropdown pill */}
                 <div className="relative">
                   <button
                     type="button"
@@ -713,9 +838,8 @@ function WorkspaceCanvas() {
                 </div>
               </div>
 
-              {/* Right Controls: Waveform icon & Big Run/Stop Button */}
+              {/* Right Controls */}
               <div className="flex items-center gap-2.5">
-                {/* Waveform / Logs toggle button */}
                 <button
                   type="button"
                   onClick={() => setActiveOverlay("steps")}
@@ -725,7 +849,6 @@ function WorkspaceCanvas() {
                   <Activity className="w-4 h-4" />
                 </button>
 
-                {/* Big Run / Stop Square or Play Action Button (Exactly matching target) */}
                 {isRunning ? (
                   <button
                     type="button"
@@ -748,117 +871,6 @@ function WorkspaceCanvas() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* ───────────────────────────────────────────────────────────── */}
-        {/* CARD 3: SECONDARY AGENT - TOP RIGHT (Architect & Coder)       */}
-        {/* ───────────────────────────────────────────────────────────── */}
-        <div className="absolute left-[1530px] top-[190px] w-[310px] rounded-[24px] glass-secondary-card p-5 text-white z-10 interactive-card transition-all hover:border-white/20">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-zinc-300">
-              Architect &amp; Coder Agent
-            </h3>
-            <span
-              className={`w-2 h-2 rounded-full ${
-                agents.coder.status === "RUNNING"
-                  ? "bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]"
-                  : agents.coder.status === "DONE"
-                  ? "bg-emerald-400"
-                  : agents.architect.status === "RUNNING"
-                  ? "bg-blue-400 animate-pulse shadow-[0_0_6px_#60a5fa]"
-                  : "bg-zinc-500"
-              }`}
-            />
-          </div>
-
-          <div className="flex items-end justify-between pt-2">
-            <span className="text-xs text-zinc-400 font-normal">
-              {agents.coder.data?.files_generated
-                ? "Files Synthesized"
-                : agents.architect.data?.files_count
-                ? "Files Planned"
-                : "Confidence"}
-            </span>
-            <span className="text-2xl font-light tracking-tight text-white font-mono">
-              {agents.coder.data?.files_generated
-                ? `${agents.coder.data.files_generated}`
-                : agents.architect.data?.files_count
-                ? `${agents.architect.data.files_count}`
-                : "97%"}
-            </span>
-          </div>
-        </div>
-
-        {/* ───────────────────────────────────────────────────────────── */}
-        {/* CARD 4: SECONDARY AGENT - BOTTOM RIGHT (Browser Automation)   */}
-        {/* ───────────────────────────────────────────────────────────── */}
-        <div className="absolute left-[1600px] top-[560px] w-[340px] rounded-[24px] glass-secondary-card p-5 text-white z-10 interactive-card transition-all hover:border-white/20">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-7 h-7 rounded-lg glass-chip flex items-center justify-center text-zinc-300">
-              <Globe className="w-3.5 h-3.5" />
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full glass-chip text-[10px] text-emerald-400">
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  agents.browser.status === "RUNNING"
-                    ? "bg-emerald-400 animate-pulse shadow-[0_0_6px_#34d399]"
-                    : agents.browser.status === "DONE"
-                    ? "bg-emerald-400"
-                    : "bg-zinc-500"
-                }`}
-              />
-              <span>
-                {agents.browser.status === "RUNNING"
-                  ? "In progress"
-                  : agents.browser.status === "DONE"
-                  ? "Passed"
-                  : "Standby"}
-              </span>
-            </div>
-          </div>
-
-          <div className="mb-3">
-            <h3 className="text-base font-semibold text-white">
-              Browser Automation Agent
-            </h3>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              Playwright E2E Verification
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-chip text-xs text-zinc-300">
-            <CheckCircle2 className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="truncate">
-              {agents.browser.status === "DONE"
-                ? "Playwright E2E passed (0 errors)"
-                : agents.browser.status === "RUNNING"
-                ? "Verifying DOM & endpoints"
-                : "Playwright E2E Verification"}
-            </span>
-          </div>
-        </div>
-
-        {/* ───────────────────────────────────────────────────────────── */}
-        {/* CARD 5: SECONDARY AGENT - BOTTOM LEFT (Debugger Agent)        */}
-        {/* ───────────────────────────────────────────────────────────── */}
-        <div className="absolute left-[400px] top-[710px] w-[280px] rounded-[22px] glass-secondary-card p-4 text-white z-10 interactive-card opacity-85 hover:opacity-100 transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-zinc-400">Debugger Agent</span>
-            <span className="text-[10px] font-mono text-emerald-400">
-              {agents.debugger.status === "DONE"
-                ? "0 AST ERRORS"
-                : agents.debugger.status === "RUNNING"
-                ? "REVIEWING"
-                : "STANDBY"}
-            </span>
-          </div>
-          <p className="text-[11px] text-zinc-500">
-            {agents.terminal.status === "RUNNING"
-              ? "Terminal: Installing packages..."
-              : agents.terminal.status === "DONE"
-              ? "Terminal: Build Clean"
-              : "AST Review & Self-Healing"}
-          </p>
         </div>
       </div>
 
